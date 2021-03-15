@@ -93,7 +93,7 @@ Open an issue explaining what the bug is and how you encountered it. Be detailed
 
 Fork this project and submit a pull request. Please use another branch on your fork of this project if you are submitting a pull request for something. Also, keep the following guidelines in mind.
 
-- Test your contribution before submitting it, making sure the program compiles properly.
+- Test your contribution before submitting them, making sure the program compiles properly.
 - Remember to make use of gofmt. This will keep the formatting of the code standard for everyone.
 - Try and keep your code as clean and efficient as possible.
 
