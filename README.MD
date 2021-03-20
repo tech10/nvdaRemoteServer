@@ -22,7 +22,7 @@ My goals for this project are to create a stable server for the NVDARemote addon
 At the moment, there is one method for installing the program. With the latest version of Go installed, use the following command.
 
 ```console
-$ go get github.com/tech10/nvdaRemoteServer
+$ go install github.com/tech10/nvdaRemoteServer
 ```
 
 This should download and compile the latest code, placing the binary within your GOBIN environment variable. Presuming you have the GOBIN in your path, you will be able to execute it fairly easily. If not, you will need to update your path or execute the binary with its full path.
@@ -31,7 +31,7 @@ This should download and compile the latest code, placing the binary within your
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert="/path/to/ssl/certificate"] [-key="/path/to/ssl/key"] [-ip4=""] [-ip6=""] [-port=6837] [-loglevel=0]
+$ nvdaRemoteServer [-cert=/path/to/ssl/certificate] [-key=/path/to/ssl/key] [-ip4=0.0.0.0] [-ip6=[::]] [-port=6837] [-loglevel=0]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -53,17 +53,25 @@ This is the path to the SSL key. Both the certificate and key file need to exist
 
 #### `-ip4`
 
-IPV4 address for the program to listen for incoming connections on. By default, all addresses are used. If you don't want to listen on IPV4, enter `-ip4="0"` as the parameter.
+IPV4 address for the program to listen for incoming connections on. By default, all addresses are used. If you don't want to listen on IPV4, enter `-ip4=0` as the parameter.
 
 
 #### `-ip6`
 
-IPV6 address for the program to listen for incoming connections on. By default, all addresses are used.  If you don't want to listen on IPV6, enter `-ip6="0"` as the parameter.
+IPV6 address for the program to listen for incoming connections on. By default, all addresses are used.  If you don't want to listen on IPV6, enter `-ip6=0` as the parameter.
+
+If you use 0 for both IPV4 and IPV6 addresses, the program will fall back to listening on all IP addresses.
+
+The IPV6 parameter must format an IPV6 address in brackets. The address must also be on an interface for your computer. For example, this type of parameter can be used.
+
+`[fd80::ffe8]`
+
+So long as that is a valid IPV6 address on one of your network interfaces, this example in the local prefix of IPV6 addresses, you will be able to listen for incoming connections to the server.
 
 
 #### `-port`
 
-Choose the port the server will use. At the moment, this isn't configurable by the NVDA addon itself. You should probably leave it at 6837.
+Choose the port the server will use. At the moment, this isn't configurable by the NVDA addon itself. You should probably leave it at 6837. Valid port numbers are between 1 and 65536.
 
 
 #### `-loglevel`
@@ -81,6 +89,7 @@ Each level above the previous will also log what the prior level is logging. For
 - 2 will log what channels each client joins and leaves, which will contain channel passwords. Don't use this log level in production.
 - 3 will log what the program is doing at each stage of its operation. Use this for debugging purposes only.
 - 4 will log the protocol that the server and client are exchanging. Don't use this unless you're a developer or you want to annalize the protocol being used. This will also cause a performance degrodation.
+
 
 # Notes on self-signed certificate generation
 
