@@ -5,6 +5,7 @@ Welcome to the server for the NVDARemote addon, written in the [Go programming l
 The original server for the addon is written in [Python,](https://www.python.org/) which works well enough under most circumstances. However, there were a few reasons why I wanted to write the server in Go.
 
 - Performance. Go can be much faster than Python if you write your program properly.
+- Automatic generation of the self-signed certificate, if desired. Both the addon and the server utalize self-signed SSL certificates, and the addon doesn't verify a certificate's authenticity before connecting. Therefore, I wanted a program that would automatically generate the needed certificate, store it in memory, and use it until the program is terminated.
 - Less memory should be used by the Go program.
 - Easy to compile on other operating systems without changing the code base much, if at all.
 - Can be compiled into a static, position-independent binary if desired, for use across systems using different libraries.
@@ -13,7 +14,7 @@ The original server for the addon is written in [Python,](https://www.python.org
 
 ## Goals
 
-My goals for this project are to create a stable server for the NVDARemote addon, which will be fast and have an efficient memory footprint. Configuration of the program will be done through the command line, which is more efficient than parsing a configuration file.
+My goals for this project are to create a stable server for the NVDARemote addon, which will be fast and have an efficient memory footprint. Configuration of the program will be done through the command line. Any log output can easily be redirected by the various facilities across operating systems, so a log file wouldn't need to be implemented by the program.
 
 
 # Installation
@@ -30,7 +31,7 @@ This should download and compile the latest code, placing the binary within your
 # Usage
 
 ```console
-$ nvdaRemoteServer -cert="/path/to/ssl/certificate" -key="/path/to/ssl/key" [-ip4=""] [-ip6=""] [-port=6837] [-loglevel=0]
+$ nvdaRemoteServer [-cert="/path/to/ssl/certificate"] [-key="/path/to/ssl/key"] [-ip4=""] [-ip6=""] [-port=6837] [-loglevel=0]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -38,7 +39,7 @@ Please note that the brackets around a parameter indicate that it is optional.
 
 ## Parameters
 
-### Required
+### Optional
 
 #### `-cert`
 
@@ -47,10 +48,8 @@ This is the path to the SSL certificate the program will use to communicate secu
 
 #### `-key`
 
-This is the path to the SSL key.
+This is the path to the SSL key. Both the certificate and key file need to exist and be accessible by the program, or the program will fall back to generating its own certificate.
 
-
-### Optional
 
 #### `-ip4`
 
@@ -76,17 +75,25 @@ This will choose what you want logged. The default is 0.
 
 Each level above the previous will also log what the prior level is logging. For instance, 1 will log both levels 0 and 1.
 
-- -1 will disable logging.
-- 0 will log when the server has started, stopped, or if a serious error has occurred. This should also log program panicks.
+- -1 will disable logging, with the exception of error messages, which are always logged. This includes panicks, which crash the program.
+- 0 will log when the server has started, stopped, or if an error has occurred that isn't severe enough to be logged at all times.
 - 1 will log information about which clients connect, logging both their ID and IP address.
 - 2 will log what channels each client joins and leaves, which will contain channel passwords. Don't use this log level in production.
 - 3 will log what the program is doing at each stage of its operation. Use this for debugging purposes only.
 - 4 will log the protocol that the server and client are exchanging. Don't use this unless you're a developer or you want to annalize the protocol being used. This will also cause a performance degrodation.
 
+# Notes on self-signed certificate generation
+
+The certificate that this program generates will allow for secure verification. However, like the certificate packaged by the addon, you can't verify it by using any certificate authority. If this changes in the addon and it requires certificate verification in the future, a certificate, key, and a root certificate authority file will be required for the server to use. The client would then require the appropriate files to verify the certificate is valid, unless you get a certificate from Letsencrypt, or another certificate authority.
+
+To generate the certificate, the program will use a source of random entropy that is cryptographically secure. This can be a problem on servers that are headless, meaning you access them remotely only. However, daemons such as Haveged exist to provide your system with available entropy that can be utalized.
+
+As a result of the secure random number generator, along with the various algorithms needed to generate the keys, the generation of a self-signed certificate can take some time, anywhere between three to ten seconds in the best case sanario. If the program takes longer than thirty seconds to generate the certificate, it is probably hanging as it waits for available entropy to complete random number generation. Once the key is generated, the program will run with its full performance.
+
 
 # Bugs
 
-Open an issue explaining what the bug is and how you encountered it. Be detailed, or your issue will be closed if it can't be resolved properly.
+Open an issue explaining what the bug is and how you encountered it. Try and be as detailed as you can, to allow the bug to be reproduced. Be detailed, or your issue will be closed if it can't be resolved properly.
 
 
 # Contributing
