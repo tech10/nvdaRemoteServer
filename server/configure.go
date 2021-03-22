@@ -78,6 +78,15 @@ func Configure() error {
 			return err
 		}
 		Log("SSL certificate generated.", LOG_DEBUG)
+	} else {
+		cert, cerr := tls.LoadX509KeyPair(Cert, Key)
+		if cerr != nil {
+			Log_error("Error loading certificate and key files.\r\n" + cerr.Error() + "\r\nUnable to start server.")
+			return cerr
+		}
+		config = &tls.Config{
+			Certificates: []tls.Certificate{cert},
+		}
 	}
 
 	portstr := strconv.Itoa(port)
