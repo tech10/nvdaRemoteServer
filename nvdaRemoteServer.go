@@ -4,6 +4,8 @@ package main
 
 import (
 	. "github.com/tech10/nvdaRemoteServer/server"
+	"os"
+	"strconv"
 	"sync"
 )
 
@@ -16,6 +18,7 @@ func main() {
 	if num == 0 {
 		return
 	}
+	Log("Server started. Running under PID "+strconv.Itoa(os.Getpid()), LOG_INFO)
 	wait()
 	Log("Server shutdown complete.", LOG_INFO)
 }
