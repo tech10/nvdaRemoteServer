@@ -51,6 +51,13 @@ This is the path to the SSL certificate the program will use to communicate secu
 This is the path to the SSL key. Both the certificate and key file need to exist and be accessible by the program, or the program will fall back to generating its own certificate.
 
 
+##### Note about the cert and key files
+
+If you are using the official NVDA addon as a server, or the unofficial one I linked above, you are welcome to use the same server.pem file for the certificate and key. The server should load successfully under this configuration.
+
+If the certificate and key files both exist and fail to load a valid SSL key pair, the program will terminate rather than falling back on automatic self-signed SSL key generation.
+
+
 #### `-ip4`
 
 IPV4 address for the program to listen for incoming connections on. By default, all addresses are used. If you don't want to listen on IPV4, enter `-ip4=0` as the parameter.
