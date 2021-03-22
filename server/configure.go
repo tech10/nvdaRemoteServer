@@ -89,6 +89,10 @@ func Configure() error {
 		}
 	}
 
+	config.PreferServerCipherSuites = false
+	config.MaxVersion = tls.VersionTLS12
+	config.InsecureSkipVerify = true
+
 	portstr := strconv.Itoa(port)
 
 	ip4l := false
