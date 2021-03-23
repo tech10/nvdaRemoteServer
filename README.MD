@@ -31,7 +31,7 @@ This should download and compile the latest code, placing the binary within your
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display false] [-loglevel=0]
+$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display false] [-loglevel 0]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -60,12 +60,12 @@ If the certificate and key files both exist and fail to load a valid SSL key pai
 
 #### `-ip4`
 
-IPV4 address for the program to listen for incoming connections on. By default, all addresses are used. If you don't want to listen on IPV4, enter `-ip4=0` as the parameter.
+IPV4 address for the program to listen for incoming connections on. By default, all addresses are used. If you don't want to listen on IPV4, enter `-ip4 0` as the parameter.
 
 
 #### `-ip6`
 
-IPV6 address for the program to listen for incoming connections on. By default, all addresses are used.  If you don't want to listen on IPV6, enter `-ip6=0` as the parameter.
+IPV6 address for the program to listen for incoming connections on. By default, all addresses are used.  If you don't want to listen on IPV6, enter `-ip6 0` as the parameter.
 
 If you use 0 for both IPV4 and IPV6 addresses, the program will fall back to listening on all IP addresses.
 
