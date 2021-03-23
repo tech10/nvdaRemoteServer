@@ -117,11 +117,6 @@ To generate the certificate, the program will use a source of random entropy tha
 As a result of the secure random number generator, along with the various algorithms needed to generate the keys, the generation of a self-signed certificate can take some time, anywhere between three to ten seconds in the best case sanario. If the program takes longer than thirty seconds to generate the certificate, it is probably hanging as it waits for available entropy to complete random number generation. Once the key is generated, the program will run with its full performance.
 
 
-# Bugs
-
-Open an issue explaining what the bug is and how you encountered it. Try and be as detailed as you can, to allow the bug to be reproduced. Be detailed, or your issue will be closed if it can't be resolved properly.
-
-
 # Statistics
 
 These by no means should be taken as representative of any definitive stats, but the results given by systemd's tracking of memory and CPU use can speak for themselves.
@@ -182,6 +177,11 @@ My personal observations are the following, running both servers on a server app
 I took no benchmarks of response times between sending and receiving data, but I would estimate that the Go program is at least four or five times faster than the Python program, perhaps more so. It definitely seems to use less CPU.
 
 In comparing the two servers, keep the following in mind. Python is an interpreted language. Therefore, the program is compiled into machine code as it is executed. This compiling and reading of the program will increase CPU use and slow down the responsiveness of a program. PyPy will compile the entire Python program into machine code before it begins to execute, which makes it faster than Python for long running processes, though slightly slower in starting. I believe it was stated that PyPy is at least four times faster than Python. Go will compile the entire program into machine code before you execute it, leaving you with a binary that you will run on your computer, similar to programming languages such as C. In [one particular use case,](https://getstream.io/blog/switched-python-go/#:~:text=Go%20is%20extremely%20fast.,40%20times%20faster%20than%20Python.) it was stated that Go was forty times faster than Python.
+
+
+# Bugs
+
+Open an issue explaining what the bug is and how you encountered it. Try and be as detailed as you can, to allow the bug to be reproduced. Be detailed, or your issue will be closed if it can't be resolved properly.
 
 
 # Contributing
