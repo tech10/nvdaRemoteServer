@@ -79,7 +79,11 @@ func (c *ClientChannel) Add(client *Client) {
 	if encerr == nil {
 		client.Send(enc)
 	}
-	Log("Client "+strconv.Itoa(id)+" has joined channel "+c.name, LOG_CHANNEL)
+	logstr := "Client " + strconv.Itoa(id) + " has joined channel " + c.name
+	if connection != "" {
+		logstr += " as a " + connection
+	}
+	Log(logstr+".", LOG_CHANNEL)
 }
 
 func (c *ClientChannel) Remove(client *Client) {
