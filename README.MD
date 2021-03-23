@@ -31,7 +31,7 @@ This should download and compile the latest code, placing the binary within your
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert=/path/to/ssl/certificate] [-key=/path/to/ssl/key] [-ip4=0.0.0.0] [-ip6=[::]] [-port=6837] [-loglevel=0]
+$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display false] [-loglevel=0]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -81,9 +81,19 @@ So long as that is a valid IPV6 address on one of your network interfaces, this 
 Choose the port the server will use. At the moment, this isn't configurable by the NVDA addon itself. You should probably leave it at 6837. Valid port numbers are between 1 and 65536.
 
 
+#### `-motd`
+
+Enter a message of the day for your server. You probably want to quote this string in the shell so spaces will be escaped properly, as in the example command line parameter.
+
+
+#### `-motd-always-display`
+
+Force the client to display the message of the day from the server, even if it hasn't changed since you last connected. This value is a boolean, so it can be true, false, 1, or 0. The numbers 1 and 0 are the same as true and false.
+
+
 #### `-loglevel`
 
-This will choose what you want logged. The default is 0.
+This will choose what you want logged. The default level is 0.
 
 
 ##### Logging Levels
@@ -95,7 +105,7 @@ Each level above the previous will also log what the prior level is logging. For
 - 1 will log information about which clients connect, logging both their ID and IP address.
 - 2 will log what channels each client joins and leaves, which will contain channel passwords. Don't use this log level in production.
 - 3 will log what the program is doing at each stage of its operation. Use this for debugging purposes only.
-- 4 will log the protocol that the server and client are exchanging. Don't use this unless you're a developer or you want to annalize the protocol being used. This will also cause a performance degrodation.
+- 4 will log the protocol that the server and client are exchanging. Don't use this unless you're a developer or you want to annalize the protocol being used. This might cause a performance degrodation, since the protocol being exchanged is also sent to the console, or redirected to a file by your operating system if you've told it to do so.
 
 
 # Notes on self-signed certificate generation
