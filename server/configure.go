@@ -100,21 +100,34 @@ func Configure() error {
 	config.MaxVersion = tls.VersionTLS12
 	config.InsecureSkipVerify = true
 
+	if motd != "" {
+		logstr := "The server will display the following message of the day:\r\n" + motd
+		if motdForceDisplay {
+			logstr += "\r\nThe server will tell each client to display this message of the day upon each connection."
+		}
+		Log(logstr, LOG_DEBUG)
+	}
+
+	if motd == "" && motdForceDisplay {
+		Log("The server has been told to always display a message of the day, but no message of the day has been set. The -motd-always-display parameter will be reset to false.", LOG_DEBUG)
+		motdForceDisplay = false
+	}
+
 	portstr := strconv.Itoa(port)
 
 	ip4l := false
 	ip6l := false
 
 	if ip4 != "" && ip4 != "0" {
-		Log("Starting IPV4 server on address "+ip4+", listening on port "+portstr, LOG_DEBUG)
+		Log("Starting IPV4 server on address "+ip4+", using on port "+portstr, LOG_DEBUG)
 		S4 = NewWithTLSConfig(ip4+":"+portstr, config)
 	}
 	if ip6 != "" && ip6 != "0" {
-		Log("Starting IPV6 server on address "+ip6+", listening on port "+portstr, LOG_DEBUG)
+		Log("Starting IPV6 server on address "+ip6+", using on port "+portstr, LOG_DEBUG)
 		S6 = NewWithTLSConfig(ip6+":"+portstr, config)
 	}
 	if !ip4l && !ip6l {
-		Log("Listening on all IPV4 and IPV6 addresses using port "+portstr, LOG_DEBUG)
+		Log("Starting server on all IPV4 and IPV6 addresses using port "+portstr, LOG_DEBUG)
 		SAll = NewWithTLSConfig(":"+portstr, config)
 	}
 
