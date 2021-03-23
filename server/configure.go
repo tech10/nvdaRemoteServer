@@ -27,6 +27,9 @@ const LOG_CHANNEL int = 2
 const LOG_DEBUG int = 3
 const LOG_PROTOCOL int = 4
 
+var motd string
+var motdForceDisplay bool
+
 var log_standard *log.Logger
 var log_error *log.Logger
 
@@ -43,6 +46,10 @@ func Configure() error {
 	flag.IntVar(&port, "port", DEFAULT_PORT, "The port that the server will listen for connections on. This can be blank if desired, in which case, the server will listen for connections on the default port, "+strconv.Itoa(DEFAULT_PORT)+". This value must be between 1 and 65536.")
 
 	flag.IntVar(&loglevel, "loglevel", DEFAULT_LOGLEVEL, "Choose what log level you wish to use. Any value below -1 will be ignored.")
+
+	flag.StringVar(&motd, "motd", "", "Display a message of the day for the server.")
+	flag.BoolVar(&motdForceDisplay, "motd-always-display", false, "Force the message of the day to be displayed upon each connection to the server, even if it hasn't changed.")
+
 	flag.Parse()
 
 	log_standard = log.New(os.Stdout, "", log.LstdFlags)

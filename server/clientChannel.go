@@ -60,7 +60,8 @@ func (c *ClientChannel) Add(client *Client) {
 	scdb.Origin = 0
 	scdb.ID = 0
 	scdb.Client = nil
-
+	scdb.Motd = motd
+	scdb.MotdForceDisplay = motdForceDisplay
 	if clients != nil {
 		scdb.UserIds = make([]int, 0, len(clients))
 		scdb.Clients = make([]ClientData, 0, len(clients))
