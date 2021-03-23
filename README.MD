@@ -163,7 +163,7 @@ $ sudo systemctl status nvdaRemoteServer
 
 ## Notes about the results
 
-There is one difference between the Python and Go versions of the server that is significant, other than the programming language being used. The Python server forks itself into the background, something that isn't strictly necessary to do with systemd processes. The Go version of the server does no forking, so the systemd service is capable of monitoring its process directly. This may cause results to be different than they should be, but the use of memory and CPU time should be fairly accurate. You will note that the IP accounting is different than it ought to be between the two processes for the time used. They should be fairly different, given that they are sending text only, though text encrypted by a TLS connection. Since the runtime was different but the usage the same, the numbers of IP trafic does seem inconsistent. I would have expected the Go program to use 25MB over the five hour period, or the Python program to use 2.3MB over the one hour period.
+There is one difference between the Python and Go versions of the server that is significant, other than the programming language being used. The Python server forks itself into the background, something that isn't strictly necessary to do with systemd processes. The Go version of the server does no forking, so the systemd service is capable of monitoring its process directly. This may cause results to be different than they should be, but the use of memory and CPU time should be fairly accurate.
 
 
 ## Observations of using the servers
