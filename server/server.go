@@ -90,10 +90,11 @@ func RemoveChannel(name string) {
 	sl.Lock()
 	defer sl.Unlock()
 	delete(channels, name)
+	Log("Channel "+name+" has been removed.", LOG_CHANNEL)
 	if len(channels) == 0 {
 		channels = nil
+		Log("There are now no channels on the server.", LOG_DEBUG)
 	}
-	Log("Channel "+name+" has been removed.", LOG_CHANNEL)
 }
 
 var ClientConnected = func(c *Connection) {
