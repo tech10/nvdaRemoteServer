@@ -122,6 +122,68 @@ As a result of the secure random number generator, along with the various algori
 Open an issue explaining what the bug is and how you encountered it. Try and be as detailed as you can, to allow the bug to be reproduced. Be detailed, or your issue will be closed if it can't be resolved properly.
 
 
+# Statistics
+
+These by no means should be taken as representative of any definitive stats, but the results given by systemd's tracking of memory and CPU use can speak for themselves.
+
+When running the servers, both the Go and Python versions, I was performing similar tasks over different periods of time, typing, reading, and doing virtually everything on the remote system, including writing this section of the document and collecting the statistics.
+
+Here is what they gathered for both the Python and Go versions of the NVDARemote server. The Python version I was running was 3.9.2, and Go was 1.16.2.
+
+
+## Python
+
+The run time was approximately one hour.
+
+```console
+$ sudo systemctl status NVDARemoteServer
+ NVDARemoteServer.service - NVDARemote relay server
+ Loaded: loaded (/usr/lib/systemd/system/NVDARemoteServer.service; disabled; vendor preset: disabled)
+ Active: active (running) since Tue 2021-03-23 12:37:24 MDT; 1h 0min ago
+ Process: 11551 ExecStart=/usr/bin/python /usr/share/NVDARemoteServer/server.py start (code=exited, status=0/SUCCESS)
+ Main PID: 11553 (python)
+ IP: 4.5M in, 5.2M out
+ Tasks: 5 (limit: 1151)
+ Memory: 12.0M
+ CPU: 1min 13.385s
+```
+
+
+## Go
+
+The runtime was approximately five hours, fourteen minutes.
+
+```console
+$ sudo systemctl status nvdaRemoteServer
+ nvdaRemoteServer.service - NVDARemote relay server
+ Loaded: loaded (/etc/systemd/system/nvdaRemoteServer.service; enabled; vendor preset: disabled)
+ Active: active (running) since Tue 2021-03-23 07:21:02 MDT; 5h 14min ago
+ Main PID: 7512 (nvdaRemoteServe)
+ IP: 10.6M in, 11.6M out
+ Tasks: 8 (limit: 1151)
+ Memory: 4.8M
+ CPU: 13.324s
+```
+
+
+## Notes about the results
+
+There is one difference between the Python and Go versions of the server that is significant, other than the programming language being used. The Python server forks itself into the background, something that isn't strictly necessary to do with systemd processes. The Go version of the server does no forking, so the systemd service is capable of monitoring its process directly. This may cause results to be different than they should be, but the use of memory and CPU time should be fairly accurate. You will note that the IP accounting is different than it ought to be between the two processes for the time used. They should be fairly different, given that they are sending text only, though text encrypted by a TLS connection. Since the runtime was different but the usage the same, the numbers of IP trafic does seem inconsistent. I would have expected the Go program to use 25MB over the five hour period, or the Python program to use 2.3MB over the one hour period.
+
+
+## Observations of using the servers
+
+My personal observations are the following, running both servers on a server approximately 50MS ping time away from both locations, which would make the round trip approximately 100MS:
+
+- When running the Python version of the NVDARemote server, the delay is noticeable between the controlling computer, and the computer being controlled.
+- When running the Python version of the server using [PyPy,](https://www.pypy.org/) which is a faster version of Python for longer running programs, the delay is less, better than Python and a bit more stable. I can still tell that I'm controlling a remote computer.
+- When running the Go version of the NVDARemote server, the delay can still be noticed, but is less than the Python version of the server. General stability and delay between keystrokes is also improved on the Go version of the server, and sometimes, I forget that I'm actually controlling a remote computer.
+
+I took no benchmarks of response times between sending and receiving data, but I would estimate that the Go program is at least four or five times faster than the Python program, perhaps more so. It definitely seems to use less CPU.
+
+In comparing the two servers, keep the following in mind. Python is an interpreted language. Therefore, the program is compiled into machine code as it is executed. This compiling and reading of the program will increase CPU use and slow down the responsiveness of a program. PyPy will compile the entire Python program into machine code before it begins to execute, which makes it faster than Python for long running processes, though slightly slower in starting. I believe it was stated that PyPy is at least four times faster than Python. Go will compile the entire program into machine code before you execute it, leaving you with a binary that you will run on your computer, similar to programming languages such as C. In [one particular use case,](https://getstream.io/blog/switched-python-go/#:~:text=Go%20is%20extremely%20fast.,40%20times%20faster%20than%20Python.) it was stated that Go was forty times faster than Python.
+
+
 # Contributing
 
 Fork this project and submit a pull request. Please use another branch on your fork of this project if you are submitting a pull request for something. Also, keep the following guidelines in mind.
