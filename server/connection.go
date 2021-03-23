@@ -72,6 +72,7 @@ func (c *Connection) listen() {
 	c.Lock()
 	c.t = time.NewTicker(120 * time.Second)
 	reader := bufio.NewReader(c.conn)
+	EndMessage := c.messageTerminator
 	c.Unlock()
 	// Stopping and pinging our client
 	go func() {
@@ -96,9 +97,6 @@ func (c *Connection) listen() {
 			}
 		}
 	}()
-	c.Server.Lock()
-	EndMessage := c.Server.messageTerminator
-	c.Server.Unlock()
 	for {
 		message, err := reader.ReadBytes(EndMessage)
 		if err != nil {
