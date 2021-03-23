@@ -34,13 +34,14 @@ import (
 // Connection holds info about server connection
 type Connection struct {
 	sync.Mutex
-	conn   net.Conn
-	ip     string
-	id     int
-	Server *Server
-	ctx    context.Context
-	Close  context.CancelFunc
-	t      *time.Ticker
+	conn              net.Conn
+	messageTerminator byte
+	ip                string
+	id                int
+	Server            *Server
+	ctx               context.Context
+	Close             context.CancelFunc
+	t                 *time.Ticker
 }
 
 // TCP server
@@ -68,7 +69,10 @@ func init() {
 
 // Read client data from channel
 func (c *Connection) listen() {
+	c.Lock()
 	c.t = time.NewTicker(120 * time.Second)
+	reader := bufio.NewReader(c.conn)
+	c.Unlock()
 	// Stopping and pinging our client
 	go func() {
 		for {
@@ -92,7 +96,6 @@ func (c *Connection) listen() {
 			}
 		}
 	}()
-	reader := bufio.NewReader(c.conn)
 	c.Server.Lock()
 	EndMessage := c.Server.messageTerminator
 	c.Server.Unlock()
@@ -116,9 +119,9 @@ func (c *Connection) listen() {
 
 // Send bytes to client
 func (c *Connection) Send(b []byte) error {
-	c.Server.Lock()
-	EndMessage := c.Server.messageTerminator
-	c.Server.Unlock()
+	c.Lock()
+	EndMessage := c.messageTerminator
+	c.Unlock()
 	if len(b) == 0 {
 		return nil
 	}
@@ -227,9 +230,10 @@ func (s *Server) accept(listener net.Listener) {
 		msl.Lock()
 		s.Lock()
 		client := &Connection{
-			conn:   conn,
-			ip:     getIP(conn),
-			Server: s,
+			conn:              conn,
+			ip:                getIP(conn),
+			Server:            s,
+			messageTerminator: s.messageTerminator,
 		}
 		client.ctx, client.Close = context.WithCancel(s.ctx)
 		s.Add(1)
