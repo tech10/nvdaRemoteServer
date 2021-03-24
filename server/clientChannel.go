@@ -184,7 +184,7 @@ func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
 		clients = c.ClientsAll
 	}
 	c.Unlock()
-	if clients == nil {
+	if len(clients) == 0 {
 		if connection == "master" {
 			client.Send([]byte("{\"type\":\"nvda_not_connected\"}"))
 		}
