@@ -79,9 +79,6 @@ func (c *ClientChannel) Add(client *Client) {
 	if encerr == nil {
 		client.Send(enc)
 	}
-	if len(clients) == 0 && connection == "master" {
-		client.Send([]byte("{\"type\":\"nvda_not_connected\"}"))
-	}
 	logstr := "Client " + strconv.Itoa(id) + " has joined channel " + c.name
 	if connection != "" {
 		logstr += " as a " + connection
@@ -188,6 +185,9 @@ func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
 	}
 	c.Unlock()
 	if clients == nil {
+		if connection == "master" {
+			client.Send([]byte("{\"type\":\"nvda_not_connected\"}"))
+		}
 		return
 	}
 	for _, sc := range clients {
