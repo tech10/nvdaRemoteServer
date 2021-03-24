@@ -14,27 +14,11 @@ type ClientChannel struct {
 }
 
 func (c *ClientChannel) Add(client *Client) {
+	defer c.Unlock()
+	c.Lock()
 	id := client.GetID()
 	connection := client.GetConnectionType()
-	c.Lock()
-	scdb := Data{
-		Type:    "client_joined",
-		Channel: c.name,
-		ID:      id,
-		Origin:  id,
-		Client: &ClientData{
-			ID:             id,
-			ConnectionType: connection,
-		},
-	}
-	c.Unlock()
-	enc, encerr := Encode(scdb)
-	if encerr == nil {
-		c.SendOthers(enc, nil)
-	}
 	var clients map[int]*Client
-	c.Lock()
-	defer c.Unlock()
 	switch connection {
 	case "master":
 		_, exists := c.ClientsMaster[id]
@@ -57,6 +41,20 @@ func (c *ClientChannel) Add(client *Client) {
 	}
 	c.ClientsAll[id] = client
 	client.SetChannel(c)
+	scdb := Data{
+		Type:    "client_joined",
+		Channel: c.name,
+		ID:      id,
+		Origin:  id,
+		Client: &ClientData{
+			ID:             id,
+			ConnectionType: connection,
+		},
+	}
+	enc, encerr := Encode(scdb)
+	if encerr == nil {
+		go c.SendOthers(enc, client)
+	}
 
 	scdb.Type = "channel_joined"
 	scdb.Origin = 0
@@ -102,7 +100,7 @@ func (c *ClientChannel) Remove(client *Client) {
 	}
 	enc, encerr := Encode(scdb)
 	if encerr == nil {
-		c.SendOthers(enc, nil)
+		c.SendOthers(enc, client)
 	}
 	defer c.EndIfEmpty()
 	defer c.Unlock()
@@ -172,10 +170,10 @@ func (c *ClientChannel) SendAll(msg []byte, client *Client) {
 }
 
 func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
-	var connection string
-	if client != nil {
-		connection = client.GetConnectionType()
+	if client == nil {
+		return
 	}
+	connection := client.GetConnectionType()
 	var clients map[int]*Client
 	c.Lock()
 	switch connection {
@@ -191,7 +189,7 @@ func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
 		return
 	}
 	for _, sc := range clients {
-		if sc == client || sc == nil {
+		if sc == client {
 			continue
 		}
 		sc.Send(msg)
