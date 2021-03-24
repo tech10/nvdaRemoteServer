@@ -18,6 +18,9 @@ func cmd_add(cmd string, cfunc func(*Client, *Data)) {
 
 func cmd_exec(c *Client, db *Data) error {
 	cmd := db.Type
+	if cmd == "" {
+		return errors.New("Invalid parameters received, a command cannot be blank.")
+	}
 	if !cmd_exists(cmd) {
 		return errors.New("The command " + cmd + " does not exist.")
 	}
