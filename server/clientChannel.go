@@ -53,7 +53,7 @@ func (c *ClientChannel) Add(client *Client) {
 	}
 	enc, encerr := Encode(scdb)
 	if encerr == nil {
-		go c.SendOthers(enc, client)
+		c.SendAll(enc, client)
 	}
 
 	scdb.Type = "channel_joined"
@@ -87,24 +87,11 @@ func (c *ClientChannel) Add(client *Client) {
 }
 
 func (c *ClientChannel) Remove(client *Client) {
-	id := client.GetID()
-	connection := client.GetConnectionType()
-	scdb := Data{
-		Type:   "client_left",
-		ID:     id,
-		Origin: id,
-		Client: &ClientData{
-			ID:             id,
-			ConnectionType: connection,
-		},
-	}
-	enc, encerr := Encode(scdb)
-	if encerr == nil {
-		c.SendOthers(enc, client)
-	}
 	defer c.EndIfEmpty()
 	defer c.Unlock()
 	c.Lock()
+	id := client.GetID()
+	connection := client.GetConnectionType()
 	switch connection {
 	case "master":
 		_, exists := c.ClientsMaster[id]
@@ -120,11 +107,23 @@ func (c *ClientChannel) Remove(client *Client) {
 		delete(c.ClientsSlave, id)
 	}
 	_, exists := c.ClientsAll[id]
-	if !exists {
-		return
+	if exists {
+		delete(c.ClientsAll, id)
 	}
-	delete(c.ClientsAll, id)
 	client.ClearChannel()
+	scdb := Data{
+		Type:   "client_left",
+		ID:     id,
+		Origin: id,
+		Client: &ClientData{
+			ID:             id,
+			ConnectionType: connection,
+		},
+	}
+	enc, encerr := Encode(scdb)
+	if encerr == nil {
+		c.SendAll(enc, client)
+	}
 	Log("Client "+strconv.Itoa(id)+" has left channel "+c.name, LOG_CHANNEL)
 }
 
@@ -158,10 +157,10 @@ func (c *ClientChannel) Quit() {
 }
 
 func (c *ClientChannel) SendAll(msg []byte, client *Client) {
-	c.Lock()
-	clients := c.ClientsAll
-	c.Unlock()
-	for _, sc := range clients {
+	if c.ClientsAll == nil || len(c.ClientsAll) == 0 {
+		return
+	}
+	for _, sc := range c.ClientsAll {
 		if client != nil && client == sc {
 			continue
 		}
