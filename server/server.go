@@ -7,7 +7,7 @@ import (
 
 var sl sync.Mutex
 var EndMessage byte = '\n'
-var lastID = 0
+var lastID int = 0
 var clients map[*Connection]*Client
 var channels map[string]*ClientChannel
 
@@ -124,11 +124,12 @@ var MessageReceived = func(c *Connection, pmsg []byte) {
 	cc := client.GetChannel()
 	if cc != nil {
 		pmsg, err = JsonAdd(pmsg, "origin", id)
-		if err != nil {
+		if err == nil {
 			cc.SendOthers(pmsg, client)
 			return
 		}
-		cc.SendAll(pmsg, client)
+		Log("Error adding origin to message from client "+strconv.Itoa(id)+".\r\n"+err.Error()+"\r\nSending to all clients anyway.", LOG_DEBUG)
+		cc.SendOthers(pmsg, client)
 		return
 	}
 	authErr := Authorize(client, pmsg)
