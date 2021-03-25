@@ -1,6 +1,7 @@
 package server
 
 import (
+	"sort"
 	"strconv"
 	"sync"
 )
@@ -75,6 +76,15 @@ func (c *ClientChannel) Add(client *Client) {
 				ConnectionType: ctype,
 			})
 		}
+
+		if len(scdb.UserIds) > 1 {
+			sort.Ints(scdb.UserIds)
+			sort.SliceStable(scdb.Clients,
+				func(i, j int) bool {
+					return scdb.Clients[i].ID < scdb.Clients[j].ID
+				})
+		}
+
 	}
 	enc, encerr = Encode(scdb)
 	if encerr == nil {
