@@ -39,7 +39,7 @@ func init() {
 				c.Send(enc)
 				return
 			} else {
-				Log(LOG_DEBUG, "JSON encoding error for client "+strconv.Itoa(c.GetID()))
+				Log(LOG_DEBUG, "JSON encoding error for client "+strconv.Itoa(c.GetID())+"\r\n"+encerr.Error())
 				return
 			}
 		}
@@ -52,7 +52,7 @@ func init() {
 				c.Send(enc)
 				return
 			} else {
-				Log(LOG_DEBUG, "JSON encoding error for client "+strconv.Itoa(c.GetID()))
+				Log(LOG_DEBUG, "JSON encoding error for client "+strconv.Itoa(c.GetID())+"\r\n"+encerr.Error())
 				return
 			}
 		}
