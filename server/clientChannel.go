@@ -19,7 +19,7 @@ func (c *ClientChannel) Add(client *Client) {
 	c.Lock()
 	id := client.GetID()
 	connection := client.GetConnectionType()
-	var clients map[int]*Client
+	clients := c.ClientsAll
 	switch connection {
 	case "master":
 		_, exists := c.ClientsMaster[id]
@@ -27,16 +27,12 @@ func (c *ClientChannel) Add(client *Client) {
 			break
 		}
 		c.ClientsMaster[id] = client
-		clients = c.ClientsSlave
 	case "slave":
 		_, exists := c.ClientsSlave[id]
 		if exists {
 			break
 		}
 		c.ClientsSlave[id] = client
-		clients = c.ClientsMaster
-	default:
-		clients = c.ClientsAll
 	}
 	_, exists := c.ClientsAll[id]
 	if exists {
@@ -56,6 +52,8 @@ func (c *ClientChannel) Add(client *Client) {
 	enc, encerr := Encode(scdb)
 	if encerr == nil {
 		c.SendAll(enc, client)
+	} else {
+		Log(LOG_DEBUG, "Error encoding JSON for client "+strconv.Itoa(id)+" while trying to add them to channel "+c.name+"\r\n"+encerr.Error())
 	}
 
 	scdb.Type = "channel_joined"
@@ -69,6 +67,9 @@ func (c *ClientChannel) Add(client *Client) {
 		scdb.Clients = make([]ClientData, 0, len(clients))
 		var ctype string
 		for cid, cc := range clients {
+			if cid == id {
+				continue
+			}
 			ctype = cc.GetConnectionType()
 			scdb.UserIds = append(scdb.UserIds, cid)
 			scdb.Clients = append(scdb.Clients, ClientData{
@@ -76,8 +77,10 @@ func (c *ClientChannel) Add(client *Client) {
 				ConnectionType: ctype,
 			})
 		}
-
-		if len(scdb.UserIds) > 1 {
+		if len(scdb.UserIds) == 0 {
+			scdb.UserIds = nil
+			scdb.Clients = nil
+		} else if len(scdb.UserIds) > 1 {
 			sort.Ints(scdb.UserIds)
 			sort.SliceStable(scdb.Clients,
 				func(i, j int) bool {
