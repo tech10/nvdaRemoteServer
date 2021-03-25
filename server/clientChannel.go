@@ -47,7 +47,6 @@ func (c *ClientChannel) Add(client *Client) {
 		Type:    "client_joined",
 		Channel: c.name,
 		ID:      id,
-		Origin:  id,
 		Client: &ClientData{
 			ID:             id,
 			ConnectionType: connection,
@@ -59,7 +58,7 @@ func (c *ClientChannel) Add(client *Client) {
 	}
 
 	scdb.Type = "channel_joined"
-	scdb.Origin = 0
+	scdb.Origin = id
 	scdb.ID = 0
 	scdb.Client = nil
 	scdb.Motd = motd
