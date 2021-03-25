@@ -34,6 +34,8 @@ func (c *ClientChannel) Add(client *Client) {
 		}
 		c.ClientsSlave[id] = client
 		clients = c.ClientsMaster
+	default:
+		clients = c.ClientsAll
 	}
 	_, exists := c.ClientsAll[id]
 	if exists {
