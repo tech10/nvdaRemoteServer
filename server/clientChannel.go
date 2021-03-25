@@ -83,7 +83,7 @@ func (c *ClientChannel) Add(client *Client) {
 	if connection != "" {
 		logstr += " as a " + connection
 	}
-	Log(logstr+".", LOG_CHANNEL)
+	Log(LOG_CHANNEL, logstr+".")
 }
 
 func (c *ClientChannel) Remove(client *Client) {
@@ -124,7 +124,7 @@ func (c *ClientChannel) Remove(client *Client) {
 	if encerr == nil {
 		c.SendAll(enc, client)
 	}
-	Log("Client "+strconv.Itoa(id)+" has left channel "+c.name, LOG_CHANNEL)
+	Log(LOG_CHANNEL, "Client "+strconv.Itoa(id)+" has left channel "+c.name)
 }
 
 func (c *ClientChannel) EndIfEmpty() bool {

@@ -26,7 +26,7 @@ func AddClient(c *Connection) {
 		clients = make(map[*Connection]*Client)
 	}
 	clients[c] = client
-	Log("Client "+strconv.Itoa(client.GetID())+" has connected from "+c.GetIP(), LOG_CONNECTION)
+	Log(LOG_CONNECTION, "Client "+strconv.Itoa(client.GetID())+" has connected from "+c.GetIP())
 }
 
 func FindClient(c *Connection) *Client {
@@ -45,16 +45,16 @@ func FindClient(c *Connection) *Client {
 func RemoveClient(c *Connection) {
 	client := FindClient(c)
 	if client == nil {
-		Log("This client is already disconnected. No client object was found for the closing connection, number "+strconv.Itoa(c.GetID())+".", LOG_DEBUG)
+		Log(LOG_DEBUG, "This client is already disconnected. No client object was found for the closing connection, number "+strconv.Itoa(c.GetID())+".")
 		return
 	}
 	sl.Lock()
 	defer sl.Unlock()
-	Log("Client "+strconv.Itoa(client.GetID())+" has disconnected.", LOG_CONNECTION)
+	Log(LOG_CONNECTION, "Client "+strconv.Itoa(client.GetID())+" has disconnected.")
 	delete(clients, c)
 	if len(clients) == 0 {
 		clients = nil
-		Log("There are now no clients connected to the server.", LOG_DEBUG)
+		Log(LOG_DEBUG, "There are now no clients connected to the server.")
 	}
 }
 
@@ -64,7 +64,7 @@ func AddChannel(name string, c *Client) {
 	if channels == nil {
 		channels = make(map[string]*ClientChannel)
 	}
-	Log("Channel "+name+" has been created.", LOG_CHANNEL)
+	Log(LOG_CHANNEL, "Channel "+name+" has been created.")
 	cc := NewClientChannel(name, c)
 	channels[name] = cc
 }
@@ -90,10 +90,10 @@ func RemoveChannel(name string) {
 	sl.Lock()
 	defer sl.Unlock()
 	delete(channels, name)
-	Log("Channel "+name+" has been removed.", LOG_CHANNEL)
+	Log(LOG_CHANNEL, "Channel "+name+" has been removed.")
 	if len(channels) == 0 {
 		channels = nil
-		Log("There are now no channels on the server.", LOG_DEBUG)
+		Log(LOG_DEBUG, "There are now no channels on the server.")
 	}
 }
 
@@ -125,14 +125,14 @@ var MessageReceived = func(c *Connection, pmsg []byte) {
 	if cc != nil {
 		pmsg, err = JsonAdd(pmsg, "origin", id)
 		if err != nil {
-			Log("Error adding origin to message from client "+strconv.Itoa(id)+".\r\n"+err.Error()+"\r\nSending to all clients without origin field.", LOG_DEBUG)
+			Log(LOG_DEBUG, "Error adding origin to message from client "+strconv.Itoa(id)+".\r\n"+err.Error()+"\r\nSending to all clients without origin field.")
 		}
 		cc.SendOthers(pmsg, client)
 		return
 	}
 	authErr := Authorize(client, pmsg)
 	if authErr != nil {
-		Log("Authorization failure for client "+strconv.Itoa(id)+".\r\n"+authErr.Error(), LOG_DEBUG)
+		Log(LOG_DEBUG, "Authorization failure for client "+strconv.Itoa(id)+".\r\n"+authErr.Error())
 		c.Close()
 		return
 	}

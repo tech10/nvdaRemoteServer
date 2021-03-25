@@ -14,6 +14,6 @@ func signals_init() {
 		syscall.SIGTERM,
 		syscall.SIGQUIT)
 	<-kill
-	Log("Signal received to shut down.", LOG_INFO)
+	Log(LOG_INFO, "Signal received to shut down.")
 	StopServers()
 }

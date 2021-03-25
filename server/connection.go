@@ -79,7 +79,7 @@ func (c *Connection) listen() {
 		for {
 			select {
 			case <-c.ctx.Done():
-				Log("Client "+strconv.Itoa(c.GetID())+" has received a signal to close.", LOG_DEBUG)
+				Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" has received a signal to close.")
 				msl.Lock()
 				c.Server.Lock()
 				c.t.Stop()
@@ -100,17 +100,17 @@ func (c *Connection) listen() {
 	for {
 		message, err := reader.ReadBytes(EndMessage)
 		if err != nil {
-			Log("Error receiving message from client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.", LOG_DEBUG)
+			Log(LOG_DEBUG, "Error receiving message from client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
 			c.Close()
 			return
 		}
 		message = bytes.TrimSuffix(message, []byte{EndMessage})
 		if len(message) == 0 {
-			Log("Received empty message from client "+strconv.Itoa(c.GetID()), LOG_DEBUG)
+			Log(LOG_DEBUG, "Received empty message from client "+strconv.Itoa(c.GetID()))
 			continue
 		}
 		c.t.Reset(120 * time.Second)
-		Log("Data received from client "+strconv.Itoa(c.GetID())+"\r\n"+string(message), LOG_PROTOCOL)
+		Log(LOG_PROTOCOL, "Data received from client "+strconv.Itoa(c.GetID())+"\r\n"+string(message))
 		c.Server.onNewMessage(c, message)
 	}
 }
@@ -123,16 +123,16 @@ func (c *Connection) Send(b []byte) error {
 	if len(b) == 0 {
 		return nil
 	}
-	Log("Data sending to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b), LOG_PROTOCOL)
+	Log(LOG_PROTOCOL, "Data sending to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
 	b = append(b, EndMessage)
 	num, err := c.conn.Write(b)
 	if err != nil {
-		Log("Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.", LOG_DEBUG)
+		Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
 		c.Close()
 		return err
 	}
 	if num < len(b) {
-		Log("Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b))+" bytes sent. Closing connection.", LOG_DEBUG)
+		Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b))+" bytes sent. Closing connection.")
 		c.Close()
 		return errors.New("Too few bytes sent to client.")
 	}
@@ -219,14 +219,14 @@ func (s *Server) accept(listener net.Listener) {
 	// Stopping our server.
 	go func() {
 		<-s.ctx.Done()
-		Log("The server at "+address+" has received a signal to stop.", LOG_DEBUG)
+		Log(LOG_DEBUG, "The server at "+address+" has received a signal to stop.")
 		listener.Close()
 		s.Done()
 	}()
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			Log("Error accepting connections on the server at "+address+"\r\n"+err.Error()+"\r\nStopping server.", LOG_DEBUG)
+			Log(LOG_DEBUG, "Error accepting connections on the server at "+address+"\r\n"+err.Error()+"\r\nStopping server.")
 			s.Stop()
 			break
 		}

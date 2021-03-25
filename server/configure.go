@@ -55,18 +55,18 @@ func Configure() error {
 	log_standard = log.New(os.Stdout, "", log.LstdFlags)
 	log_error = log.New(os.Stderr, "[ERROR]: ", log.LstdFlags)
 
-	Log("Initializing configuration.", LOG_INFO)
+	Log(LOG_INFO, "Initializing configuration.")
 
 	generate := false
 	var config *tls.Config
 	var err error
 
 	if Cert != "" && !fileExists(Cert) {
-		Log("The certificate file at "+Cert+" does not exist.", LOG_INFO)
+		Log(LOG_INFO, "The certificate file at "+Cert+" does not exist.")
 		generate = true
 	}
 	if Key != "" && !fileExists(Key) {
-		Log("The key file at "+Key+" does not exist.", LOG_INFO)
+		Log(LOG_INFO, "The key file at "+Key+" does not exist.")
 		generate = true
 	}
 	if Cert == "" || Key == "" {
@@ -78,13 +78,13 @@ func Configure() error {
 	}
 
 	if generate {
-		Log("Attempting to generate self-signed SSL certificate.", LOG_DEBUG)
+		Log(LOG_DEBUG, "Attempting to generate self-signed SSL certificate.")
 		config, err = gen_cert()
 		if err != nil {
 			Log_error("Unable to generate self-signed certificate.\r\n" + err.Error() + "\r\nUnable to start server.")
 			return err
 		}
-		Log("SSL certificate generated.", LOG_DEBUG)
+		Log(LOG_DEBUG, "SSL certificate generated.")
 	} else {
 		cert, cerr := tls.LoadX509KeyPair(Cert, Key)
 		if cerr != nil {
@@ -105,11 +105,11 @@ func Configure() error {
 		if motdForceDisplay {
 			logstr += "\r\nThe server will tell each client to display this message of the day upon each connection."
 		}
-		Log(logstr, LOG_DEBUG)
+		Log(LOG_DEBUG, logstr)
 	}
 
 	if motd == "" && motdForceDisplay {
-		Log("The server has been told to always display a message of the day, but no message of the day has been set. The -motd-always-display parameter will be reset to false.", LOG_DEBUG)
+		Log(LOG_INFO, "The server has been told to always display a message of the day, but no message of the day has been set. The -motd-always-display parameter will be reset to false.")
 		motdForceDisplay = false
 	}
 
@@ -119,15 +119,15 @@ func Configure() error {
 	ip6l := false
 
 	if ip4 != "" && ip4 != "0" {
-		Log("Starting IPV4 server on address "+ip4+", using on port "+portstr, LOG_DEBUG)
+		Log(LOG_DEBUG, "Starting IPV4 server on address "+ip4+", using on port "+portstr)
 		S4 = NewWithTLSConfig(ip4+":"+portstr, config)
 	}
 	if ip6 != "" && ip6 != "0" {
-		Log("Starting IPV6 server on address "+ip6+", using on port "+portstr, LOG_DEBUG)
+		Log(LOG_DEBUG, "Starting IPV6 server on address "+ip6+", using on port "+portstr)
 		S6 = NewWithTLSConfig(ip6+":"+portstr, config)
 	}
 	if !ip4l && !ip6l {
-		Log("Starting server on all IPV4 and IPV6 addresses using port "+portstr, LOG_DEBUG)
+		Log(LOG_DEBUG, "Starting server on all IPV4 and IPV6 addresses using port "+portstr)
 		SAll = NewWithTLSConfig(":"+portstr, config)
 	}
 
@@ -151,7 +151,7 @@ func Start() int {
 		if err != nil {
 			Log_error("Error listening on IPV4 address.\r\n" + err.Error())
 		} else {
-			Log("Listening on IPV4 address.", LOG_INFO)
+			Log(LOG_INFO, "Listening on IPV4 address.")
 			num++
 		}
 	}
@@ -160,7 +160,7 @@ func Start() int {
 		if err != nil {
 			Log_error("Error listening on IPV6 address.\r\n" + err.Error())
 		} else {
-			Log("Listening on IPV6 address.", LOG_INFO)
+			Log(LOG_INFO, "Listening on IPV6 address.")
 			num++
 		}
 	}
@@ -170,10 +170,10 @@ func Start() int {
 			Log_error("Error listening on all addresses.\r\n" + err.Error())
 			return num
 		}
-		Log("Listening on all IPV4 and IPV6 addresses.", LOG_INFO)
+		Log(LOG_INFO, "Listening on all IPV4 and IPV6 addresses.")
 		num++
 	}
-	Log("Number of servers started: "+strconv.Itoa(num), LOG_DEBUG)
+	Log(LOG_DEBUG, "Number of servers started: "+strconv.Itoa(num))
 	go signals_init()
 	return num
 }

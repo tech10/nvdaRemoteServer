@@ -39,7 +39,7 @@ func init() {
 				c.Send(enc)
 				return
 			} else {
-				Log("JSON encoding error for client "+strconv.Itoa(c.GetID()), LOG_DEBUG)
+				Log(LOG_DEBUG, "JSON encoding error for client "+strconv.Itoa(c.GetID()))
 				return
 			}
 		}
@@ -52,7 +52,7 @@ func init() {
 				c.Send(enc)
 				return
 			} else {
-				Log("JSON encoding error for client "+strconv.Itoa(c.GetID()), LOG_DEBUG)
+				Log(LOG_DEBUG, "JSON encoding error for client "+strconv.Itoa(c.GetID()))
 				return
 			}
 		}
@@ -68,7 +68,7 @@ func init() {
 
 	cmd_add("protocol_version", func(c *Client, db *Data) {
 		if db.Version <= 0 {
-			Log("Client "+strconv.Itoa(c.GetID())+" has tried to register an invalid version number.", LOG_DEBUG)
+			Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" has tried to register an invalid version number.")
 			enc, encerr := Encode(Data{
 				Type:  "error",
 				Error: "invalid_parameters",
@@ -77,12 +77,12 @@ func init() {
 				c.Send(enc)
 				return
 			} else {
-				Log("JSON encoding error for client "+strconv.Itoa(c.GetID()), LOG_DEBUG)
+				Log(LOG_DEBUG, "JSON encoding error for client "+strconv.Itoa(c.GetID()))
 				return
 			}
 		}
 		c.SetVersion(db.Version)
-		Log("Client "+strconv.Itoa(c.GetID())+" has set protocol version "+strconv.Itoa(db.Version)+".", LOG_DEBUG)
+		Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" has set protocol version "+strconv.Itoa(db.Version)+".")
 	})
 
 	cmd_add("generate_key", func(c *Client, db *Data) {
@@ -92,11 +92,11 @@ func init() {
 			Key:  key,
 		})
 		if encerr != nil {
-			Log("JSON encoding error for client "+strconv.Itoa(c.GetID()), LOG_DEBUG)
+			Log(LOG_DEBUG, "JSON encoding error for client "+strconv.Itoa(c.GetID()))
 			return
 		}
 		c.Send(enc)
-		Log("Client "+strconv.Itoa(c.GetID())+" has generated a key: "+key, LOG_DEBUG)
+		Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" has generated a key: "+key)
 		c.Close()
 	})
 

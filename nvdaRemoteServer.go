@@ -18,9 +18,9 @@ func main() {
 	if num == 0 {
 		return
 	}
-	Log("Server started. Running under PID "+strconv.Itoa(os.Getpid()), LOG_INFO)
+	Log(LOG_INFO, "Server started. Running under PID "+strconv.Itoa(os.Getpid()))
 	wait()
-	Log("Server shutdown complete.", LOG_INFO)
+	Log(LOG_INFO, "Server shutdown complete.")
 }
 
 func wait() {

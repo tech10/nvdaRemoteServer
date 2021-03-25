@@ -1,12 +1,12 @@
 package server
 
-func Log(msg string, level int) {
+func Log(level int, msg ...interface{}) {
 	if level > loglevel {
 		return
 	}
-	log_standard.Println(msg)
+	log_standard.Println(msg...)
 }
 
-func Log_error(msg string) {
-	log_error.Println(msg)
+func Log_error(msg ...interface{}) {
+	log_error.Println(msg...)
 }
