@@ -9,7 +9,7 @@ The original server for the addon is written in [Python,](https://www.python.org
 - Less memory should be used by the Go program.
 - Easy to compile on other operating systems without changing the code base much, if at all.
 - Can be compiled into a static, position-independent binary if desired, for use across systems using different libraries.
-- Should be able to easily upgrade a program to utalize the latest version of Go without changing API calls.
+- Should be able to easily upgrade a program to utalize the latest version of Go without changing API calls within the program.
 
 
 ## Goals
@@ -166,7 +166,7 @@ $ sudo systemctl status nvdaRemoteServer
 There is one difference between the Python and Go versions of the server that is significant, other than the programming language being used. The Python server forks itself into the background, something that isn't strictly necessary to do with systemd processes. The Go version of the server does no forking, so the systemd service is capable of monitoring its process directly. This may cause results to be different than they should be, but the use of memory and CPU time should be fairly accurate.
 
 
-## Observations of using the servers
+## Observations using the servers
 
 My personal observations are the following, running both servers on a server approximately 50MS ping time away from both locations, which would make the round trip approximately 100MS:
 
