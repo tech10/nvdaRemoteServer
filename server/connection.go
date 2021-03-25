@@ -213,15 +213,20 @@ func (s *Server) Listen() error {
 }
 
 func (s *Server) accept(listener net.Listener) {
+	s.Lock()
+	address := s.address
+	s.Unlock()
 	// Stopping our server.
 	go func() {
 		<-s.ctx.Done()
+		Log("The server at "+address+" has received a signal to stop.", LOG_DEBUG)
 		listener.Close()
 		s.Done()
 	}()
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
+			Log("Error accepting connections on the server at "+address+"\r\n"+err.Error()+"\r\nStopping server.", LOG_DEBUG)
 			s.Stop()
 			break
 		}
