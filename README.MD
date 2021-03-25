@@ -78,7 +78,7 @@ So long as that is a valid IPV6 address on one of your network interfaces, this 
 
 #### `-port`
 
-Choose the port the server will use. At the moment, this isn't configurable by the NVDA addon itself. You should probably leave it at 6837. Valid port numbers are between 1 and 65536.
+Choose the port the server will use. The default is 6837. Valid port numbers are between 1 and 65536.
 
 
 #### `-motd`
