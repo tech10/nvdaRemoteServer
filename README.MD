@@ -69,7 +69,7 @@ IPV6 address for the program to listen for incoming connections on. By default, 
 
 If you use 0 for both IPV4 and IPV6 addresses, the program will fall back to listening on all IP addresses.
 
-The IPV6 parameter must format an IPV6 address in brackets. The address must also be on an interface for your computer. For example, this type of parameter can be used.
+The IPV6 parameter must have the address address surrounded by brackets. The address must also be on an interface for your computer. For example, this type of parameter can be used.
 
 `[fd80::ffe8]`
 
@@ -83,7 +83,7 @@ Choose the port the server will use. The default is 6837. Valid port numbers are
 
 #### `-motd`
 
-Enter a message of the day for your server. You probably want to quote this string in the shell so spaces will be escaped properly, as in the example command line parameter.
+Enter a message of the day for your server. You probably want to quote this string in the shell, ensuring spaces will be escaped properly, as in the example command line parameter.
 
 
 #### `-motd-always-display`
@@ -188,7 +188,7 @@ Open an issue explaining what the bug is and how you encountered it. Try and be 
 
 Fork this project and submit a pull request. Please use another branch on your fork of this project if you are submitting a pull request for something. Also, keep the following guidelines in mind.
 
-- Test your contribution before submitting them, making sure the program compiles properly.
+- Test your contributions before submitting them, making sure the program compiles properly.
 - Remember to make use of gofmt. This will keep the formatting of the code standard for everyone.
 - Try and keep your code as clean and efficient as possible.
 
