@@ -31,7 +31,7 @@ This should download and compile the latest code, placing the binary within your
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display false] [-loglevel 0]
+$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display false] [-send-origin true] [-loglevel 0]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -89,6 +89,11 @@ Enter a message of the day for your server. You probably want to quote this stri
 #### `-motd-always-display`
 
 Force the client to display the message of the day from the server, even if it hasn't changed since you last connected. This value is a boolean, so it can be true, false, 1, or 0. The numbers 1 and 0 are the same as true and false.
+
+
+#### `-send-origin`
+
+By default, when the server receives a message from a client, it will send that same message to all clients that need to receive it, but it will add an origin field to that message. This requires that the message be decoded into a value the program can more easily manipulate, an origin message added to it, then encoded back to the value that will be sent to all clients. This could cause a slight performance hit. You can disable this feature by setting it to false, if desired, though you might find some things don't work properly for you if you do so.
 
 
 #### `-loglevel`

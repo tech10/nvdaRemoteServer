@@ -30,6 +30,8 @@ const LOG_PROTOCOL int = 4
 var motd string
 var motdForceDisplay bool
 
+var sendOrigin bool
+
 var log_standard *log.Logger
 var log_error *log.Logger
 
@@ -49,6 +51,8 @@ func Configure() error {
 
 	flag.StringVar(&motd, "motd", "", "Display a message of the day for the server.")
 	flag.BoolVar(&motdForceDisplay, "motd-always-display", false, "Force the message of the day to be displayed upon each connection to the server, even if it hasn't changed.")
+
+	flag.BoolVar(&sendOrigin, "send-origin", true, "Send an origin message from every message received by a client.")
 
 	flag.Parse()
 

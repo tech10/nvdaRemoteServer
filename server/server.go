@@ -123,9 +123,11 @@ var MessageReceived = func(c *Connection, pmsg []byte) {
 	id := client.GetID()
 	cc := client.GetChannel()
 	if cc != nil {
-		pmsg, err = JsonAdd(pmsg, "origin", id)
-		if err != nil {
-			Log(LOG_DEBUG, "Error adding origin to message from client "+strconv.Itoa(id)+".\r\n"+err.Error()+"\r\nSending to all clients without origin field.")
+		if sendOrigin {
+			pmsg, err = JsonAdd(pmsg, "origin", id)
+			if err != nil {
+				Log(LOG_DEBUG, "Error adding origin to message from client "+strconv.Itoa(id)+".\r\n"+err.Error()+"\r\nSending to all clients without origin field.")
+			}
 		}
 		cc.SendOthers(pmsg, client)
 		return
