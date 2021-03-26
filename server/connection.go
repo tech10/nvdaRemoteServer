@@ -104,8 +104,7 @@ func (c *Connection) listen() {
 			c.Close()
 			return
 		}
-		message = bytes.TrimSuffix(message, []byte{EndMessage})
-		if len(message) == 0 {
+		if len(message) == 1 {
 			Log(LOG_DEBUG, "Received empty message from client "+strconv.Itoa(c.GetID()))
 			continue
 		}
