@@ -47,7 +47,7 @@ func Configure() error {
 	flag.StringVar(&ip6, "ip6", "", "IPV6 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV6 addresses.")
 	flag.IntVar(&port, "port", DEFAULT_PORT, "The port that the server will listen for connections on. This can be blank if desired, in which case, the server will listen for connections on the default port, "+strconv.Itoa(DEFAULT_PORT)+". This value must be between 1 and 65536.")
 
-	flag.IntVar(&loglevel, "loglevel", DEFAULT_LOGLEVEL, "Choose what log level you wish to use. Any value below -1 will be ignored.")
+	flag.IntVar(&loglevel, "log-level", DEFAULT_LOGLEVEL, "Choose what log level you wish to use. Any value below -1 will be ignored.")
 
 	flag.StringVar(&motd, "motd", "", "Display a message of the day for the server.")
 	flag.BoolVar(&motdForceDisplay, "motd-always-display", false, "Force the message of the day to be displayed upon each connection to the server, even if it hasn't changed.")
