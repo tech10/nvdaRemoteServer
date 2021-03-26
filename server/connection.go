@@ -124,15 +124,14 @@ func (c *Connection) Send(b []byte) error {
 		return nil
 	}
 	Log(LOG_PROTOCOL, "Data sending to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
-	b = append(b, EndMessage)
-	num, err := c.conn.Write(b)
+	num, err := c.conn.Write(append(b, EndMessage))
 	if err != nil {
 		Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
 		c.Close()
 		return err
 	}
-	if num < len(b) {
-		Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b))+" bytes sent. Closing connection.")
+	if num < len(b)+1 {
+		Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b)+1)+" bytes sent. Closing connection.")
 		c.Close()
 		return errors.New("Too few bytes sent to client.")
 	}
