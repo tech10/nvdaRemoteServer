@@ -97,11 +97,11 @@ func RemoveChannel(name string) {
 	}
 }
 
-var ClientConnected = func(c *Connection) {
+func ClientConnected(c *Connection) {
 	AddClient(c)
 }
 
-var ClientDisconnected = func(c *Connection) {
+func ClientDisconnected(c *Connection) {
 	client := FindClient(c)
 	if client != nil {
 		cc := client.GetChannel()
@@ -112,7 +112,7 @@ var ClientDisconnected = func(c *Connection) {
 	RemoveClient(c)
 }
 
-var MessageReceived = func(c *Connection, pmsg []byte) {
+func MessageReceived(c *Connection, pmsg []byte) {
 	var err error
 	client := FindClient(c)
 	if client == nil {

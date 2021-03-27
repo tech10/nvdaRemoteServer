@@ -50,9 +50,6 @@ type Server struct {
 	sync.WaitGroup
 	address           string // Address to open connection: localhost:9999
 	config            *tls.Config
-	onNewConnection   func(c *Connection)
-	onClientClosed    func(c *Connection)
-	onNewMessage      func(c *Connection, message []byte)
 	messageTerminator byte
 	ctx               context.Context
 	Stop              context.CancelFunc
@@ -84,7 +81,7 @@ func (c *Connection) listen() {
 				c.Server.Lock()
 				c.t.Stop()
 				c.conn.Close()
-				c.Server.onClientClosed(c)
+				ClientDisconnected(c)
 				c.Server.Unlock()
 				msl.Unlock()
 				c.Server.Done()
@@ -110,7 +107,7 @@ func (c *Connection) listen() {
 		}
 		c.t.Reset(120 * time.Second)
 		Log(LOG_PROTOCOL, "Data received from client "+strconv.Itoa(c.GetID())+"\r\n"+string(message))
-		c.Server.onNewMessage(c, message)
+		MessageReceived(c, message)
 	}
 }
 
@@ -156,27 +153,6 @@ func (c *Connection) SetID(id int) {
 	c.Lock()
 	defer c.Unlock()
 	c.id = id
-}
-
-// Called right after server starts listening new client
-func (s *Server) OnNewConnection(callback func(c *Connection)) {
-	s.Lock()
-	defer s.Unlock()
-	s.onNewConnection = callback
-}
-
-// Called right after connection closed
-func (s *Server) OnClientClosed(callback func(c *Connection)) {
-	s.Lock()
-	defer s.Unlock()
-	s.onClientClosed = callback
-}
-
-// Called when Connection receives new message
-func (s *Server) OnNewMessage(callback func(c *Connection, message []byte)) {
-	s.Lock()
-	defer s.Unlock()
-	s.onNewMessage = callback
 }
 
 // Set message terminator
@@ -238,7 +214,7 @@ func (s *Server) accept(listener net.Listener) {
 		}
 		client.ctx, client.Close = context.WithCancel(s.ctx)
 		s.Add(1)
-		s.onNewConnection(client)
+		ClientConnected(client)
 		s.Unlock()
 		msl.Unlock()
 		go client.listen()
@@ -251,10 +227,6 @@ func New(address string) *Server {
 		address:           address,
 		messageTerminator: '\n',
 	}
-
-	server.OnNewConnection(ClientConnected)
-	server.OnNewMessage(MessageReceived)
-	server.OnClientClosed(ClientDisconnected)
 
 	return server
 }
