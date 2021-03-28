@@ -93,7 +93,7 @@ func (s *Server) accept(listener net.Listener) {
 		client := &Client{
 			conn:              conn,
 			ip:                getIP(conn),
-			Server:            s,
+			s:                 s,
 			messageTerminator: s.messageTerminator,
 		}
 		client.ctx, client.Close = context.WithCancel(s.ctx)

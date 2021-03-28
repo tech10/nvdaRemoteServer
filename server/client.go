@@ -23,7 +23,7 @@ type Client struct {
 	ctx               context.Context
 	Close             context.CancelFunc
 	t                 *time.Ticker
-	Server            *Server
+	s                 *Server
 }
 
 func (c *Client) ClearChannel() {
@@ -100,13 +100,13 @@ func (c *Client) listen() {
 			case <-c.ctx.Done():
 				Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" has received a signal to close.")
 				msl.Lock()
-				c.Server.Lock()
+				c.s.Lock()
 				c.t.Stop()
 				c.conn.Close()
 				ClientDisconnected(c)
-				c.Server.Unlock()
+				c.s.Unlock()
 				msl.Unlock()
-				c.Server.Done()
+				c.s.Done()
 				return
 			case <-c.t.C:
 				c.Send(ping_msg)
