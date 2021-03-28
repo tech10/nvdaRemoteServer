@@ -1,6 +1,7 @@
 package server
 
 import (
+	"runtime"
 	"strconv"
 	"sync"
 )
@@ -103,8 +104,7 @@ func MessageReceived(c *Client, pmsg []byte) {
 	var err error
 	if !FindClient(c) {
 		Log_error("A client object was not found from the connection receiving a message, number " + strconv.Itoa(c.GetID()) + ". Unexpected behavior encountered. Closing connection.")
-		c.Close()
-		return
+		runtime.Goexit()
 	}
 	id := c.GetID()
 	cc := c.GetChannel()

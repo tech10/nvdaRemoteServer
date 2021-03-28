@@ -113,11 +113,11 @@ func (c *Client) listen() {
 			}
 		}
 	}()
+	defer c.Close()
 	for {
 		message, err := reader.ReadBytes(EndMessage)
 		if err != nil {
 			Log(LOG_DEBUG, "Error receiving message from client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
-			c.Close()
 			return
 		}
 		if len(message) == 1 {
