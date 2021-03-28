@@ -11,6 +11,8 @@ import (
 
 var ping_msg = []byte(`{"type":"ping"}`)
 
+const ping_sec int = 120
+
 type Client struct {
 	sync.Mutex
 	conn              net.Conn
@@ -89,7 +91,7 @@ func (c *Client) SetVersion(version int) {
 // Read client data from channel
 func (c *Client) listen() {
 	c.Lock()
-	c.t = time.NewTicker(120 * time.Second)
+	c.t = time.NewTicker(time.Duration(ping_sec) * time.Second)
 	reader := bufio.NewReader(c.conn)
 	EndMessage := c.messageTerminator
 	c.Unlock()
@@ -124,7 +126,7 @@ func (c *Client) listen() {
 			Log(LOG_DEBUG, "Received empty message from client "+strconv.Itoa(c.GetID()))
 			continue
 		}
-		c.t.Reset(120 * time.Second)
+		c.t.Reset(time.Duration(ping_sec) * time.Second)
 		Log(LOG_PROTOCOL, "Data received from client "+strconv.Itoa(c.GetID())+"\r\n"+string(message))
 		MessageReceived(c, message)
 	}
