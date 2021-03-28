@@ -8,49 +8,39 @@ import (
 var sl sync.Mutex
 var EndMessage byte = '\n'
 var lastID int = 0
-var clients map[*Connection]*Client
+var clients map[*Client]struct{}
 var channels map[string]*ClientChannel
 
-func AddClient(c *Connection) {
+func AddClient(c *Client) {
 	sl.Lock()
 	defer sl.Unlock()
 	lastID++
-	client := &Client{
-		conn:           c,
-		connectionType: "",
-		id:             lastID,
-		c:              nil,
-	}
 	c.SetID(lastID)
 	if clients == nil {
-		clients = make(map[*Connection]*Client)
+		clients = make(map[*Client]struct{})
 	}
-	clients[c] = client
-	Log(LOG_CONNECTION, "Client "+strconv.Itoa(client.GetID())+" has connected from "+c.GetIP())
+	clients[c] = struct{}{}
+	Log(LOG_CONNECTION, "Client "+strconv.Itoa(lastID)+" has connected from "+c.GetIP())
 }
 
-func FindClient(c *Connection) *Client {
+func FindClient(c *Client) bool {
 	sl.Lock()
 	defer sl.Unlock()
 	if clients == nil {
-		return nil
+		return false
 	}
-	client, exists := clients[c]
-	if !exists {
-		return nil
-	}
-	return client
+	_, exists := clients[c]
+	return exists
 }
 
-func RemoveClient(c *Connection) {
-	client := FindClient(c)
-	if client == nil {
-		Log(LOG_DEBUG, "This client is already disconnected. No client object was found for the closing connection, number "+strconv.Itoa(c.GetID())+".")
+func RemoveClient(c *Client) {
+	if !FindClient(c) {
+		Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" is already disconnected.")
 		return
 	}
 	sl.Lock()
 	defer sl.Unlock()
-	Log(LOG_CONNECTION, "Client "+strconv.Itoa(client.GetID())+" has disconnected.")
+	Log(LOG_CONNECTION, "Client "+strconv.Itoa(c.GetID())+" has disconnected.")
 	delete(clients, c)
 	if len(clients) == 0 {
 		clients = nil
@@ -97,31 +87,27 @@ func RemoveChannel(name string) {
 	}
 }
 
-func ClientConnected(c *Connection) {
+func ClientConnected(c *Client) {
 	AddClient(c)
 }
 
-func ClientDisconnected(c *Connection) {
-	client := FindClient(c)
-	if client != nil {
-		cc := client.GetChannel()
-		if cc != nil {
-			cc.Remove(client)
-		}
+func ClientDisconnected(c *Client) {
+	cc := c.GetChannel()
+	if cc != nil {
+		cc.Remove(c)
 	}
 	RemoveClient(c)
 }
 
-func MessageReceived(c *Connection, pmsg []byte) {
+func MessageReceived(c *Client, pmsg []byte) {
 	var err error
-	client := FindClient(c)
-	if client == nil {
+	if !FindClient(c) {
 		Log_error("A client object was not found from the connection receiving a message, number " + strconv.Itoa(c.GetID()) + ". Unexpected behavior encountered. Closing connection.")
 		c.Close()
 		return
 	}
-	id := client.GetID()
-	cc := client.GetChannel()
+	id := c.GetID()
+	cc := c.GetChannel()
 	if cc != nil {
 		if sendOrigin {
 			pmsg, err = JsonAdd(pmsg, "origin", id)
@@ -129,10 +115,10 @@ func MessageReceived(c *Connection, pmsg []byte) {
 				Log(LOG_DEBUG, "Error adding origin to message from client "+strconv.Itoa(id)+".\r\n"+err.Error()+"\r\nSending to all clients without origin field.")
 			}
 		}
-		cc.SendOthers(pmsg, client)
+		cc.SendOthers(pmsg, c)
 		return
 	}
-	authErr := Authorize(client, pmsg)
+	authErr := Authorize(c, pmsg)
 	if authErr != nil {
 		Log(LOG_DEBUG, "Authorization failure for client "+strconv.Itoa(id)+".\r\n"+authErr.Error())
 		c.Close()

@@ -13,36 +13,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package server
 
 import (
-	"bufio"
-	"bytes"
 	"context"
-	"crypto/rand"
-	"crypto/rsa"
 	"crypto/tls"
-	"crypto/x509"
-	"crypto/x509/pkix"
-	"encoding/pem"
-	"errors"
-	"math/big"
 	"net"
-	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
-
-// Connection holds info about server connection
-type Connection struct {
-	sync.Mutex
-	conn              net.Conn
-	messageTerminator byte
-	ip                string
-	id                int
-	Server            *Server
-	ctx               context.Context
-	Close             context.CancelFunc
-	t                 *time.Ticker
-}
 
 // TCP server
 type Server struct {
@@ -58,101 +34,9 @@ type Server struct {
 var mctx context.Context
 var StopServers context.CancelFunc
 var msl sync.Mutex
-var ping_msg = []byte(`{"type":"ping"}`)
 
 func init() {
 	mctx, StopServers = context.WithCancel(context.Background())
-}
-
-// Read client data from channel
-func (c *Connection) listen() {
-	c.Lock()
-	c.t = time.NewTicker(120 * time.Second)
-	reader := bufio.NewReader(c.conn)
-	EndMessage := c.messageTerminator
-	c.Unlock()
-	// Stopping and pinging our client
-	go func() {
-		for {
-			select {
-			case <-c.ctx.Done():
-				Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" has received a signal to close.")
-				msl.Lock()
-				c.Server.Lock()
-				c.t.Stop()
-				c.conn.Close()
-				ClientDisconnected(c)
-				c.Server.Unlock()
-				msl.Unlock()
-				c.Server.Done()
-				return
-			case <-c.t.C:
-				err := c.Send(ping_msg)
-				if err != nil {
-					go c.Close()
-				}
-			}
-		}
-	}()
-	for {
-		message, err := reader.ReadBytes(EndMessage)
-		if err != nil {
-			Log(LOG_DEBUG, "Error receiving message from client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
-			c.Close()
-			return
-		}
-		if len(message) == 1 {
-			Log(LOG_DEBUG, "Received empty message from client "+strconv.Itoa(c.GetID()))
-			continue
-		}
-		c.t.Reset(120 * time.Second)
-		Log(LOG_PROTOCOL, "Data received from client "+strconv.Itoa(c.GetID())+"\r\n"+string(message))
-		MessageReceived(c, message)
-	}
-}
-
-// Send bytes to client
-func (c *Connection) Send(b []byte) error {
-	c.Lock()
-	EndMessage := c.messageTerminator
-	c.Unlock()
-	if len(b) == 0 {
-		return nil
-	}
-	Log(LOG_PROTOCOL, "Data sending to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
-	num, err := c.conn.Write(append(b, EndMessage))
-	if err != nil {
-		Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
-		c.Close()
-		return err
-	}
-	if num < len(b)+1 {
-		Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b)+1)+" bytes sent. Closing connection.")
-		c.Close()
-		return errors.New("Too few bytes sent to client.")
-	}
-	return nil
-}
-
-// Get client IP
-func (c *Connection) GetIP() string {
-	c.Lock()
-	defer c.Unlock()
-	return c.ip
-}
-
-// Get client ID
-func (c *Connection) GetID() int {
-	c.Lock()
-	defer c.Unlock()
-	return c.id
-}
-
-// Set client ID
-func (c *Connection) SetID(id int) {
-	c.Lock()
-	defer c.Unlock()
-	c.id = id
 }
 
 // Set message terminator
@@ -206,7 +90,7 @@ func (s *Server) accept(listener net.Listener) {
 		}
 		msl.Lock()
 		s.Lock()
-		client := &Connection{
+		client := &Client{
 			conn:              conn,
 			ip:                getIP(conn),
 			Server:            s,
@@ -229,92 +113,6 @@ func New(address string) *Server {
 	}
 
 	return server
-}
-
-func NewWithTLS(address, certFile, keyFile string) (*Server, error) {
-	var config *tls.Config
-	if certFile != "" && keyFile != "" {
-		cert, cerr := tls.LoadX509KeyPair(certFile, keyFile)
-		if cerr != nil {
-			return nil, cerr
-		}
-		config = &tls.Config{
-			Certificates: []tls.Certificate{cert},
-		}
-	} else {
-		var gerr error
-		config, gerr = gen_cert()
-		if gerr != nil {
-			return nil, gerr
-		}
-	}
-	server := New(address)
-	server.config = config
-	return server, nil
-}
-
-// Generate a self-signed certificate as long as the server is running
-func serial_number() *big.Int {
-	serial_num, serial_err := rand.Int(rand.Reader, big.NewInt(999999999999))
-	if serial_err != nil {
-		return big.NewInt(345098734305)
-	}
-	return serial_num
-}
-
-func gen_cert() (*tls.Config, error) {
-	var ca = &x509.Certificate{
-		SerialNumber: serial_number(),
-		Subject: pkix.Name{
-			Country:      []string{"US"},
-			Organization: []string{"NVDARemote Server"},
-			CommonName:   "Root CA",
-		},
-		NotBefore:             time.Now().Add(-10 * time.Second),
-		NotAfter:              time.Now().AddDate(10, 0, 0),
-		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign | x509.KeyUsageDigitalSignature,
-		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
-		BasicConstraintsValid: true,
-		IsCA:                  true,
-	}
-	priv, err := rsa.GenerateKey(rand.Reader, 4096)
-	if err != nil {
-		return nil, err
-	}
-	caBytes, cerr := x509.CreateCertificate(rand.Reader, ca, ca, &priv.PublicKey, priv)
-	if cerr != nil {
-		return nil, cerr
-	}
-
-	certPEM := new(bytes.Buffer)
-	err = pem.Encode(certPEM, &pem.Block{
-		Type:  "CERTIFICATE",
-		Bytes: caBytes,
-	})
-	if err != nil {
-		return nil, err
-	}
-	certPrivKeyPEM := new(bytes.Buffer)
-	err = pem.Encode(certPrivKeyPEM, &pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: x509.MarshalPKCS1PrivateKey(priv),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	serverCert, serr := tls.X509KeyPair(certPEM.Bytes(), certPrivKeyPEM.Bytes())
-	if serr != nil {
-		return nil, serr
-	}
-
-	serverTLSConf := &tls.Config{
-		Certificates: []tls.Certificate{serverCert},
-	}
-
-	//serverTLSConf.InsecureSkipVerify = true
-
-	return serverTLSConf, nil
 }
 
 func NewWithTLSConfig(address string, config *tls.Config) *Server {
