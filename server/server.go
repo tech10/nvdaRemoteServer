@@ -114,7 +114,7 @@ func MessageReceived(c *Client, pmsg []byte) {
 	if authErr != nil {
 		Log(LOG_DEBUG, "Authorization failure for client "+strconv.Itoa(id)+".\r\n"+authErr.Error())
 		c.Close()
-		return
+		runtime.Goexit()
 	}
 }
 
