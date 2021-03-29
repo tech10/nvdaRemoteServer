@@ -125,10 +125,12 @@ func Configure() error {
 	if ip4 != "" && ip4 != "0" {
 		Log(LOG_DEBUG, "Starting IPV4 server on address "+ip4+", using on port "+portstr)
 		S4 = NewWithTLSConfig(ip4+":"+portstr, config)
+		ip4l = true
 	}
 	if ip6 != "" && ip6 != "0" {
 		Log(LOG_DEBUG, "Starting IPV6 server on address "+ip6+", using on port "+portstr)
 		S6 = NewWithTLSConfig(ip6+":"+portstr, config)
+		ip6l = true
 	}
 	if !ip4l && !ip6l {
 		Log(LOG_DEBUG, "Starting server on all IPV4 and IPV6 addresses using port "+portstr)
