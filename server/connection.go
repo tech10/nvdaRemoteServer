@@ -98,7 +98,7 @@ func (s *Server) accept(listener net.Listener) {
 		}
 		client.ctx, client.Close = context.WithCancel(s.ctx)
 		s.Add(1)
-		ClientConnected(client)
+		AddClient(client)
 		s.Unlock()
 		msl.Unlock()
 		go client.listen()

@@ -105,7 +105,7 @@ func (c *Client) listen() {
 				c.s.Lock()
 				c.t.Stop()
 				c.conn.Close()
-				ClientDisconnected(c)
+				RemoveClient(c)
 				c.s.Unlock()
 				msl.Unlock()
 				c.s.Done()

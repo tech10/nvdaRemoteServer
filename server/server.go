@@ -39,13 +39,17 @@ func RemoveClient(c *Client) {
 		Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" is already disconnected.")
 		return
 	}
+	cc := c.GetChannel()
+	if cc != nil {
+		cc.Remove(c)
+	}
 	sl.Lock()
 	defer sl.Unlock()
 	Log(LOG_CONNECTION, "Client "+strconv.Itoa(c.GetID())+" has disconnected.")
 	delete(clients, c)
 	if len(clients) == 0 {
 		clients = nil
-		Log(LOG_DEBUG, "There are now no clients connected to the server.")
+		Log(LOG_DEBUG, "There are no clients connected to the server.")
 	}
 }
 
@@ -84,20 +88,8 @@ func RemoveChannel(name string) {
 	Log(LOG_CHANNEL, "Channel "+name+" has been removed.")
 	if len(channels) == 0 {
 		channels = nil
-		Log(LOG_DEBUG, "There are now no channels on the server.")
+		Log(LOG_DEBUG, "There are no channels on the server.")
 	}
-}
-
-func ClientConnected(c *Client) {
-	AddClient(c)
-}
-
-func ClientDisconnected(c *Client) {
-	cc := c.GetChannel()
-	if cc != nil {
-		cc.Remove(c)
-	}
-	RemoveClient(c)
 }
 
 func MessageReceived(c *Client, pmsg []byte) {
