@@ -1,5 +1,3 @@
-// nvdaRemoteServer
-
 package main
 
 import (
