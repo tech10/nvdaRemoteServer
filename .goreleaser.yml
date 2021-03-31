@@ -29,6 +29,9 @@ checksum:
   name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ .Tag }}-next"
+# .goreleaser.yml
+signs:
+  - artifacts: checksum
 changelog:
   sort: asc
   filters:
