@@ -152,13 +152,14 @@ func fileExists(filename string) bool {
 func Start() int {
 	var num int = 0
 	var err error
+	var portstr = strconv.Itoa(port)
 
 	if S4 != nil {
 		err = S4.Listen()
 		if err != nil {
 			Log_error("Error listening on IPV4 address.\r\n" + err.Error())
 		} else {
-			Log(LOG_INFO, "Listening on IPV4 address.")
+			Log(LOG_INFO, "Listening on IPV4 address using port "+portstr+".")
 			num++
 		}
 	}
@@ -167,7 +168,7 @@ func Start() int {
 		if err != nil {
 			Log_error("Error listening on IPV6 address.\r\n" + err.Error())
 		} else {
-			Log(LOG_INFO, "Listening on IPV6 address.")
+			Log(LOG_INFO, "Listening on IPV6 address using port "+portstr+".")
 			num++
 		}
 	}
@@ -177,7 +178,7 @@ func Start() int {
 			Log_error("Error listening on all addresses.\r\n" + err.Error())
 			return num
 		}
-		Log(LOG_INFO, "Listening on all IPV4 and IPV6 addresses.")
+		Log(LOG_INFO, "Listening on all IPV4 and IPV6 addresses using port "+portstr+".")
 		num++
 	}
 	Log(LOG_DEBUG, "Number of servers started: "+strconv.Itoa(num))
