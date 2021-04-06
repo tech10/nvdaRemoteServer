@@ -7,6 +7,8 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
+    ldflags:
+      - -w -s
     goos:
       - linux
       - windows
