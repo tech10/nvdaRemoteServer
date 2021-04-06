@@ -40,7 +40,7 @@ $ cd ./nvdaRemoteServer
 $ ./build-static.sh
 ```
 
-Installing the musl libc is beyond the scope of this document, and is specific to your Linux distribution.
+Installing musl libc is beyond the scope of this document, and is specific to your Linux distribution.
 
 
 ## Docker
