@@ -44,8 +44,8 @@ Below are some minimal examples of getting the service up and running within a D
 The automatically built images are [located here.](https://github.com/users/tech10/packages/container/package/nvdaremoteserver-docker) Provided on that page is a command you can copy to the clipboard which should pull the latest image. Here is an example use of downloading and running the image.
 
 ```console
-$ docker pull ghcr.io/tech10/nvdaremoteserver-docker:v0.1.16
-$ docker run ghcr.io/tech10/nvdaremoteserver-docker:v0.1.16
+$ docker pull ghcr.io/tech10/nvdaremoteserver-docker:v0.1.19
+$ docker run ghcr.io/tech10/nvdaremoteserver-docker:v0.1.19
 ```
 
 
