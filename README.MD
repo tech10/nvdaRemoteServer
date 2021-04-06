@@ -32,7 +32,7 @@ This should download and compile the latest code, placing the binary within your
 
 ## Docker
 
-Thanks to a feature request in [issue 1,](https://github.com/tech10/nvdaRemoteServer/issues/1) a Dockerfile has been added. Automatically built and published issues with GitHub actions are currently placed on the GitHub Container Registry, a service that is in public beta. As such, this service is subject to change until it's announced as stable. I don't anticipate many changes to the service, so everything ought to continue working as is.
+Thanks to a feature request in [issue 1,](https://github.com/tech10/nvdaRemoteServer/issues/1) a Dockerfile has been added. Automatically built and published images with GitHub actions are currently placed on the GitHub Container Registry, a service that is in public beta. As such, this service is subject to change until it's announced as stable. I don't anticipate many changes to the service, so everything ought to continue working as is.
 
 Below are some minimal examples of getting the service up and running within a Docker container. The installation and use of Docker is beyond the scope of this document.
 
