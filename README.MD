@@ -30,6 +30,19 @@ $ go install github.com/tech10/nvdaRemoteServer
 This should download and compile the latest code, placing the binary within your GOBIN environment variable. Presuming you have the GOBIN in your path, you will be able to execute it fairly easily. If not, you will need to update your path or execute the binary with its full path.
 
 
+### Static build
+
+If you require a completely static build of the program, you can clone the GitHub repository and execute the bash script. So long as you have the [musl libc](https://www.musl-libc.org/) installed, and the musl-gcc in your path, you can do the following:
+
+```console
+$ git clone https://github.com/tech10/nvdaRemoteServer
+$ cd ./nvdaRemoteServer
+$ ./build-static.sh
+```
+
+Installing the musl libc is beyond the scope of this document, and is specific to your Linux distribution.
+
+
 ## Docker
 
 Thanks to a feature request in [issue 1,](https://github.com/tech10/nvdaRemoteServer/issues/1) a Dockerfile has been added. Automatically built and published images with GitHub actions are currently placed on the GitHub Container Registry, a service that is in public beta. As such, this service is subject to change until it's announced as stable. I don't anticipate many changes to the service, so everything ought to continue working as is.
