@@ -21,6 +21,7 @@ var Key string
 var loglevel int
 
 const DEFAULT_LOGLEVEL int = 0
+const LOG_SILENT int = -1
 const LOG_INFO int = 0
 const LOG_CONNECTION int = 1
 const LOG_CHANNEL int = 2
