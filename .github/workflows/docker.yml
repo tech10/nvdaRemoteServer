@@ -14,6 +14,6 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: tech10/nvdaremoteserver/nvdaremoteserver-docker
+          registry: ghcr.io
+          repository: tech10/nvdaremoteserver-docker
           tag_with_ref: true
