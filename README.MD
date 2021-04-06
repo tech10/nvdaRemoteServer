@@ -32,7 +32,7 @@ This should download and compile the latest code, placing the binary within your
 
 ### Static build
 
-If you require a completely static build of the program, you can clone the GitHub repository and execute the bash script. So long as you have the [musl libc](https://www.musl-libc.org/) installed, and the musl-gcc in your path, you can do the following:
+If you require a completely static build of the program, you can clone the GitHub repository and execute the bash script. So long as you have the [musl libc](https://www.musl-libc.org/) installed, and musl-gcc in your path, you can do the following:
 
 ```console
 $ git clone https://github.com/tech10/nvdaRemoteServer
