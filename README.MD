@@ -17,9 +17,11 @@ The original server for the addon is written in [Python,](https://www.python.org
 My goals for this project are to create a stable server for the NVDARemote addon, which will be fast and have an efficient memory footprint. Configuration of the program will be done through the command line. Any log output can easily be redirected by the various facilities across operating systems, so a log file wouldn't need to be implemented by the program.
 
 
-# Installation
+# Downloading / installation
 
-At the moment, there is one method for installing the program. With the latest version of Go installed, use the following command.
+## Go
+
+With the latest version of Go installed, use the following command.
 
 ```console
 $ go install github.com/tech10/nvdaRemoteServer
@@ -27,6 +29,34 @@ $ go install github.com/tech10/nvdaRemoteServer
 
 This should download and compile the latest code, placing the binary within your GOBIN environment variable. Presuming you have the GOBIN in your path, you will be able to execute it fairly easily. If not, you will need to update your path or execute the binary with its full path.
 
+
+## Docker
+
+Thanks to a feature request in [issue 1,](https://github.com/tech10/nvdaRemoteServer/issues/1) a Dockerfile has been added. Automatically built and published issues with GitHub actions are currently placed on the GitHub Container Registry, a service that is in public beta. As such, this service is subject to change until it's announced as stable. I don't anticipate many changes to the service, so everything ought to continue working as is.
+
+Below are some minimal examples of getting the service up and running within a Docker container. The installation and use of Docker is beyond the scope of this document.
+
+
+### Downloading the Docker image
+
+The automatically built images are [located here.](https://github.com/users/tech10/packages/container/package/nvdaremoteserver-docker) Provided on that page is a command you can copy to the clipboard which should pull the latest image. Here is an example use of downloading and running the image.
+
+```console
+$ docker pull ghcr.io/tech10/nvdaremoteserver-docker:v0.1.16
+$ docker run ghcr.io/tech10/nvdaremoteserver-docker:v0.1.16
+```
+
+
+### Manually build docker image
+
+Clone the repository, and from within the directory, build a Docker image, then run it. Some sample commands are below.
+
+```console
+$ git clone https://github.com/tech10/nvdaRemoteServer
+$ cd ./nvdaRemoteServer
+$ docker build -t nvdaremoteserver-docker .
+$ docker run nvdaremoteserver-docker
+```
 
 # Usage
 
