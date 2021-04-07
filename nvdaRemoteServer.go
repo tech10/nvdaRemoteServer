@@ -4,6 +4,7 @@ import (
 	. "github.com/tech10/nvdaRemoteServer/server"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -18,6 +19,7 @@ func main() {
 	if num == 0 {
 		return
 	}
+	Version = strings.TrimPrefix(Version, "v")
 	Log(LOG_INFO, "Server started. Running under PID "+strconv.Itoa(os.Getpid())+". Server version "+Version)
 	wait()
 	Log(LOG_INFO, "Server shutdown complete.")
