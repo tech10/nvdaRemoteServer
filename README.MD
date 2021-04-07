@@ -255,4 +255,4 @@ Fork this project and submit a pull request. Please use another branch on your f
 
 # Final thoughts
 
-Primarily, I am writing this program for my use, but am releasing it for anyone to utalize, should they wish. At the moment, I'm not providing any specific compiled and packaged releases. That may change in the future.
+Primarily, I am writing this program for my use, but am releasing it for anyone to utalize, should they wish.
