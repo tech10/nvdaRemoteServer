@@ -4,7 +4,7 @@
 # So long as you build with 'go build .',
 # this script should work correctly.
 # Modification is outside the scope of the comments.
-# To use this script, you need the musl library installed.
+# To use this script, you need musl libc installed.
 # You will also need musl-gcc in your path, so the script can properly execute.
 # This will link your program against the musl lib and create a completely static program.
 # Not all Go programs will do this by default, but if you plan to use this in a Docker container such as scratch,
