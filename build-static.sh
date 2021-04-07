@@ -12,4 +12,4 @@
 # In addition to making a static build, this script will strip all debug information from the binaries,
 # and trim the build path of your current working directory from all information returned in case of a panic.
 
-CC=musl-gcc go build -buildmode=pie "-asmflags=all='-trimpath=`pwd`'" -ldflags '-linkmode external -w -s -extldflags "-static"' .
+CC=musl-gcc go build -buildmode=pie "-asmflags=all='-trimpath=`pwd`'" -ldflags "-linkmode external -w -s -extldflags '-static' -X main.Version=`git describe --abbrev=0`" .

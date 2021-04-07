@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-var version string = "v0.1.21"
+var Version string = "development"
 
 func main() {
 	err := Configure()
@@ -18,7 +18,7 @@ func main() {
 	if num == 0 {
 		return
 	}
-	Log(LOG_INFO, "Server started. Running under PID "+strconv.Itoa(os.Getpid())+". Server version "+version)
+	Log(LOG_INFO, "Server started. Running under PID "+strconv.Itoa(os.Getpid())+". Server version "+Version)
 	wait()
 	Log(LOG_INFO, "Server shutdown complete.")
 }
