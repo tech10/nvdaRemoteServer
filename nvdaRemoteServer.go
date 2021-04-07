@@ -11,6 +11,7 @@ import (
 var Version string = "development"
 
 func main() {
+	Version = strings.TrimPrefix(Version, "v")
 	err := Configure()
 	if err != nil {
 		return
@@ -19,7 +20,6 @@ func main() {
 	if num == 0 {
 		return
 	}
-	Version = strings.TrimPrefix(Version, "v")
 	Log(LOG_INFO, "Server started. Running under PID "+strconv.Itoa(os.Getpid())+". Server version "+Version)
 	wait()
 	Log(LOG_INFO, "Server shutdown complete.")
