@@ -4,6 +4,8 @@ before:
 builds:
   -
     binary: nvdaRemoteServer
+    asmflags:
+      - all=-trimpath={{.Env.PWD}}
     ldflags:
       - -w -s -X main.Version={{.Version}}
     goos:
@@ -22,7 +24,8 @@ builds:
       - goos: darwin
         goarch: 386
 archives:
-  - replacements:
+  -
+    replacements:
       darwin: MacOS
       linux: Linux
       windows: Windows
