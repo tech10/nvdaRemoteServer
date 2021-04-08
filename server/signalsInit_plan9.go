@@ -13,6 +13,7 @@ func signalsWait() chan os.Signal {
 	kill := make(chan os.Signal, 2)
 	signal.Notify(kill,
 		os.Interrupt,
-		syscall.SIGTERM)
+		syscall.SIGTERM,
+		syscall.Note("quit"))
 	return kill
 }
