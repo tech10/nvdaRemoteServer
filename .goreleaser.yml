@@ -28,6 +28,13 @@ builds:
       - ppc64le
       - riscv64
       - s390x
+    goarm:
+      - 5
+      - 6
+      - 7
+    gomips:
+      - hardfloat
+      - softfloat
     ignore:
       - goos: darwin
         goarch: 386
