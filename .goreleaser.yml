@@ -11,6 +11,9 @@ builds:
       - linux
       - windows
       - darwin
+      - freebsd
+      - netbsd
+      - openbsd
     goarch:
       - 386
       - amd64
@@ -24,6 +27,9 @@ archives:
       darwin: MacOS
       linux: Linux
       windows: Windows
+      freebsd: FreeBSD
+      netbsd: NetBSD
+      openbsd: OpenBSD
       386: i386
       amd64: x86_64
       arm64: aarch64
