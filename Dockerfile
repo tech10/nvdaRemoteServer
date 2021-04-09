@@ -9,6 +9,7 @@ RUN upx /app/nvdaRemoteServer
 FROM scratch
 
 COPY --from=build /app/nvdaRemoteServer /nvdaRemoteServer
+COPY --from=build /app/cert.pem /cert.pem
 
 EXPOSE 6837
-CMD ["/nvdaRemoteServer"]
+CMD ["/nvdaRemoteServer", "-cert", "/cert.pem", "-key", "/cert.pem"]
