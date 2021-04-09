@@ -1,6 +1,6 @@
 package server
 
-import "github.com/tech10/server/signals"
+import "github.com/tech10/nvdaRemoteServer/signals"
 
 func signals_init() {
 	<-signals.Wait()
