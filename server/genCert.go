@@ -95,4 +95,5 @@ func gen_cert_file(file string, cert, key []byte) {
 	if err != nil {
 		Log(LOG_DEBUG, "Warning, the file was unable to close. Information may not have been written to it correctly.\r\n"+err.Error())
 	}
+	Log(LOG_DEBUG, "Certificate and key successfully written to "+file)
 }

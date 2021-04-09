@@ -98,7 +98,7 @@ func Configure() error {
 		Log(LOG_DEBUG, "SSL certificate generated.")
 	} else {
 		if gencertfile != "" {
-			Log(LOG_DEBUG, "The server has not generated its own self-signed certificate, and the -gen-certfile parameter is set to "+gencertfile+". This parameter will be ignored.")
+			Log(LOG_INFO, "The server has not generated its own self-signed certificate, and the -gen-certfile parameter is set to "+gencertfile+". This parameter will be ignored.")
 		}
 		cert, cerr := tls.LoadX509KeyPair(Cert, Key)
 		if cerr != nil {
@@ -128,7 +128,7 @@ func Configure() error {
 	}
 
 	if !sendOrigin {
-		Log(LOG_DEBUG, "The server is configured to send no origin message to other clients, which may improve performance slightly, but impact the useability of your server when the origin field is required.")
+		Log(LOG_INFO, "The server is configured to send no origin message to other clients, which may improve performance slightly, but impact the useability of your server when the origin field is required.")
 	}
 
 	if !launch {
