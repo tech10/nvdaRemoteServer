@@ -83,10 +83,6 @@ func Configure() error {
 	if Cert == "" || Key == "" {
 		generate = true
 	}
-	if port < 1 || port > 65536 {
-		Log_error("The port specified is outside the given parameter. The port parameter must be between 1 and 65536. Unable to start server.")
-		return errors.New("Invalid port number.")
-	}
 
 	if generate {
 		Log(LOG_DEBUG, "Attempting to generate self-signed SSL certificate.")
@@ -136,6 +132,10 @@ func Configure() error {
 		return errors.New("Server launch parameter set to false.")
 	}
 
+	if port < 1 || port > 65536 {
+		Log_error("The port specified is outside the given parameter. The port parameter must be between 1 and 65536. Unable to start server.")
+		return errors.New("Invalid port number.")
+	}
 	portstr := strconv.Itoa(port)
 
 	ip4l := false
