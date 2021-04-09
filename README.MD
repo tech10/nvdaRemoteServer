@@ -80,11 +80,12 @@ $ docker run tech10/nvdaremoteserver
 
 ### Manually build docker image
 
-Clone the repository, and from within the directory, build a Docker image, then run it. Some sample commands are below.
+Clone the repository, and from within the directory, build a Docker image, then run it. Some sample commands are below, one of which will update the certificate from the repository, rewriting it to a freshly generated certificate. To update the certificate, you need go installed, as documented within the shell script. If you simply want to build the docker image, remove the command updating the certificate. You only need Docker installed in order to build the image.
 
 ```console
 $ git clone https://github.com/tech10/nvdaRemoteServer
 $ cd ./nvdaRemoteServer
+$ ./update-cert.sh
 $ docker build -t nvdaremoteserver-docker .
 $ docker run nvdaremoteserver-docker
 ```
