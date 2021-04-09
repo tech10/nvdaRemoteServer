@@ -16,6 +16,9 @@ builds:
       - netbsd
       - openbsd
       - plan9
+      - dragonfly
+      - solaris
+      - illumos
     goarch:
       - 386
       - amd64
@@ -49,6 +52,8 @@ archives:
       netbsd: NetBSD
       openbsd: OpenBSD
       plan9: Plan9
+      dragonfly: DragonFly
+      solaris: Solaris
       386: i386
       amd64: x86_64
       arm64: aarch64
