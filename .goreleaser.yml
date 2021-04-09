@@ -19,6 +19,7 @@ builds:
       - dragonfly
       - solaris
       - illumos
+      - aix
     goarch:
       - 386
       - amd64
@@ -54,6 +55,7 @@ archives:
       plan9: Plan9
       dragonfly: DragonFly
       solaris: Solaris
+      aix: AIX
       386: i386
       amd64: x86_64
       arm64: aarch64
