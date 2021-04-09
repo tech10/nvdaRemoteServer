@@ -47,7 +47,13 @@ Installing musl libc is beyond the scope of this document, and is specific to yo
 
 Thanks to a feature request in [issue 1,](https://github.com/tech10/nvdaRemoteServer/issues/1) a Dockerfile has been added. Automatically built and published images with GitHub actions are currently placed on the GitHub Container Registry, a service that is in public beta. As such, this service is subject to change until it's announced as stable. I don't anticipate many changes to the service, so everything ought to continue working as is.
 
-Below are some minimal examples of getting the service up and running within a Docker container. The installation and use of Docker is beyond the scope of this document.
+By default, the docker image will contain the certificate within the GitHub repository, and utalize it. This will prevent entropy difficulties on systems that may not be able to generate their own certificates quickly. This can be altered by the user at the run time of the Docker image. Presuming your image is tagged nvdaremoteserver, here is a sample command.
+
+```console
+$ docker run nvdaremoteserver /nvdaRemoteServer
+```
+
+This will run the Docker image with no parameters, allowing the server to choose its own defaults. This will prevent it from automatically using the included certificate within the git repository. To use the included certificate, you can use the minimal examples below.
 
 
 ### Downloading the Docker image
