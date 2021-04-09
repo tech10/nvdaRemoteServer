@@ -46,7 +46,7 @@ builds:
 archives:
   -
     replacements:
-      darwin: MacOS
+      darwin: macOS
       linux: Linux
       windows: Windows
       freebsd: FreeBSD
