@@ -68,6 +68,7 @@ archives:
       - LICENSE
       - README.MD
       - systemd/*
+      - cert.pem
     wrap_in_directory: true
 checksum:
   name_template: 'checksums.txt'
