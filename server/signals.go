@@ -1,7 +1,9 @@
 package server
 
+import "github.com/tech10/server/signals"
+
 func signals_init() {
-	<-signalsWait()
+	<-signals.Wait()
 	Log(LOG_INFO, "Signal received to shut down.")
 	StopServers()
 }
