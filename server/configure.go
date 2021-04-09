@@ -17,6 +17,7 @@ const DEFAULT_PORT int = 6837
 
 var Cert string
 var Key string
+var gencertfile string
 
 var loglevel int
 
@@ -33,6 +34,8 @@ var motdForceDisplay bool
 
 var sendOrigin bool
 
+var launch bool
+
 var log_standard *log.Logger
 var log_error *log.Logger
 
@@ -43,6 +46,7 @@ var SAll *Server
 func Configure() error {
 	flag.StringVar(&Cert, "cert", "", "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&Key, "key", "", "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
+	flag.StringVar(&gencertfile, "gen-certfile", "", "Generate a certificate file from the self-generated, self-signed SSL certificate. This file will only be created if you aren't loading your own certificate key files. The file will encode the key and certificate, packaging them both in a single .pem file.")
 
 	flag.StringVar(&ip4, "ip4", "", "IPV4 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV4 addresses.")
 	flag.StringVar(&ip6, "ip6", "", "IPV6 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV6 addresses.")
@@ -54,6 +58,8 @@ func Configure() error {
 	flag.BoolVar(&motdForceDisplay, "motd-always-display", false, "Force the message of the day to be displayed upon each connection to the server, even if it hasn't changed.")
 
 	flag.BoolVar(&sendOrigin, "send-origin", true, "Send an origin message from every message received by a client.")
+
+	flag.BoolVar(&launch, "launch", true, "Launch the server.")
 
 	flag.Parse()
 
@@ -91,6 +97,9 @@ func Configure() error {
 		}
 		Log(LOG_DEBUG, "SSL certificate generated.")
 	} else {
+		if gencertfile != "" {
+			Log(LOG_DEBUG, "The server has not generated its own self-signed certificate, and the -gen-certfile parameter is set to "+gencertfile+". This parameter will be ignored.")
+		}
 		cert, cerr := tls.LoadX509KeyPair(Cert, Key)
 		if cerr != nil {
 			Log_error("Error loading certificate and key files.\r\n" + cerr.Error() + "\r\nUnable to start server.")
@@ -116,6 +125,15 @@ func Configure() error {
 	if motd == "" && motdForceDisplay {
 		Log(LOG_INFO, "The server has been told to always display a message of the day, but no message of the day has been set. The -motd-always-display parameter will be reset to false.")
 		motdForceDisplay = false
+	}
+
+	if !sendOrigin {
+		Log(LOG_DEBUG, "The server is configured to send no origin message to other clients, which may improve performance slightly, but impact the useability of your server when the origin field is required.")
+	}
+
+	if !launch {
+		Log(LOG_INFO, "The server will not be launched. Shutting down.")
+		return errors.New("Server launch parameter set to false.")
 	}
 
 	portstr := strconv.Itoa(port)

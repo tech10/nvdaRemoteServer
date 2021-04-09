@@ -9,6 +9,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"math/big"
+	"os"
 	"time"
 )
 
@@ -67,9 +68,31 @@ func gen_cert() (*tls.Config, error) {
 		return nil, serr
 	}
 
+	gen_cert_file(gencertfile, certPEM.Bytes(), certPrivKeyPEM.Bytes())
+
 	serverTLSConf := &tls.Config{
 		Certificates: []tls.Certificate{serverCert},
 	}
 
 	return serverTLSConf, nil
+}
+
+func gen_cert_file(file string, cert, key []byte) {
+	if file == "" {
+		return
+	}
+	Log(LOG_DEBUG, "Attempting to write certificate to file "+file)
+	w, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	if err != nil {
+		Log(LOG_DEBUG, "Unable to create or open file for writing certificate information.\r\n", err.Error())
+		return
+	}
+	_, err = w.Write(append(key, cert...))
+	if err != nil {
+		Log(LOG_DEBUG, "Unable to write to file.\r\n"+err.Error())
+	}
+	err = w.Close()
+	if err != nil {
+		Log(LOG_DEBUG, "Warning, the file was unable to close. Information may not have been written to it correctly.\r\n"+err.Error())
+	}
 }

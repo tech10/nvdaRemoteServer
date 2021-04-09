@@ -86,7 +86,7 @@ $ docker run nvdaremoteserver-docker
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display false] [-send-origin true] [-log-level 0]
+$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-certfile /path/to/created/cert/file] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-launch=true]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -108,9 +108,27 @@ This is the path to the SSL key. Both the certificate and key file need to exist
 
 ##### Note about the cert and key files
 
-If you are using the official NVDA addon as a server, or the unofficial one I linked above, you are welcome to use the same server.pem file for the certificate and key. The server should load successfully under this configuration.
+If you are using the official NVDA addon as a server, or the unofficial one I linked above, you are welcome to use the same server.pem file for the certificate and key. The server should load successfully under this configuration. If you choose to generate a certificate file, the key and certificate will be in a single file, just as they are with the official addon.
 
 If the certificate and key files both exist and fail to load a valid SSL key pair, the program will terminate rather than falling back on automatic self-signed SSL key generation.
+
+
+#### `-gen-certfile`
+
+Path to a location where a file can be written with the automatically generated certificate and key.
+
+When the program generates its own self-signed certificate, you can optionally write this certificate to a file, so as to easily use it again in the future. The certificate and key will be written to a single file. If the file can't be written, the program will warn you via the debug log level and continue execution.
+
+
+##### Notes on self-signed certificate generation
+
+The certificate that this program generates will allow for secure verification. However, like the certificate packaged by the addon, you can't verify it by using any certificate authority. If this changes in the addon and it requires certificate verification in the future, a certificate, key, and a root certificate authority file will be required for the server to use. The client would then require the appropriate files to verify the certificate is valid, unless you get a certificate from Letsencrypt, or another certificate authority.
+
+To generate the certificate, the program will use a source of random entropy that is cryptographically secure. This can be a problem on servers that are headless, meaning you access them remotely only. However, daemons such as Haveged exist to provide your system with available entropy that can be utalized.
+
+As a result of the secure random number generator, along with the various algorithms needed to generate the keys, the generation of a self-signed certificate can take some time, anywhere between three to ten seconds in the best case sanario. If the program takes longer than thirty seconds to generate the certificate, it is probably hanging as it waits for available entropy to complete random number generation. Once the key is generated, the program will run with its full performance.
+
+If the self-signed certificate takes a particularly long time to create on your system, you can elect to write the certificate to a file as documented above, and optionally do only that by setting the launch parameter to false, which is documented below. You could then launch the server with the generated certificate file as the parameter for the cert and key parameters, preventing long start times on systems with slow processors or entropy difficulties. Alternatively, you could have someone else generate a certificate for you with this program, then send it to you via a secure method of transfer.
 
 
 #### `-ip4`
@@ -148,7 +166,7 @@ Force the client to display the message of the day from the server, even if it h
 
 #### `-send-origin`
 
-By default, when the server receives a message from a client, it will send that same message to all clients that need to receive it, but it will add an origin field to that message. This requires that the message be decoded into a value the program can more easily manipulate, an origin message added to it, then encoded back to the value that will be sent to all clients. This could cause a slight performance hit. You can disable this feature by setting it to false, if desired, though you might find some things don't work properly for you if you do so.
+By default, when the server receives a message from a client, it will send that same message to all clients that need to receive it, but it will add an origin field to that message. This requires that the message be decoded into a value the program can more easily manipulate, an origin message added to it, then encoded back to the value that will be sent to all clients. This could cause a slight performance hit. You can disable this feature by setting it to false, if desired, though you might find some things don't work properly for you if you do so. If you set this to false, the server will warn yu that it may impact the functionality of clients when the origin field is required.
 
 
 #### `-log-level`
@@ -168,13 +186,9 @@ Each level above the previous will also log what the prior level is logging. For
 - 4 will log the protocol that the server and client are exchanging. Don't use this unless you're a developer or you want to annalize the protocol being used. This might cause a performance degrodation, since the protocol being exchanged is also sent to the console, or redirected to a file by your operating system if you've told it to do so.
 
 
-# Notes on self-signed certificate generation
+#### `-launch`
 
-The certificate that this program generates will allow for secure verification. However, like the certificate packaged by the addon, you can't verify it by using any certificate authority. If this changes in the addon and it requires certificate verification in the future, a certificate, key, and a root certificate authority file will be required for the server to use. The client would then require the appropriate files to verify the certificate is valid, unless you get a certificate from Letsencrypt, or another certificate authority.
-
-To generate the certificate, the program will use a source of random entropy that is cryptographically secure. This can be a problem on servers that are headless, meaning you access them remotely only. However, daemons such as Haveged exist to provide your system with available entropy that can be utalized.
-
-As a result of the secure random number generator, along with the various algorithms needed to generate the keys, the generation of a self-signed certificate can take some time, anywhere between three to ten seconds in the best case sanario. If the program takes longer than thirty seconds to generate the certificate, it is probably hanging as it waits for available entropy to complete random number generation. Once the key is generated, the program will run with its full performance.
+By default, the server will attempt to launch itself if nothing has caused it to abort execution prematurely. If you set this parameter to false, the server will shut down immediately after most configuration is complete. This can be useful if you only wanted to generate a self-signed certificate and write it to a file, for instance.
 
 
 # Statistics
