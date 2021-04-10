@@ -47,10 +47,12 @@ Installing musl libc is beyond the scope of this document, and is specific to yo
 
 Thanks to a feature request in [issue 1,](https://github.com/tech10/nvdaRemoteServer/issues/1) a Dockerfile has been added. Automatically built and published images with GitHub actions are currently placed on the GitHub Container Registry, a service that is in public beta. As such, this service is subject to change until it's announced as stable. I don't anticipate many changes to the service, so everything ought to continue working as is.
 
+All example commands expose the host networking to the docker image, which is the quickest means of hosting the service without any difficulty. There are other ways, but they won't work as well with IPV6 unless you set it up, and are beyond the scope of this document.
+
 By default, the docker image will contain the certificate within the GitHub repository, and utalize it. This will prevent entropy difficulties on systems that may not be able to generate their own certificates quickly. This can be altered by the user at the run time of the Docker image. Presuming your image is tagged nvdaremoteserver, here is a sample command.
 
 ```console
-$ docker run nvdaremoteserver /nvdaRemoteServer
+$ docker run --network host nvdaremoteserver /nvdaRemoteServer
 ```
 
 This will run the Docker image with no parameters, allowing the server to choose its own defaults. This will prevent it from automatically using the included certificate within the git repository. To use the included certificate, you can use the minimal examples below.
@@ -64,7 +66,7 @@ The automatically built images are [located here.](https://github.com/users/tech
 
 ```console
 $ docker pull ghcr.io/tech10/nvdaremoteserver-docker:v0.2.2
-$ docker run ghcr.io/tech10/nvdaremoteserver-docker:v0.2.2
+$ docker run --network host ghcr.io/tech10/nvdaremoteserver-docker:v0.2.2
 ```
 
 
@@ -74,7 +76,7 @@ Automatically built images are now available on [Docker Hub.](https://hub.docker
 
 ```console
 $ docker pull tech10/nvdaremoteserver
-$ docker run tech10/nvdaremoteserver
+$ docker run --network host tech10/nvdaremoteserver
 ```
 
 
@@ -87,7 +89,7 @@ $ git clone https://github.com/tech10/nvdaRemoteServer
 $ cd ./nvdaRemoteServer
 $ ./update-cert.sh
 $ docker build -t nvdaremoteserver-docker .
-$ docker run nvdaremoteserver-docker
+$ docker run --network host nvdaremoteserver-docker
 ```
 
 # Usage
