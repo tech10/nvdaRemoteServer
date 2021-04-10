@@ -17,6 +17,15 @@ The original server for the addon is written in [Python,](https://www.python.org
 My goals for this project are to create a stable server for the NVDARemote addon, which will be fast and have an efficient memory footprint. Configuration of the program will be done through the command line. Any log output can easily be redirected by the various facilities across operating systems, so a log file wouldn't need to be implemented by the program.
 
 
+# Notes on current usage
+
+Any command line flags used by the program are not garanteed to remain the same until a 1.0 release. As I am still developing features for this server, the current command line flags may not remain completely compatible with a future version. Those I am satisfied with are likely to remain the same, but those which could have more flexibility may be changed.
+
+The three command line flags that currently come to mind are the ip4, ip6, and port flags. At some point, I am planning to replace them with a single address flag that will use the convention of address:port to provide a listening address, either IPV4 or IPV6, and the port for that specific address. This flag should be implemented such that it can be declared multiple times, providing multiple such combonations. If not declared, the server will simply use the default address and listen to all IP addresses on the default port of 6837.
+
+Keep an eye on the changelog for future releases. Any breaking changes will be clearly indicated there on the first release that introduces the change. If you encounter a breaking change, review this readme file and see what's changed in the usage parameters.
+
+
 # Downloading / installation
 
 ## Go
@@ -91,6 +100,12 @@ $ ./update-cert.sh
 $ docker build -t nvdaremoteserver-docker .
 $ docker run --network host nvdaremoteserver-docker
 ```
+
+
+# About the included certificate
+
+The included certificate file is a single file that contains an automatically generated self-signed certificate from this program, along with its private key. They are both encoded in the same pem format that the official addon uses. Before every release, a new certificate file is generated and uploaded to the GitHub repository. For now, this is how it is placed in the Docker images, and how it is made available to other users. This is subject to change in the future.
+
 
 # Usage
 
