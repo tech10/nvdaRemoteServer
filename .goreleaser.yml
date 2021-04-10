@@ -83,7 +83,7 @@ changelog:
   filters:
     exclude:
       - '^docs:'
-      - '^test:'
+      - '^release:'
 source:
   enabled: true
   name_template: "{{ .ProjectName }}_source"

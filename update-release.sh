@@ -28,7 +28,7 @@ echo Failure.
 exit
 fi
 echo Committing update.
-git commit -a -s -m "Update to $newtag."
+git commit -a -s -m "release: $newtag"
 if [ $? -ne 0 ]; then
 echo Failure.
 exit
@@ -40,7 +40,7 @@ echo Failure.
 exit
 fi
 echo Tagging update.
-git tag -s -m "Update to $newtag." -a $newtag
+git tag -s -m "release: $newtag" -a $newtag
 if [ $? -ne 0 ]; then
 echo Failure.
 exit
