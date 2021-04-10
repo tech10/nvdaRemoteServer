@@ -15,6 +15,8 @@ var port int
 
 const DEFAULT_PORT int = 6837
 
+var addresses addressList
+
 var Cert string
 var Key string
 var gencertfile string
@@ -53,6 +55,8 @@ func Configure() error {
 	flag.StringVar(&ip4, "ip4", "", "IPV4 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV4 addresses.")
 	flag.StringVar(&ip6, "ip6", "", "IPV6 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV6 addresses.")
 	flag.IntVar(&port, "port", DEFAULT_PORT, "The port that the server will listen for connections on. This can be blank if desired, in which case, the server will listen for connections on the default port. This value must be between 1 and 65536.")
+
+	flag.Var(&addresses, "address", "Address the server will listen on in the format ip:port, such as \"0.0.0.0:6837\", \":6837\", \"[::]:6837\". The port must be between 1 and 65536. You can declare this parameter more than once for multiple listen addresses.")
 
 	flag.IntVar(&loglevel, "log-level", DEFAULT_LOGLEVEL, "Choose what log level you wish to use. Any value below -1 will be ignored.")
 	flag.StringVar(&logfile, "log-file", "", "Choose what log file you wish to use in addition to logging output to the console. If the file can't be created or open for writing, the program will fall back to console logging only.")
