@@ -48,7 +48,7 @@ var SAll *Server
 func Configure() error {
 	flag.StringVar(&Cert, "cert", "", "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&Key, "key", "", "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
-	flag.StringVar(&gencertfile, "gen-certfile", "", "Generate a certificate file from the self-generated, self-signed SSL certificate. This file will only be created if you aren't loading your own certificate key files. The file will encode the key and certificate, packaging them both in a single .pem file.")
+	flag.StringVar(&gencertfile, "gen-cert-file", "", "Generate a certificate file from the self-generated, self-signed SSL certificate. This file will only be created if you aren't loading your own certificate key files. The file will encode the key and certificate, packaging them both in a single .pem file.")
 
 	flag.StringVar(&ip4, "ip4", "", "IPV4 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV4 addresses.")
 	flag.StringVar(&ip6, "ip6", "", "IPV6 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV6 addresses.")

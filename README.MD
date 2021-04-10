@@ -110,7 +110,7 @@ The included certificate file is a single file that contains an automatically ge
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-certfile /path/to/created/cert/file] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
+$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -137,7 +137,7 @@ If you are using the official NVDA addon as a server, or the unofficial one I li
 If the certificate and key files both exist and fail to load a valid SSL key pair, the program will terminate rather than falling back on automatic self-signed SSL key generation.
 
 
-#### `-gen-certfile`
+#### `-gen-cert-file`
 
 Path to a location where a file can be written with the automatically generated certificate and key.
 

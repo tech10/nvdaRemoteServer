@@ -22,7 +22,7 @@ echo Failure.
 exit
 fi
 echo Generating certificate.
-go run . -launch=false -log-level=-1 -gen-certfile ./cert.pem
+go run . -launch=false -log-level=-1 -gen-cert-file ./cert.pem
 if [ $? -ne 0 ]; then
 echo Failure.
 exit
