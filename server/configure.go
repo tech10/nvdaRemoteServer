@@ -19,6 +19,8 @@ var Cert string
 var Key string
 var gencertfile string
 
+var logfile string
+
 var loglevel int
 
 const DEFAULT_LOGLEVEL int = 0
@@ -53,6 +55,7 @@ func Configure() error {
 	flag.IntVar(&port, "port", DEFAULT_PORT, "The port that the server will listen for connections on. This can be blank if desired, in which case, the server will listen for connections on the default port. This value must be between 1 and 65536.")
 
 	flag.IntVar(&loglevel, "log-level", DEFAULT_LOGLEVEL, "Choose what log level you wish to use. Any value below -1 will be ignored.")
+	flag.StringVar(&logfile, "log-file", "", "Choose what log file you wish to use in addition to logging output to the console. If the file can't be created or open for writing, the program will fall back to console logging only.")
 
 	flag.StringVar(&motd, "motd", "", "Display a message of the day for the server.")
 	flag.BoolVar(&motdForceDisplay, "motd-always-display", false, "Force the message of the day to be displayed upon each connection to the server, even if it hasn't changed.")
@@ -63,7 +66,7 @@ func Configure() error {
 
 	flag.Parse()
 
-	log_init()
+	log_init(logfile)
 
 	Log(LOG_INFO, "Initializing configuration.")
 

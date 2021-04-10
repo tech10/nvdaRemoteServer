@@ -11,6 +11,15 @@ import (
 var Version string = "development"
 
 func main() {
+	// Log panics
+	defer func() {
+		r := recover()
+		if r == nil {
+			return
+		}
+		Log_error(r)
+	}()
+
 	Version = strings.TrimPrefix(Version, "v")
 	err := Configure()
 	if err != nil {

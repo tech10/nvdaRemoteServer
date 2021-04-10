@@ -110,7 +110,7 @@ The included certificate file is a single file that contains an automatically ge
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-certfile /path/to/created/cert/file] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-launch=true]
+$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-certfile /path/to/created/cert/file] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -191,6 +191,11 @@ Force the client to display the message of the day from the server, even if it h
 #### `-send-origin`
 
 By default, when the server receives a message from a client, it will send that same message to all clients that need to receive it, but it will add an origin field to that message. This requires that the message be decoded into a value the program can more easily manipulate, an origin message added to it, then encoded back to the value that will be sent to all clients. This could cause a slight performance hit. You can disable this feature by setting it to false, if desired, though you might find some things don't work properly for you if you do so. If you set this to false, the server will warn yu that it may impact the functionality of clients when the origin field is required.
+
+
+#### `-log-file`
+
+Choose a file for the program to log its data. Any logged information will always be sent to the console, but in addition to this, a log file can also be used. By default, logged data is only sent to the console.
 
 
 #### `-log-level`
