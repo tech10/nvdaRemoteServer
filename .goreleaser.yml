@@ -7,7 +7,7 @@ builds:
     asmflags:
       - all=-trimpath={{.Env.PWD}}
     ldflags:
-      - -w -s -X main.Version={{.Version}}
+      - -w -s -X main.Version={{.Tag}}
     goos:
       - linux
       - windows
