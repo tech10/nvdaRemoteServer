@@ -99,6 +99,7 @@ func Configure() error {
 		cert, cerr := tls.LoadX509KeyPair(Cert, Key)
 		if cerr != nil {
 			Log_error("Error loading certificate and key files.\r\n" + cerr.Error() + "\r\nUnable to start server.")
+			Launch_fail()
 			return cerr
 		}
 		config = &tls.Config{
