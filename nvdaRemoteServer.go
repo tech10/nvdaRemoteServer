@@ -14,7 +14,10 @@ func main() {
 	Version = strings.TrimPrefix(Version, "v")
 	err := Configure()
 	if err != nil {
-		os.Exit(1)
+		if Launch {
+			os.Exit(1)
+		}
+		return
 	}
 	num := Start()
 	if num == 0 {

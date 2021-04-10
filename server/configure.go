@@ -34,7 +34,7 @@ var motdForceDisplay bool
 
 var sendOrigin bool
 
-var launch bool
+var Launch bool
 
 var log_standard *log.Logger
 var log_error *log.Logger
@@ -59,7 +59,7 @@ func Configure() error {
 
 	flag.BoolVar(&sendOrigin, "send-origin", true, "Send an origin message from every message received by a client.")
 
-	flag.BoolVar(&launch, "launch", true, "Launch the server.")
+	flag.BoolVar(&Launch, "launch", true, "Launch the server.")
 
 	flag.Parse()
 
@@ -127,7 +127,7 @@ func Configure() error {
 		Log(LOG_INFO, "The server is configured to send no origin message to other clients, which may improve performance slightly, but impact the useability of your server when the origin field is required.")
 	}
 
-	if !launch {
+	if !Launch {
 		Log(LOG_INFO, "The server will not be launched. Shutting down.")
 		return errors.New("Server launch parameter set to false.")
 	}
@@ -205,7 +205,7 @@ func Start() int {
 }
 
 func Launch_fail() {
-	if !launch {
+	if !Launch {
 		os.Exit(1)
 	}
 }
