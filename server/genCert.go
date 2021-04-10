@@ -85,15 +85,18 @@ func gen_cert_file(file string, cert, key []byte) {
 	w, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		Log_error("Unable to create or open file for writing certificate information.\r\n", err.Error())
+		Launch_fail()
 		return
 	}
 	_, err = w.Write(append(key, cert...))
 	if err != nil {
 		Log_error("Unable to write to the file " + file + "\r\n" + err.Error())
+		Launch_fail()
 	}
 	err = w.Close()
 	if err != nil {
 		Log_error("The file at " + file + " was unable to close. Information may not have been written to it correctly.\r\n" + err.Error())
+		Launch_fail()
 	}
 	Log(LOG_DEBUG, "Certificate and key successfully written to "+file)
 }

@@ -14,11 +14,11 @@ func main() {
 	Version = strings.TrimPrefix(Version, "v")
 	err := Configure()
 	if err != nil {
-		return
+		os.Exit(1)
 	}
 	num := Start()
 	if num == 0 {
-		return
+		os.Exit(1)
 	}
 	Log(LOG_INFO, "Server started. Running under PID "+strconv.Itoa(os.Getpid())+". Server version "+Version)
 	wait()

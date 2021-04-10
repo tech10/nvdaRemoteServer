@@ -203,3 +203,9 @@ func Start() int {
 	go signals_init()
 	return num
 }
+
+func Launch_fail() {
+	if !launch {
+		os.Exit(1)
+	}
+}
