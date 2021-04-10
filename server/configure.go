@@ -63,8 +63,7 @@ func Configure() error {
 
 	flag.Parse()
 
-	log_standard = log.New(os.Stdout, "", log.LstdFlags)
-	log_error = log.New(os.Stderr, "[ERROR]: ", log.LstdFlags)
+	log_init()
 
 	Log(LOG_INFO, "Initializing configuration.")
 
