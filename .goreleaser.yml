@@ -84,3 +84,7 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+source:
+  enabled: true
+  name_template: "{{ .ProjectName }}_source"
+  format: "tar.gz"
