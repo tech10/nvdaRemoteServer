@@ -11,13 +11,23 @@ import (
 
 const DEFAULT_ADDRESS string = ":6837"
 
-var addresses addressList
+var addresses AddressList
 
 var Cert string
+
+const DEFAULT_CERT_FILE string = ""
+
 var Key string
+
+const DEFAULT_KEY_FILE string = ""
+
 var gencertfile string
 
+const DEFAULT_GEN_CERT_FILE = ""
+
 var logfile string
+
+const DEFAULT_LOG_FILE string = ""
 
 var loglevel int
 
@@ -30,11 +40,20 @@ const LOG_DEBUG int = 3
 const LOG_PROTOCOL int = 4
 
 var motd string
-var motdForceDisplay bool
+
+const DEFAULT_MOTD string = ""
+
+var motdAlwaysDisplay bool
+
+const DEFAULT_MOTD_ALWAYS_DISPLAY bool = false
 
 var sendOrigin bool
 
+const DEFAULT_SEND_ORIGIN bool = true
+
 var Launch bool
+
+const DEFAULT_LAUNCH bool = true
 
 var log_standard *log.Logger
 var log_error *log.Logger
@@ -42,21 +61,21 @@ var log_error *log.Logger
 var Servers []*Server
 
 func Configure() error {
-	flag.StringVar(&Cert, "cert", "", "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
-	flag.StringVar(&Key, "key", "", "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
-	flag.StringVar(&gencertfile, "gen-cert-file", "", "Generate a certificate file from the self-generated, self-signed SSL certificate. This file will only be created if you aren't loading your own certificate key files. The file will encode the key and certificate, packaging them both in a single .pem file.")
+	flag.StringVar(&Cert, "cert", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
+	flag.StringVar(&Key, "key", DEFAULT_KEY_FILE, "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
+	flag.StringVar(&gencertfile, "gen-cert-file", DEFAULT_GEN_CERT_FILE, "Generate a certificate file from the self-generated, self-signed SSL certificate. This file will only be created if you aren't loading your own certificate key files. The file will encode the key and certificate, packaging them both in a single .pem file.")
 
 	flag.Var(&addresses, "address", "Address the server will listen on in the format ip:port, such as \"0.0.0.0:6837\", \":6837\", \"[::]:6837\". The port must be between 1 and 65536. You can declare this parameter more than once for multiple listen addresses.")
 
 	flag.IntVar(&loglevel, "log-level", DEFAULT_LOGLEVEL, "Choose what log level you wish to use. Any value below -1 will be ignored.")
-	flag.StringVar(&logfile, "log-file", "", "Choose what log file you wish to use in addition to logging output to the console. If the file can't be created or open for writing, the program will fall back to console logging only.")
+	flag.StringVar(&logfile, "log-file", DEFAULT_LOG_FILE, "Choose what log file you wish to use in addition to logging output to the console. If the file can't be created or open for writing, the program will fall back to console logging only.")
 
-	flag.StringVar(&motd, "motd", "", "Display a message of the day for the server.")
-	flag.BoolVar(&motdForceDisplay, "motd-always-display", false, "Force the message of the day to be displayed upon each connection to the server, even if it hasn't changed.")
+	flag.StringVar(&motd, "motd", DEFAULT_MOTD, "Display a message of the day for the server.")
+	flag.BoolVar(&motdAlwaysDisplay, "motd-always-display", DEFAULT_MOTD_ALWAYS_DISPLAY, "Force the message of the day to be displayed upon each connection to the server, even if it hasn't changed.")
 
-	flag.BoolVar(&sendOrigin, "send-origin", true, "Send an origin message from every message received by a client.")
+	flag.BoolVar(&sendOrigin, "send-origin", DEFAULT_SEND_ORIGIN, "Send an origin message from every message received by a client.")
 
-	flag.BoolVar(&Launch, "launch", true, "Launch the server.")
+	flag.BoolVar(&Launch, "launch", DEFAULT_LAUNCH, "Launch the server.")
 
 	flag.Parse()
 
@@ -110,15 +129,15 @@ func Configure() error {
 
 	if motd != "" {
 		logstr := "The server will display the following message of the day:\r\n" + motd
-		if motdForceDisplay {
+		if motdAlwaysDisplay {
 			logstr += "\r\nThe server will tell each client to display this message of the day upon each connection."
 		}
 		Log(LOG_DEBUG, logstr)
 	}
 
-	if motd == "" && motdForceDisplay {
+	if motd == "" && motdAlwaysDisplay {
 		Log(LOG_INFO, "The server has been told to always display a message of the day, but no message of the day has been set. The -motd-always-display parameter will be reset to false.")
-		motdForceDisplay = false
+		motdAlwaysDisplay = false
 	}
 
 	if !sendOrigin {
@@ -131,7 +150,7 @@ func Configure() error {
 	}
 
 	if len(addresses) == 0 {
-		addresses = make(addressList, 1)
+		addresses = make(AddressList, 1)
 		addresses[0] = DEFAULT_ADDRESS
 	}
 

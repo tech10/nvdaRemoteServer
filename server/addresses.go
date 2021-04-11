@@ -6,9 +6,9 @@ import (
 	"strconv"
 )
 
-type addressList []string
+type AddressList []string
 
-func (a *addressList) String() string {
+func (a *AddressList) String() string {
 	l := ""
 	if len(*a) == 0 {
 		return ""
@@ -22,7 +22,7 @@ func (a *addressList) String() string {
 	return l
 }
 
-func (a *addressList) Set(v string) error {
+func (a *AddressList) Set(v string) error {
 	err := address_valid(v)
 	if err != nil {
 		return err
