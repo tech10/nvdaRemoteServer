@@ -9,11 +9,7 @@ import (
 	"strconv"
 )
 
-var ip4 string
-var ip6 string
-var port int
-
-const DEFAULT_PORT int = 6837
+const DEFAULT_ADDRESS string = ":6837"
 
 var addresses addressList
 
@@ -43,18 +39,12 @@ var Launch bool
 var log_standard *log.Logger
 var log_error *log.Logger
 
-var S4 *Server
-var S6 *Server
-var SAll *Server
+var Servers []*Server
 
 func Configure() error {
 	flag.StringVar(&Cert, "cert", "", "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&Key, "key", "", "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&gencertfile, "gen-cert-file", "", "Generate a certificate file from the self-generated, self-signed SSL certificate. This file will only be created if you aren't loading your own certificate key files. The file will encode the key and certificate, packaging them both in a single .pem file.")
-
-	flag.StringVar(&ip4, "ip4", "", "IPV4 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV4 addresses.")
-	flag.StringVar(&ip6, "ip6", "", "IPV6 address for the server to listen for connections on. This can be blank if desired, in which case, the server will listen on all IPV6 addresses.")
-	flag.IntVar(&port, "port", DEFAULT_PORT, "The port that the server will listen for connections on. This can be blank if desired, in which case, the server will listen for connections on the default port. This value must be between 1 and 65536.")
 
 	flag.Var(&addresses, "address", "Address the server will listen on in the format ip:port, such as \"0.0.0.0:6837\", \":6837\", \"[::]:6837\". The port must be between 1 and 65536. You can declare this parameter more than once for multiple listen addresses.")
 
@@ -95,6 +85,7 @@ func Configure() error {
 		config, err = gen_cert()
 		if err != nil {
 			Log_error("Unable to generate self-signed certificate.\r\n" + err.Error() + "\r\nUnable to start server.")
+			Launch_fail()
 			return err
 		}
 		Log(LOG_DEBUG, "SSL certificate generated.")
@@ -139,28 +130,15 @@ func Configure() error {
 		return errors.New("Server launch parameter set to false.")
 	}
 
-	if port < 1 || port > 65536 {
-		Log_error("The port specified is outside the given parameter. The port parameter must be between 1 and 65536. Unable to start server.")
-		return errors.New("Invalid port number.")
+	if len(addresses) == 0 {
+		addresses = make(addressList, 1)
+		addresses[0] = DEFAULT_ADDRESS
 	}
-	portstr := strconv.Itoa(port)
 
-	ip4l := false
-	ip6l := false
-
-	if ip4 != "" && ip4 != "0" {
-		Log(LOG_DEBUG, "Starting IPV4 server on address "+ip4+", using port "+portstr+".")
-		S4 = NewWithTLSConfig(ip4+":"+portstr, config)
-		ip4l = true
-	}
-	if ip6 != "" && ip6 != "0" {
-		Log(LOG_DEBUG, "Starting IPV6 server on address "+ip6+", using port "+portstr+".")
-		S6 = NewWithTLSConfig(ip6+":"+portstr, config)
-		ip6l = true
-	}
-	if !ip4l && !ip6l {
-		Log(LOG_DEBUG, "Starting server on all IPV4 and IPV6 addresses using port "+portstr+".")
-		SAll = NewWithTLSConfig(":"+portstr, config)
+	Servers = make([]*Server, len(addresses))
+	for i, addr := range addresses {
+		Servers[i] = NewWithTLSConfig(addr, config)
+		Log(LOG_DEBUG, "Starting server listening on address "+addr)
 	}
 
 	return nil
@@ -177,35 +155,21 @@ func fileExists(filename string) bool {
 func Start() int {
 	var num int = 0
 	var err error
-	var portstr = strconv.Itoa(port)
 
-	if S4 != nil {
-		err = S4.Listen()
+	for i := range Servers {
+		err = Servers[i].Listen()
 		if err != nil {
-			Log_error("Error listening on IPV4 address.\r\n" + err.Error())
-		} else {
-			Log(LOG_INFO, "Listening on IPV4 address using port "+portstr+".")
-			num++
+			Log_error("Unable to listen on address " + Servers[i].address + ".\r\n" + err.Error())
+			Servers[i] = nil
+			continue
 		}
-	}
-	if S6 != nil {
-		err = S6.Listen()
-		if err != nil {
-			Log_error("Error listening on IPV6 address.\r\n" + err.Error())
-		} else {
-			Log(LOG_INFO, "Listening on IPV6 address using port "+portstr+".")
-			num++
-		}
-	}
-	if SAll != nil {
-		err = SAll.Listen()
-		if err != nil {
-			Log_error("Error listening on all addresses.\r\n" + err.Error())
-			return num
-		}
-		Log(LOG_INFO, "Listening on all IPV4 and IPV6 addresses using port "+portstr+".")
 		num++
 	}
+	if num == 0 {
+		Servers = nil
+		return num
+	}
+
 	Log(LOG_DEBUG, "Number of servers started: "+strconv.Itoa(num))
 	go signals_init()
 	return num

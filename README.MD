@@ -21,8 +21,6 @@ My goals for this project are to create a stable server for the NVDARemote addon
 
 Any command line flags used by the program are not garanteed to remain the same until a 1.0 release. As I am still developing features for this server, the current command line flags may not remain completely compatible with a future version. Those I am satisfied with are likely to remain the same, but those which could have more flexibility may be changed.
 
-The three command line flags that currently come to mind are the ip4, ip6, and port flags. At some point, I am planning to replace them with a single address flag that will use the convention of address:port to provide a listening address, either IPV4 or IPV6, and the port for that specific address. This flag should be implemented such that it can be declared multiple times, providing multiple such combonations. If not declared, the server will simply use the default address and listen to all IP addresses on the default port of 6837.
-
 Keep an eye on the changelog for future releases. Any breaking changes will be clearly indicated there on the first release that introduces the change. If you encounter a breaking change, review this readme file and see what's changed in the usage parameters.
 
 
@@ -110,7 +108,7 @@ The included certificate file is a single file that contains an automatically ge
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-ip4 0.0.0.0] [-ip6 [::]] [-port 6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
+$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-address :6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -155,27 +153,21 @@ As a result of the secure random number generator, along with the various algori
 If the self-signed certificate takes a particularly long time to create on your system, you can elect to write the certificate to a file as documented above, and optionally do only that by setting the launch parameter to false, which is documented below. You could then launch the server with the generated certificate file as the parameter for the cert and key parameters, preventing long start times on systems with slow processors or entropy difficulties. Alternatively, you could have someone else generate a certificate for you with this program, then send it to you via a secure method of transfer. The final method would be using the certificate file included in this repository, though this may be less secure than the other methods outlined. This is no more secure than the official addon, which packages its own certificate rather than generating it.
 
 
-#### `-ip4`
+#### `-address`
 
-IPV4 address for the program to listen for incoming connections on. By default, all addresses are used. If you don't want to listen on IPV4, enter `-ip4 0` as the parameter.
+Address for the program to listen for incoming connections on in the form ip:port. By default, all addresses are used, and the server accepts connections on port 6837. This can be declared more than once.
 
+If you want to listen on an IPV6 address, the address must be surrounded by brackets. The address must also be on an interface for your computer. For example, this type of parameter can be used.
 
-#### `-ip6`
-
-IPV6 address for the program to listen for incoming connections on. By default, all addresses are used.  If you don't want to listen on IPV6, enter `-ip6 0` as the parameter.
-
-If you use 0 for both IPV4 and IPV6 addresses, the program will fall back to listening on all IP addresses.
-
-The IPV6 parameter must have the address address surrounded by brackets. The address must also be on an interface for your computer. For example, this type of parameter can be used.
-
-`[fd80::ffe8]`
+`[fd80::ffe8]:6837`
 
 So long as that is a valid IPV6 address on one of your network interfaces, this example in the local prefix of IPV6 addresses, you will be able to listen for incoming connections to the server.
 
+To listen on an IPV4 address, it's as simple as using a valid parameter such as the following example, which will listen on all IPV4 addresses.
 
-#### `-port`
+`0.0.0.0:6837`
 
-Choose the port the server will use. The default is 6837. Valid port numbers are between 1 and 65536.
+The default port, if no address is declared, is 6837. Valid port numbers are between 1 and 65536. When declaring an address for the server to listen on, you must also declare a port, or the parameter will be invalid.
 
 
 #### `-motd`
