@@ -161,13 +161,17 @@ If you want to listen on an IPV6 address, the address must be surrounded by brac
 
 `[fd80::ffe8]:6837`
 
-So long as that is a valid IPV6 address on one of your network interfaces, this example in the local prefix of IPV6 addresses, you will be able to listen for incoming connections to the server.
+So long as that is a valid IPV6 address on one of your network interfaces, this example in the local prefix of IPV6 addresses, you will be able to listen for incoming connections to the server. To listen on only IPV6 addresses, use the following example.
 
-To listen on an IPV4 address, it's as simple as using a valid parameter such as the following example, which will listen on all IPV4 addresses.
+`[::]:6837`
+
+To listen on an IPV4 address, it's as simple as using a valid parameter such as the following example, which will listen on all IPV4 addresses only.
 
 `0.0.0.0:6837`
 
-The default port, if no address is declared, is 6837. Valid port numbers are between 1 and 65536. When declaring an address for the server to listen on, you must also declare a port, or the parameter will be invalid.
+The default port, if no address is declared, is 6837. Valid port numbers are between 1 and 65536. When declaring an address for the server to listen on, you must also declare a port, or the parameter will be invalid. You need not declare an address, however. For example, if you want to listen on all addresses, but use port 5000, use the following.
+
+`:5000`
 
 
 #### `-motd`
