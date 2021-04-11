@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	. "github.com/tech10/nvdaRemoteServer/server"
 	"os"
 	"runtime/debug"
@@ -12,6 +13,8 @@ import (
 var Version string = "development"
 
 func main() {
+	Version = strings.TrimPrefix(Version, "v")
+	args()
 	// Log panics
 	defer func() {
 		r := recover()
@@ -22,7 +25,6 @@ func main() {
 		os.Exit(2)
 	}()
 
-	Version = strings.TrimPrefix(Version, "v")
 	err := Configure()
 	if err != nil {
 		if Launch {
@@ -53,4 +55,17 @@ func wait() {
 		}(s)
 	}
 	wg.Wait()
+}
+
+func args() {
+	if len(os.Args) < 2 {
+		return
+	}
+	switch os.Args[1] {
+	case "version":
+		fmt.Println(Version)
+		os.Exit(0)
+	default:
+		return
+	}
 }
