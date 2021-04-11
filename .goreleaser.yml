@@ -4,6 +4,8 @@ before:
     - go mod tidy
 builds:
   -
+    env:
+      - CGO_ENABLED=0
     binary: nvdaRemoteServer
     asmflags:
       - all=-trimpath={{.Env.PWD}}
