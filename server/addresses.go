@@ -23,6 +23,15 @@ func (a *addressList) String() string {
 }
 
 func (a *addressList) Set(v string) error {
+	err := address_valid(v)
+	if err != nil {
+		return err
+	}
+	*a = append(*a, v)
+	return nil
+}
+
+func address_valid(v string) error {
 	var ip string
 	var portstr string
 	var port int
@@ -44,6 +53,5 @@ func (a *addressList) Set(v string) error {
 	if port < 1 || port > 65536 {
 		return errors.New("Invalid port range, " + portstr + " is not a valid port number.")
 	}
-	*a = append(*a, v)
 	return nil
 }
