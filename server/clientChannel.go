@@ -60,8 +60,6 @@ func (c *ClientChannel) Add(client *Client) {
 	scdb.Origin = id
 	scdb.ID = 0
 	scdb.Client = nil
-	scdb.Motd = motd
-	scdb.MotdAlwaysDisplay = motdAlwaysDisplay
 	if len(clients) > 0 {
 		scdb.UserIds = make([]int, 0, len(clients))
 		scdb.Clients = make([]ClientData, 0, len(clients))
@@ -92,6 +90,17 @@ func (c *ClientChannel) Add(client *Client) {
 	enc, encerr = Encode(scdb)
 	if encerr == nil {
 		client.Send(enc)
+	}
+	if motd != "" {
+		mdb := Data{
+			Type:              "motd",
+			Motd:              motd,
+			MotdAlwaysDisplay: motdAlwaysDisplay,
+		}
+		enc, encerr = Encode(mdb)
+		if encerr == nil {
+			client.Send(enc)
+		}
 	}
 	logstr := "Client " + strconv.Itoa(id) + " has joined channel " + c.name
 	if connection != "" {
