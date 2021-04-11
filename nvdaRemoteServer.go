@@ -3,6 +3,7 @@ package main
 import (
 	. "github.com/tech10/nvdaRemoteServer/server"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"strings"
 	"sync"
@@ -17,7 +18,8 @@ func main() {
 		if r == nil {
 			return
 		}
-		Log_error(r)
+		Log_error("PANIC\n", r, "\n", string(debug.Stack()))
+		os.Exit(2)
 	}()
 
 	Version = strings.TrimPrefix(Version, "v")
