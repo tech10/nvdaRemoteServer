@@ -216,6 +216,19 @@ Each level above the previous will also log what the prior level is logging. For
 By default, the server will attempt to launch itself if nothing has caused it to abort execution prematurely. If you set this parameter to false, the server will shut down immediately after most configuration is complete. This can be useful if you only wanted to generate a self-signed certificate and write it to a file, for instance.
 
 
+## Other parameters
+
+### `version`
+
+Print the program version, then shut down immediately. Example:
+
+```console
+$ nvdaRemoteServer version
+development
+$ 
+```
+
+
 # Statistics
 
 These by no means should be taken as representative of any definitive stats, but the results given by systemd's tracking of memory and CPU use can speak for themselves.
