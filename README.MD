@@ -72,8 +72,8 @@ This will run the Docker image with no parameters, allowing the server to choose
 The automatically built images are [located here.](https://github.com/users/tech10/packages/container/package/nvdaremoteserver-docker) Provided on that page is a command you can copy to the clipboard which should pull the latest image. Here is an example use of downloading and running the image.
 
 ```console
-$ docker pull ghcr.io/tech10/nvdaremoteserver-docker:v0.3.3
-$ docker run --network host ghcr.io/tech10/nvdaremoteserver-docker:v0.3.3
+$ docker pull ghcr.io/tech10/nvdaremoteserver-docker:v0.3.4
+$ docker run --network host ghcr.io/tech10/nvdaremoteserver-docker:v0.3.4
 ```
 
 
