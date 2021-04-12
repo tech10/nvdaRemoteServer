@@ -108,7 +108,7 @@ The included certificate file is a single file that contains an automatically ge
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-address :6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
+$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-pid-file /path/to/pid/file] [-address :6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -151,6 +151,13 @@ To generate the certificate, the program will use a source of random entropy tha
 As a result of the secure random number generator, along with the various algorithms needed to generate the keys, the generation of a self-signed certificate can take some time, anywhere between three to ten seconds in the best case sanario. If the program takes longer than thirty seconds to generate the certificate, it is probably hanging as it waits for available entropy to complete random number generation. Once the key is generated, the program will run with its full performance.
 
 If the self-signed certificate takes a particularly long time to create on your system, you can elect to write the certificate to a file as documented above, and optionally do only that by setting the launch parameter to false, which is documented below. You could then launch the server with the generated certificate file as the parameter for the cert and key parameters, preventing long start times on systems with slow processors or entropy difficulties. Alternatively, you could have someone else generate a certificate for you with this program, then send it to you via a secure method of transfer. The final method would be using the certificate file included in this repository, though this may be less secure than the other methods outlined. This is no more secure than the official addon, which packages its own certificate rather than generating it.
+
+
+#### `-pid-file`
+
+Path to a file where the process ID is stored.
+
+This file will only be created once the server has successfully started, and will be removed upon shutdown. This could be useful if you've started the program in the background, and wish to kill the process without searching for it. If the program fails to create the file, it will warn you via the debug log level and continue execution.
 
 
 #### `-address`

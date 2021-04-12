@@ -21,6 +21,7 @@ func main() {
 			return
 		}
 		Log_error("PANIC\n", r, "\n", string(debug.Stack()))
+		shutdown()
 		os.Exit(2)
 	}()
 
@@ -36,8 +37,10 @@ func main() {
 		Log_error("No servers started. Shutting down.")
 		os.Exit(1)
 	}
+	PidfileSet()
 	Log(LOG_INFO, "Server started. Running under PID "+PID_STR+". Server version "+Version)
 	wait()
+	shutdown()
 	Log(LOG_INFO, "Server shutdown complete.")
 }
 
@@ -67,4 +70,8 @@ func args() {
 	default:
 		return
 	}
+}
+
+func shutdown() {
+	PidfileClear()
 }
