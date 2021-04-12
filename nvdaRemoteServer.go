@@ -5,7 +5,6 @@ import (
 	. "github.com/tech10/nvdaRemoteServer/server"
 	"os"
 	"runtime/debug"
-	"strconv"
 	"strings"
 	"sync"
 )
@@ -37,7 +36,7 @@ func main() {
 		Log_error("No servers started. Shutting down.")
 		os.Exit(1)
 	}
-	Log(LOG_INFO, "Server started. Running under PID "+strconv.Itoa(os.Getpid())+". Server version "+Version)
+	Log(LOG_INFO, "Server started. Running under PID "+PID_STR+". Server version "+Version)
 	wait()
 	Log(LOG_INFO, "Server shutdown complete.")
 }
