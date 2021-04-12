@@ -4,6 +4,7 @@
 # If any command fails for any reason, the script will exit immediately.
 # No version checks are done on the tags, and automatic commit messages are created for a version update.
 # I got tired of manually updating the readme file, among other things I was doing, so combine them here.
+. ./functions.sh
 oldtag=$(git_version)
 newtag=$1
 if [ -z "$newtag" ]; then
