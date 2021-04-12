@@ -17,7 +17,7 @@ exit
 fi
 echo "Upgrading from $oldtag to $newtag."
 echo Changing readme file.
-check sed -i "s/${oldtag}/${newtag}/g" README.MD
+check sed -i \"s/${oldtag}/${newtag}/g\" README.MD
 echo Generating certificate.
 check go run . -launch=false -log-level=-1 -gen-cert-file ./cert.pem
 echo Committing update.
