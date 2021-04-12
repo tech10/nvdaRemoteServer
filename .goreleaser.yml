@@ -7,8 +7,8 @@ builds:
     env:
       - CGO_ENABLED=0
     binary: nvdaRemoteServer
-    asmflags:
-      - all=-trimpath={{.Env.PWD}}
+    flags:
+      - -trimpath
     ldflags:
       - -w -s -X main.Version={{.Tag}}
     goos:
