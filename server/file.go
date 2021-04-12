@@ -20,3 +20,11 @@ func file_rewrite(file string, data []byte) error {
 	}
 	return nil
 }
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	return !info.IsDir()
+}

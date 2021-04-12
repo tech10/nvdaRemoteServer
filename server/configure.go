@@ -174,14 +174,6 @@ func Configure() error {
 	return nil
 }
 
-func fileExists(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return !info.IsDir()
-}
-
 func Start() int {
 	var num int = 0
 	var err error
