@@ -157,7 +157,7 @@ If the self-signed certificate takes a particularly long time to create on your 
 
 Path to a file where the process ID is stored.
 
-This file will only be created once the server has successfully started, and will be removed upon shutdown. This could be useful if you've started the program in the background, and wish to kill the process without searching for it. If the program fails to create the file, it will warn you via the debug log level and continue execution.
+This file will only be created once the server has successfully started, and will be removed upon shutdown. This could be useful if you've started the program in the background, and wish to kill the process without searching for its process ID by name. If the program fails to create the file, it will warn you via the debug log level and continue execution.
 
 
 #### `-address`
