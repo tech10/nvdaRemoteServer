@@ -51,6 +51,10 @@ var sendOrigin bool
 
 const DEFAULT_SEND_ORIGIN bool = true
 
+var createDir bool
+
+const DEFAULT_CREATE_DIR bool = false
+
 var Launch bool
 
 const DEFAULT_LAUNCH bool = true
@@ -69,6 +73,8 @@ const DEFAULT_PID_FILE string = ""
 func Configure() error {
 	PID = os.Getpid()
 	PID_STR = strconv.Itoa(PID)
+
+	flag.BoolVar(&createDir, "create", DEFAULT_CREATE_DIR, "Create directories upon any operation involving files being written to, or the working directory being changed.")
 
 	flag.StringVar(&Cert, "cert", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&Key, "key", DEFAULT_KEY_FILE, "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")

@@ -8,7 +8,11 @@ import (
 )
 
 func file_rewrite(file string, data []byte) error {
-	file = fullPath(file)
+	var ferr error
+	file, ferr = fileOps(file)
+	if ferr != nil {
+		return errors.New("Unable to create or open the file " + file + "\n" + ferr.Error())
+	}
 	w, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return errors.New("Unable to create or open the file " + file + "\n" + err.Error())
@@ -59,4 +63,20 @@ func fullPath(old_path string) string {
 		}
 	}
 	return strings.TrimSuffix(e_path, PS)
+}
+
+func fileOps(file string) (string, error) {
+	path := fullPath(file)
+	return path, cdir(filepath.Dir(path))
+}
+
+func cdir(dir string) error {
+	if !createDir {
+		return nil
+	}
+	err := os.MkdirAll(dir, 0755)
+	if err == nil {
+		return nil
+	}
+	return errors.New("Unable to create directory " + dir + "\n" + err.Error())
 }
