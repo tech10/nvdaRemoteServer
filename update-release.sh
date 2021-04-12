@@ -21,10 +21,10 @@ check sed -i "s/${oldtag}/${newtag}/g" README.MD
 echo Generating certificate.
 check go run . -launch=false -log-level=-1 -gen-cert-file ./cert.pem
 echo Committing update.
-git commit -a -s -m "release: ${newtag}"
+check git commit -a -s -m \"release: ${newtag}\"
 echo Pushing update.
 check git push
 echo Tagging update.
-git tag -s -m "release: ${newtag}" -a ${newtag}
+check git tag -s -m \"release: ${newtag}\" -a ${newtag}
 echo Releasing.
 check goreleaser release --rm-dist
