@@ -13,11 +13,11 @@ const DEFAULT_ADDRESS string = ":6837"
 
 var addresses AddressList
 
-var Cert string
+var cert string
 
 const DEFAULT_CERT_FILE string = ""
 
-var Key string
+var key string
 
 const DEFAULT_KEY_FILE string = ""
 
@@ -31,7 +31,7 @@ const DEFAULT_LOG_FILE string = ""
 
 var loglevel int
 
-const DEFAULT_LOGLEVEL int = 0
+const DEFAULT_LOG_LEVEL int = 0
 const LOG_SILENT int = -1
 const LOG_INFO int = 0
 const LOG_CONNECTION int = 1
@@ -44,12 +44,10 @@ var motd string
 const DEFAULT_MOTD string = ""
 
 var motdAlwaysDisplay bool
-
-const DEFAULT_MOTD_ALWAYS_DISPLAY bool = false
+var DEFAULT_MOTD_ALWAYS_DISPLAY bool = false
 
 var sendOrigin bool
-
-const DEFAULT_SEND_ORIGIN bool = true
+var DEFAULT_SEND_ORIGIN bool = true
 
 var createDir bool
 
@@ -76,15 +74,15 @@ func Configure() error {
 
 	flag.BoolVar(&createDir, "create", DEFAULT_CREATE_DIR, "Create directories upon any operation involving files being written to, or the working directory being changed.")
 
-	flag.StringVar(&Cert, "cert", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
-	flag.StringVar(&Key, "key", DEFAULT_KEY_FILE, "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
+	flag.StringVar(&cert, "cert", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
+	flag.StringVar(&key, "key", DEFAULT_KEY_FILE, "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&gencertfile, "gen-cert-file", DEFAULT_GEN_CERT_FILE, "Generate a certificate file from the self-generated, self-signed SSL certificate. This file will only be created if you aren't loading your own certificate key files. The file will encode the key and certificate, packaging them both in a single .pem file.")
 
 	flag.StringVar(&pidfile, "pid-file", DEFAULT_PID_FILE, "Create a PID file when the server has successfully started.")
 
 	flag.Var(&addresses, "address", "Address the server will listen on in the format ip:port, such as \"0.0.0.0:6837\", \":6837\", \"[::]:6837\". The port must be between 1 and 65536. You can declare this parameter more than once for multiple listen addresses.")
 
-	flag.IntVar(&loglevel, "log-level", DEFAULT_LOGLEVEL, "Choose what log level you wish to use. Any value below -1 will be ignored.")
+	flag.IntVar(&loglevel, "log-level", DEFAULT_LOG_LEVEL, "Choose what log level you wish to use. Any value below -1 will be ignored.")
 	flag.StringVar(&logfile, "log-file", DEFAULT_LOG_FILE, "Choose what log file you wish to use in addition to logging output to the console. If the file can't be created or open for writing, the program will fall back to console logging only.")
 
 	flag.StringVar(&motd, "motd", DEFAULT_MOTD, "Display a message of the day for the server.")
@@ -104,15 +102,15 @@ func Configure() error {
 	var config *tls.Config
 	var err error
 
-	if Cert != "" && !fileExists(Cert) {
-		Log(LOG_INFO, "The certificate file at "+Cert+" does not exist.")
+	if cert != "" && !fileExists(cert) {
+		Log(LOG_INFO, "The certificate file at "+cert+" does not exist.")
 		generate = true
 	}
-	if Key != "" && !fileExists(Key) {
-		Log(LOG_INFO, "The key file at "+Key+" does not exist.")
+	if key != "" && !fileExists(key) {
+		Log(LOG_INFO, "The key file at "+key+" does not exist.")
 		generate = true
 	}
-	if Cert == "" || Key == "" {
+	if cert == "" || key == "" {
 		generate = true
 	}
 
@@ -129,7 +127,7 @@ func Configure() error {
 		if gencertfile != "" {
 			Log(LOG_INFO, "The server has not generated its own self-signed certificate, and the -gen-certfile parameter is set to "+gencertfile+". This parameter will be ignored.")
 		}
-		cert, cerr := tls.LoadX509KeyPair(Cert, Key)
+		cert, cerr := tls.LoadX509KeyPair(cert, key)
 		if cerr != nil {
 			Log_error("Error loading certificate and key files.\r\n" + cerr.Error() + "\r\nUnable to start server.")
 			Launch_fail()
@@ -207,4 +205,49 @@ func Launch_fail() {
 	if !Launch {
 		os.Exit(1)
 	}
+}
+
+func cfg_default() *Cfg {
+	return &Cfg{
+		PidFile:           DEFAULT_PID_FILE,
+		LogFile:           DEFAULT_LOG_FILE,
+		LogLevel:          DEFAULT_LOG_LEVEL,
+		Addresses:         AddressList{DEFAULT_ADDRESS},
+		Cert:              DEFAULT_CERT_FILE,
+		Key:               DEFAULT_KEY_FILE,
+		Motd:              DEFAULT_MOTD,
+		MotdAlwaysDisplay: DEFAULT_MOTD_ALWAYS_DISPLAY,
+		SendOrigin:        DEFAULT_SEND_ORIGIN,
+	}
+}
+
+func cfg_is_default(c *Cfg) bool {
+	if c.PidFile != DEFAULT_PID_FILE {
+		return false
+	}
+	if c.LogFile != DEFAULT_LOG_FILE {
+		return false
+	}
+	if c.LogLevel != DEFAULT_LOG_LEVEL {
+		return false
+	}
+	if !(len(c.Addresses) == 1 && c.Addresses[0] == DEFAULT_ADDRESS) {
+		return false
+	}
+	if c.Cert != DEFAULT_CERT_FILE {
+		return false
+	}
+	if c.Key != DEFAULT_KEY_FILE {
+		return false
+	}
+	if c.Motd != DEFAULT_MOTD {
+		return false
+	}
+	if c.MotdAlwaysDisplay != DEFAULT_MOTD_ALWAYS_DISPLAY {
+		return false
+	}
+	if c.SendOrigin != DEFAULT_SEND_ORIGIN {
+		return false
+	}
+	return true
 }

@@ -22,13 +22,13 @@ type ClientData struct {
 }
 
 type Cfg struct {
-	PidFile           string      `json:"pid_file,omitempty"`
-	LogFile           string      `json:"log_file,omitempty"`
-	LogLevel          int         `json:"log_level,omitempty"`
-	Addresses         AddressList `json:"addresses,omitempty"`
-	Cert              string      `json:"cert_file,omitempty"`
-	Key               string      `json:"key_file,omitempty"`
-	Motd              string      `json:"motd,omitempty"`
-	MotdAlwaysDisplay bool        `json:"motd_always_display,omitempty"`
-	SendOrigin        bool        `json:"send_origin,omitempty"`
+	PidFile           string      `json:"pid_file"`
+	LogFile           string      `json:"log_file"`
+	LogLevel          int         `json:"log_level"`
+	Addresses         AddressList `json:"addresses"`
+	Cert              string      `json:"cert_file"`
+	Key               string      `json:"key_file"`
+	Motd              string      `json:"motd"`
+	MotdAlwaysDisplay bool        `json:"motd_always_display"`
+	SendOrigin        bool        `json:"send_origin"`
 }

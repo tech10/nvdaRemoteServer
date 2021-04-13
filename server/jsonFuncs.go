@@ -30,3 +30,11 @@ func Decode(data []byte) (Data, error) {
 	}
 	return decode, nil
 }
+
+func cfg_read(d []byte, c *Cfg) error {
+	return json.Unmarshal(d, c)
+}
+
+func cfg_write(c *Cfg) ([]byte, error) {
+	return json.MarshalIndent(c, "", "	")
+}
