@@ -18,7 +18,7 @@ func JsonAdd(data []byte, key string, value interface{}) ([]byte, error) {
 	return new_data, nil
 }
 
-func Encode(data Data) ([]byte, error) {
+func Encode(data interface{}) ([]byte, error) {
 	return json.Marshal(data)
 }
 
