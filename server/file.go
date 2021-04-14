@@ -2,6 +2,7 @@ package server
 
 import (
 	"errors"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -50,7 +51,6 @@ func fullPath(old_path string) string {
 	}
 	e_path = ""
 	n_path := ""
-	PS := string(filepath.Separator)
 	err = nil
 	for _, v := range strings.Split(path, PS) {
 		e_path += v + PS
@@ -79,4 +79,9 @@ func cdir(dir string) error {
 		return nil
 	}
 	return errors.New("Unable to create directory " + dir + "\n" + err.Error())
+}
+
+func file_read(file string) ([]byte, error) {
+	file = fullPath(file)
+	return ioutil.ReadFile(file)
 }
