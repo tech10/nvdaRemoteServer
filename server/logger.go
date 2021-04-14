@@ -9,6 +9,9 @@ import (
 
 var ll sync.Mutex
 
+var log_standard *log.Logger
+var log_error *log.Logger
+
 func Log(level int, msg ...interface{}) {
 	if level > loglevel {
 		return

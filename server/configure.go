@@ -4,81 +4,47 @@ import (
 	"crypto/tls"
 	"errors"
 	"flag"
-	"log"
 	"os"
 	"strconv"
 )
 
-var PS string = string(os.PathSeparator)
-
 var confFile string
-var DEFAULT_CONF_FILE string = ""
-var DEFAULT_CONF_NAME string = "nvdaRemoteServer.json"
-var DEFAULT_CONF_DIR string
 
 var addresses AddressList
-var DEFAULT_ADDRESS string = ":6837"
 
 var cert string
-var DEFAULT_CERT_FILE string = ""
 
 var key string
-var DEFAULT_KEY_FILE string = ""
 
 var gencertfile string
-var DEFAULT_GEN_CERT_FILE = ""
 
 var logfile string
-var DEFAULT_LOG_FILE string = ""
 
 var loglevel int
-var DEFAULT_LOG_LEVEL int = 0
-
-const LOG_SILENT int = -1
-const LOG_INFO int = 0
-const LOG_CONNECTION int = 1
-const LOG_CHANNEL int = 2
-const LOG_DEBUG int = 3
-const LOG_PROTOCOL int = 4
 
 var motd string
-var DEFAULT_MOTD string = ""
 
 var motdAlwaysDisplay bool
-var DEFAULT_MOTD_ALWAYS_DISPLAY bool = false
 
 var sendOrigin bool
-var DEFAULT_SEND_ORIGIN bool = true
 
 var createDir bool
-var DEFAULT_CREATE_DIR bool = false
 
 var Launch bool
-var DEFAULT_LAUNCH bool = true
-
-var log_standard *log.Logger
-var log_error *log.Logger
 
 var Servers []*Server
 
 var PID int
 var PID_STR string
 var pidfile string
-var DEFAULT_PID_FILE string = ""
-
-func init() {
-	dcd, err := os.UserConfigDir()
-	if err != nil {
-		dcd = "."
-	}
-	DEFAULT_CONF_DIR = dcd + PS + "nvdaRemoteServer"
-}
 
 func Configure() error {
 	PID = os.Getpid()
 	PID_STR = strconv.Itoa(PID)
 
 	flag.BoolVar(&createDir, "create", DEFAULT_CREATE_DIR, "Create directories upon any operation involving files being written to, or the working directory being changed.")
+
+	flag.StringVar(&confFile, "conf-file", DEFAULT_CONF_FILE, "Path to a configuration file. If the configuration file does not exist, or there is an error reading the configuration file, the program will fall back to command line parameters.")
 
 	flag.StringVar(&cert, "cert", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&key, "key", DEFAULT_KEY_FILE, "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
@@ -100,9 +66,15 @@ func Configure() error {
 
 	flag.Parse()
 
+	cfg_err := conf_file()
+
 	log_init(logfile)
 
 	Log(LOG_INFO, "Initializing configuration.")
+
+	if cfg_err != nil {
+		Log_error(cfg_err)
+	}
 
 	generate := false
 	var config *tls.Config
@@ -213,97 +185,6 @@ func Launch_fail() {
 	}
 }
 
-func cfg_default() *Cfg {
-	return &Cfg{
-		PidFile:           DEFAULT_PID_FILE,
-		LogFile:           DEFAULT_LOG_FILE,
-		LogLevel:          DEFAULT_LOG_LEVEL,
-		Addresses:         AddressList{DEFAULT_ADDRESS},
-		Cert:              DEFAULT_CERT_FILE,
-		Key:               DEFAULT_KEY_FILE,
-		Motd:              DEFAULT_MOTD,
-		MotdAlwaysDisplay: DEFAULT_MOTD_ALWAYS_DISPLAY,
-		SendOrigin:        DEFAULT_SEND_ORIGIN,
-	}
-}
-
-func default_conf_file(p string) bool {
-	return (p == DEFAULT_CONF_FILE)
-}
-
-func default_pid_file(p string) bool {
-	return (p == DEFAULT_PID_FILE)
-}
-
-func default_log_file(p string) bool {
-	return (p == DEFAULT_LOG_FILE)
-}
-
-func default_log_level(p int) bool {
-	return (p == DEFAULT_LOG_LEVEL)
-}
-
-func default_addresses(p AddressList) bool {
-	if len(p) == 1 && p[0] == DEFAULT_ADDRESS {
-		return true
-	}
-	if len(p) == 0 {
-		return true
-	}
-	return false
-}
-
-func default_cert_file(p string) bool {
-	return (p == DEFAULT_CERT_FILE)
-}
-
-func default_key_file(p string) bool {
-	return (p == DEFAULT_KEY_FILE)
-}
-
-func default_motd(p string) bool {
-	return (p == DEFAULT_MOTD)
-}
-
-func default_motd_always_display(p bool) bool {
-	return (p == DEFAULT_MOTD_ALWAYS_DISPLAY)
-}
-
-func default_send_origin(p bool) bool {
-	return (p == DEFAULT_SEND_ORIGIN)
-}
-
-func cfg_is_default(c *Cfg) bool {
-	if !default_pid_file(c.PidFile) {
-		return false
-	}
-	if !default_log_file(c.LogFile) {
-		return false
-	}
-	if !default_log_level(c.LogLevel) {
-		return false
-	}
-	if !default_addresses(c.Addresses) {
-		return false
-	}
-	if !default_cert_file(c.Cert) {
-		return false
-	}
-	if !default_key_file(c.Key) {
-		return false
-	}
-	if !default_motd(c.Motd) {
-		return false
-	}
-	if !default_motd_always_display(c.MotdAlwaysDisplay) {
-		return false
-	}
-	if !default_send_origin(c.SendOrigin) {
-		return false
-	}
-	return true
-}
-
 func conf_file_check() ([]byte, error) {
 	if !default_conf_file(confFile) {
 		return file_read(confFile)
@@ -332,7 +213,7 @@ func conf_file() error {
 	if err != nil {
 		return conf_file_error(err)
 	}
-	if cfg_is_default(cfg) {
+	if cfg.IsDefault() {
 		return nil
 	}
 	conf_set(cfg)

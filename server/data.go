@@ -20,15 +20,3 @@ type ClientData struct {
 	ID             int    `json:"id"`
 	ConnectionType string `json:"connection_type"`
 }
-
-type Cfg struct {
-	PidFile           string      `json:"pid_file"`
-	LogFile           string      `json:"log_file"`
-	LogLevel          int         `json:"log_level"`
-	Addresses         AddressList `json:"addresses"`
-	Cert              string      `json:"cert_file"`
-	Key               string      `json:"key_file"`
-	Motd              string      `json:"motd"`
-	MotdAlwaysDisplay bool        `json:"motd_always_display"`
-	SendOrigin        bool        `json:"send_origin"`
-}
