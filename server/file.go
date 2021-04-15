@@ -29,8 +29,8 @@ func file_rewrite(file string, data []byte) error {
 	return nil
 }
 
-func fileExists(filename string) bool {
-	info, err := os.Stat(filename)
+func fileExists(file string) bool {
+	info, err := os.Stat(file)
 	if errors.Is(err, os.ErrNotExist) {
 		return false
 	}
