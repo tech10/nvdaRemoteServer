@@ -66,29 +66,32 @@ func Configure() error {
 
 	flag.Parse()
 
-	cfg_err := conf_file()
+	if len(addresses) == 0 {
+		addresses = make(AddressList, 1)
+		addresses[0] = DEFAULT_ADDRESS
+	}
 
-	log_init(logfile)
+	c := cfg_default()
+	c.Setup()
+
+	log_init(c.LogFile)
 
 	Log(LOG_INFO, "Initializing configuration.")
-
-	if cfg_err != nil {
-		Log_error(cfg_err)
-	}
+	c.LogWrite()
 
 	generate := false
 	var config *tls.Config
 	var err error
 
-	if cert != "" && !fileExists(cert) {
+	if !default_cert_file(cert) && !fileExists(cert) {
 		Log(LOG_INFO, "The certificate file at "+cert+" does not exist.")
 		generate = true
 	}
-	if key != "" && !fileExists(key) {
+	if !default_key_file(key) && !fileExists(key) {
 		Log(LOG_INFO, "The key file at "+key+" does not exist.")
 		generate = true
 	}
-	if cert == "" || key == "" {
+	if default_cert_file(cert) || default_key_file(key) {
 		generate = true
 	}
 
@@ -120,15 +123,15 @@ func Configure() error {
 	config.MaxVersion = tls.VersionTLS12
 	config.InsecureSkipVerify = true
 
-	if motd != "" {
+	if !default_motd(motd) {
 		logstr := "The server will display the following message of the day:\r\n" + motd
-		if motdAlwaysDisplay {
+		if default_motd_always_display(motdAlwaysDisplay) {
 			logstr += "\r\nThe server will tell each client to display this message of the day upon each connection."
 		}
 		Log(LOG_DEBUG, logstr)
 	}
 
-	if motd == "" && motdAlwaysDisplay {
+	if default_motd(motd) && !default_motd_always_display(motdAlwaysDisplay) {
 		Log(LOG_INFO, "The server has been told to always display a message of the day, but no message of the day has been set. The -motd-always-display parameter will be reset to false.")
 		motdAlwaysDisplay = false
 	}
@@ -140,11 +143,6 @@ func Configure() error {
 	if !Launch {
 		Log(LOG_INFO, "The server will not be launched. Shutting down.")
 		return errors.New("Server launch parameter set to false.")
-	}
-
-	if len(addresses) == 0 {
-		addresses = make(AddressList, 1)
-		addresses[0] = DEFAULT_ADDRESS
 	}
 
 	Servers = make([]*Server, len(addresses))
@@ -183,43 +181,4 @@ func Launch_fail() {
 	if !Launch {
 		os.Exit(1)
 	}
-}
-
-func conf_file_check() ([]byte, error) {
-	if !default_conf_file(confFile) {
-		return file_read(confFile)
-	}
-	d, err := file_read(DEFAULT_CONF_NAME)
-	if err != nil {
-		return file_read(DEFAULT_CONF_DIR + PS + DEFAULT_CONF_NAME)
-	}
-	return d, err
-}
-
-func conf_file_error(err error) error {
-	if confFile == DEFAULT_CONF_FILE {
-		return nil
-	}
-	return errors.New("Unable to read configuration file.\n" + err.Error())
-}
-
-func conf_file() error {
-	d, err := conf_file_check()
-	if err != nil {
-		return conf_file_error(err)
-	}
-	cfg := cfg_default()
-	err = cfg_read(d, cfg)
-	if err != nil {
-		return conf_file_error(err)
-	}
-	if cfg.IsDefault() {
-		return nil
-	}
-	conf_set(cfg)
-	return nil
-}
-
-func conf_set(c *Cfg) {
-
 }

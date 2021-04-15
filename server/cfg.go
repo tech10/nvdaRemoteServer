@@ -125,3 +125,66 @@ func (c *Cfg) Write(file string) error {
 	c.Log(LOG_DEBUG, "Configuration file successfully written to "+file)
 	return nil
 }
+
+func (c *Cfg) SearchFile(f string) string {
+	f = fullPath(f)
+	c.Log(LOG_DEBUG, "Searching for configuration file at "+f)
+	if fileExists(f) {
+		return f
+	}
+	c.Log(LOG_DEBUG, "Failed to find configuration file.")
+	return ""
+}
+
+func (c *Cfg) FindFile() string {
+	if !default_conf_file(confFile) {
+		return c.SearchFile(confFile)
+	}
+	cf := c.SearchFile(DEFAULT_CONF_NAME)
+	if cf != "" {
+		return cf
+	}
+	return c.SearchFile(DEFAULT_CONF_DIR + PS + DEFAULT_CONF_NAME)
+}
+
+func (c *Cfg) ReadFile(f string) ([]byte, error) {
+	c.Log(LOG_DEBUG, "Reading configuration file at "+f)
+	d, err := file_read(f)
+	if err != nil {
+		c.Log_error("Unable to read configuration file at " + f + "\n" + err.Error())
+		return nil, err
+	}
+	c.Log(LOG_DEBUG, "Successfully read configuration file.")
+	return d, nil
+}
+
+func (c *Cfg) Decode(d []byte) error {
+	c.Log(LOG_DEBUG, "Decoding data from configuration file.")
+	err := cfg_read(d, c)
+	if err != nil {
+		c.Log_error("Unable to decode data.\n" + err.Error())
+		return err
+	}
+	c.Log(LOG_DEBUG, "Data successfully decoded.")
+	return nil
+}
+
+func (c *Cfg) Read() {
+	f := c.FindFile()
+	if f == "" {
+		return
+	}
+	d, err := c.ReadFile(f)
+	if err != nil {
+		return
+	}
+	err = c.Decode(d)
+	if err != nil {
+		return
+	}
+	c.file = f
+}
+
+func (c *Cfg) Setup() {
+	c.Read()
+}
