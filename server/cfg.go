@@ -89,9 +89,9 @@ func (c *Cfg) LogWrite() {
 	}
 	for i, v := range c.ls {
 		if c.le[i] {
-			Log_error(v)
+			Log_error(v...)
 		} else {
-			Log(c.ll[i], v)
+			Log(c.ll[i], v...)
 		}
 	}
 	c.ls = nil
