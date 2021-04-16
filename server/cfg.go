@@ -102,22 +102,22 @@ func (c *Cfg) LogWrite() {
 func (c *Cfg) Write(file string) error {
 	if file == "" {
 		err := errors.New("An empty file is an invalid parameter. Not writing.")
-		c.Log(LOG_DEBUG, err)
+		c.Log_error(err)
 		return err
 	}
 	if c.IsDefault() {
 		err := errors.New("Default parameters have been used. Nothing to write to configuration file.")
-		c.Log(LOG_DEBUG, err)
+		c.Log_error(err)
 		return err
 	}
 	d, err := cfg_write(c)
 	if err != nil {
-		c.Log(LOG_DEBUG, "Unable to encode json for writing.\n"+err.Error())
+		c.Log_error("Unable to encode json for writing.\n" + err.Error())
 		return err
 	}
 	file = fullPath(file)
 	c.Log(LOG_DEBUG, "Writing to configuration file "+file)
-	err = file_rewrite(c.file, d)
+	err = file_rewrite(file, d)
 	if err != nil {
 		c.Log_error(err)
 		return err
