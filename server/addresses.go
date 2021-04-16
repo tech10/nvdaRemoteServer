@@ -46,6 +46,9 @@ func address_valid(v string) error {
 			return errors.New("The ip address " + ip + " is invalid.")
 		}
 	}
+	if portstr == "" {
+		return errors.New("Empty port is invalid.")
+	}
 	port, err = strconv.Atoi(portstr)
 	if err != nil {
 		return err
