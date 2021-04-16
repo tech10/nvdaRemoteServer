@@ -163,14 +163,7 @@ func (c *Cfg) ReadFile(f string) ([]byte, error) {
 }
 
 func (c *Cfg) Decode(d []byte) error {
-	c.Log(LOG_DEBUG, "Decoding data from configuration file.")
-	err := cfg_read(d, c)
-	if err != nil {
-		c.Log_error("Unable to decode data.\n" + err.Error())
-		return err
-	}
-	c.Log(LOG_DEBUG, "Data successfully decoded.")
-	return nil
+	return cfg_read(d, c)
 }
 
 func (c *Cfg) Read() error {
@@ -182,10 +175,13 @@ func (c *Cfg) Read() error {
 	if err != nil {
 		return errors.New("Error reading " + f + "\n" + err.Error())
 	}
+	c.Log(LOG_DEBUG, "Decoding data from configuration file.")
 	err = c.Decode(d)
 	if err != nil {
+		c.Log_error("Unable to decode, invalid data in " + f + "\n" + err.Error())
 		return err
 	}
+	c.Log(LOG_DEBUG, "Data successfully decoded.")
 	c.file = f
 	return nil
 }
