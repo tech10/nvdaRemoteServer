@@ -132,7 +132,11 @@ func (c *Cfg) SearchFile(f string) string {
 	if fileExists(f) {
 		return f
 	}
-	c.Log(LOG_DEBUG, "Failed to find configuration file.")
+	if default_conf_file(confFile) {
+		c.Log(LOG_DEBUG, "Failed to find configuration file.")
+	} else {
+		c.Log_error("The configuration file at " + f + " does not exist.")
+	}
 	return ""
 }
 
@@ -169,22 +173,30 @@ func (c *Cfg) Decode(d []byte) error {
 	return nil
 }
 
-func (c *Cfg) Read() {
+func (c *Cfg) Read() error {
 	f := c.FindFile()
 	if f == "" {
-		return
+		return errors.New("No file found.")
 	}
 	d, err := c.ReadFile(f)
 	if err != nil {
-		return
+		return errors.New("Error reading " + f + "\n" + err.Error())
 	}
 	err = c.Decode(d)
 	if err != nil {
-		return
+		return err
 	}
 	c.file = f
+	return nil
 }
 
-func (c *Cfg) Setup() {
-	c.Read()
+func (c *Cfg) Setup() error {
+	err := c.Read()
+	if err != nil {
+		if !default_conf_file(confFile) {
+			return err
+		}
+		return nil
+	}
+	return nil
 }

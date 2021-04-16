@@ -72,12 +72,16 @@ func Configure() error {
 	}
 
 	c := cfg_default()
-	c.Setup()
+	cfg_err := c.Setup()
 
-	log_init(c.LogFile)
+	log_init(logfile)
 
 	Log(LOG_INFO, "Initializing configuration.")
 	c.LogWrite()
+
+	if cfg_err != nil {
+		os.Exit(1)
+	}
 
 	generate := false
 	var config *tls.Config
