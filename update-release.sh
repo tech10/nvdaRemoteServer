@@ -19,7 +19,7 @@ echo "Upgrading from $oldtag to $newtag."
 echo Changing readme file.
 check sed -i \"s/${oldtag}/${newtag}/g\" README.MD
 echo Generating certificate.
-check go run . -launch=false -log-level=-1 -gen-cert-file $(pwd)/cert.pem
+gen_cert
 echo Committing update.
 check git commit -a -s -m \"release: ${newtag}\"
 echo Pushing update.

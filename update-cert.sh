@@ -4,5 +4,5 @@
 # If this takes a while, your system likely lacks entropy. See the readme for an explanation of this.
 . ./functions.sh
 echo Updating certificate.
-check go run . -launch=false -log-level=-1 -gen-cert-file ./cert.pem
+gen_cert
 echo Successfully updated certificate.

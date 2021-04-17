@@ -9,3 +9,6 @@ fi
 git_version() {
 git describe --tags $(git rev-list --tags --max-count=1)
 }
+gen_cert() {
+check go run . -launch=false -log-level=-1 -gen-cert-file $(pwd)/cert.pem
+}
