@@ -77,7 +77,7 @@ func gen_cert() (*tls.Config, error) {
 }
 
 func gen_cert_file(file string, cert, key []byte) {
-	if file == "" {
+	if default_gen_cert_file(file) {
 		return
 	}
 	Log(LOG_DEBUG, "Attempting to write certificate to file "+file)

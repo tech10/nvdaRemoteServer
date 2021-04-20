@@ -10,11 +10,14 @@ var DEFAULT_CONF_FILE string = ""
 var DEFAULT_CONF_NAME string = "nvdaRemoteServer.json"
 var DEFAULT_CONF_DIR string
 
+var DEFAULT_GEN_CONF_FILE string = ""
+var DEFAULT_GEN_CONF_DIR bool = false
+
 var DEFAULT_ADDRESS string = ":6837"
 
 var DEFAULT_CERT_FILE string = ""
 var DEFAULT_KEY_FILE string = ""
-var DEFAULT_GEN_CERT_FILE = ""
+var DEFAULT_GEN_CERT_FILE string = ""
 
 var DEFAULT_LOG_FILE string = ""
 
@@ -80,6 +83,10 @@ func default_key_file(p string) bool {
 	return (p == DEFAULT_KEY_FILE)
 }
 
+func default_gen_cert_file(p string) bool {
+	return (p == DEFAULT_GEN_CERT_FILE)
+}
+
 func default_motd(p string) bool {
 	return (p == DEFAULT_MOTD)
 }
@@ -90,4 +97,12 @@ func default_motd_always_display(p bool) bool {
 
 func default_send_origin(p bool) bool {
 	return (p == DEFAULT_SEND_ORIGIN)
+}
+
+func default_gen_conf_file(p string) bool {
+	return (p == DEFAULT_GEN_CONF_FILE)
+}
+
+func default_gen_conf_dir(p bool) bool {
+	return (p == DEFAULT_GEN_CONF_DIR)
 }
