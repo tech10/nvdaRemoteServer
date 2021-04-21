@@ -236,6 +236,8 @@ By default, when the server receives a message from a client, it will send that 
 
 Choose a file for the program to log its data. Any logged information will always be sent to the console, but in addition to this, a log file can also be used. By default, logged data is only sent to the console.
 
+If the server is not being launched, no log file will be written, the program will warn you, then continue execution.
+
 
 #### `-log-level`
 
