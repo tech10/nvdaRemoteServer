@@ -49,7 +49,7 @@ func Configure() error {
 
 	flag.StringVar(&confFile, "conf", DEFAULT_CONF_FILE, "Path to a configuration file. If the configuration file does not exist, or there is an error reading the configuration file, the program will fall back to command line parameters.")
 
-	flag.StringVar(&genConfFile, "gen-conf", DEFAULT_GEN_CONF_FILE, "Path to a configuration file to generate from command line parameters. If the configuration file can't be generated, an error message will be logged.")
+	flag.StringVar(&genConfFile, "gen-conf-file", DEFAULT_GEN_CONF_FILE, "Path to a configuration file to generate from command line parameters. If the configuration file can't be generated, an error message will be logged.")
 	flag.BoolVar(&genConfDir, "gen-conf-dir", DEFAULT_GEN_CONF_DIR, "Whether or not to generate a configuration directory for the user. If the configuration directory and file can't be generated, an error message will be logged.")
 
 	flag.StringVar(&cert, "cert", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
