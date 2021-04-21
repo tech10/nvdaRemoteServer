@@ -108,7 +108,7 @@ The included certificate file is a single file that contains an automatically ge
 # Usage
 
 ```console
-$ nvdaRemoteServer [-pid-file /path/to/pid/file] [-create=false] [-address :6837] [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
+$ nvdaRemoteServer [-pid-file /path/to/pid/file] [-conf /path/to/configuration/file] [-conf-read=true] [-gen-conf-file /path/to/generated/configuration/file] [-gen-conf-dir=false] [-create=false] [-address :6837] [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -131,6 +131,11 @@ If a configuration file you specify is invalid, the program will exit after tell
 If a configuration file is successfully read, and isn't in the current working directory, the program will change its working directory to that of the configuration file that was read. Any relative parameters to files, such as nvdaRemoteServer.log for a log file, will be created and written to under the configuration file directory.
 
 If a configuration file is read, and using default parameters, you will be alerted that the configuration file is using default parameters and none is needed. The program will then continue execution.
+
+
+#### `-conf-read`
+
+This will choose whether or not the program will read a configuration file. If set to false, no configuration file will be read, the program will warn you of this, then continue execution. If you have set the `-conf` parameter, it will be reset to its default value and the program will warn you of its reset.
 
 
 #### `-gen-conf-file`

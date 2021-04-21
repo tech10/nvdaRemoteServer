@@ -10,6 +10,8 @@ var DEFAULT_CONF_FILE string = ""
 var DEFAULT_CONF_NAME string = "nvdaRemoteServer.json"
 var DEFAULT_CONF_DIR string
 
+var DEFAULT_CONF_READ bool = true
+
 var DEFAULT_GEN_CONF_FILE string = ""
 var DEFAULT_GEN_CONF_DIR bool = false
 
@@ -105,4 +107,8 @@ func default_gen_conf_file(p string) bool {
 
 func default_gen_conf_dir(p bool) bool {
 	return (p == DEFAULT_GEN_CONF_DIR)
+}
+
+func default_conf_read(p bool) bool {
+	return (p == DEFAULT_CONF_READ)
 }

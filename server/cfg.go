@@ -165,6 +165,9 @@ func (c *Cfg) Decode(d []byte) error {
 }
 
 func (c *Cfg) Read() error {
+	if !default_conf_read(confRead) {
+		return nil
+	}
 	f := c.FindFile()
 	if f == "" {
 		return errors.New("No file found.")
@@ -188,6 +191,14 @@ func (c *Cfg) Read() error {
 }
 
 func (c *Cfg) Setup() error {
+	if !default_conf_read(confRead) {
+		logstr := "No configuration file will be read."
+		if !default_conf_file(confFile) {
+			logstr += " The configuration file parameter will be reset to its default."
+			confFile = DEFAULT_CONF_FILE
+		}
+		c.Log(LOG_INFO, logstr)
+	}
 	if gen_conf_check() {
 		if !default_conf_file(confFile) {
 			c.Log(LOG_INFO, "You have specified that a configuration file be generated, but have also specified a configuration file be read. No configuration file will be generated. The configuration file you have specified will be read.")

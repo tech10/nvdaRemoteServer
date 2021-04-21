@@ -13,6 +13,8 @@ var confFile string
 var genConfFile string
 var genConfDir bool
 
+var confRead bool
+
 var addresses AddressList
 
 var cert string
@@ -51,6 +53,8 @@ func Configure() error {
 
 	flag.StringVar(&genConfFile, "gen-conf-file", DEFAULT_GEN_CONF_FILE, "Path to a configuration file to generate from command line parameters. If the configuration file can't be generated, an error message will be logged.")
 	flag.BoolVar(&genConfDir, "gen-conf-dir", DEFAULT_GEN_CONF_DIR, "Whether or not to generate a configuration directory for the user. If the configuration directory and file can't be generated, an error message will be logged.")
+
+	flag.BoolVar(&confRead, "conf-read", DEFAULT_CONF_READ, "Whether or not to read a configuration file. If a configuration file will not be read or searched for, the program will warn you. If you set a configuration file parameter, it will be reset to its default value.")
 
 	flag.StringVar(&cert, "cert", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&key, "key", DEFAULT_KEY_FILE, "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
