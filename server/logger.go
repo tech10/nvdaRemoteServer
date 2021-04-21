@@ -33,6 +33,12 @@ func log_init(file string) {
 		log_error = log.New(os.Stderr, "[ERROR]: ", log.LstdFlags)
 		return
 	}
+	file = fullPath(file)
+	if !Launch {
+		log_init("")
+		Log(LOG_INFO, "The log file at "+file+" will not be written, as the server has been told not to launch.")
+		return
+	}
 	w, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		log_init("")
