@@ -2,6 +2,8 @@ package server
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 )
 
 type Cfg struct {
@@ -17,7 +19,6 @@ type Cfg struct {
 	ll                []int
 	ls                [][]interface{}
 	le                []bool
-	file              string
 }
 
 func cfg_default() *Cfg {
@@ -182,11 +183,18 @@ func (c *Cfg) Read() error {
 		return err
 	}
 	c.Log(LOG_DEBUG, "Data successfully decoded.")
-	c.file = f
+	c.Cwd(filepath.Dir(f))
 	return nil
 }
 
 func (c *Cfg) Setup() error {
+	if gen_conf_check() {
+		if !default_conf_file(confFile) {
+			c.Log(LOG_INFO, "You have specified that a configuration file be generated, but have also specified a configuration file be read. No configuration file will be generated. The configuration file you have specified will be read.")
+		} else {
+			return c.Generate()
+		}
+	}
 	err := c.Read()
 	if err != nil {
 		if !default_conf_file(confFile) {
@@ -238,4 +246,58 @@ func (c *Cfg) CmdSet() {
 	if !default_send_origin(c.SendOrigin) && default_send_origin(sendOrigin) {
 		sendOrigin = c.SendOrigin
 	}
+}
+
+func (c *Cfg) Cwd(d string) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return
+	}
+	cwd = fullPath(cwd)
+	d = fullPath(d)
+	if cwd == d {
+		return
+	}
+	err = os.Chdir(d)
+	if err != nil {
+		c.Log_error("Unable to change working directory to " + d + "\n" + err.Error())
+		return
+	}
+	c.Log(LOG_DEBUG, "Changed working directory to "+d)
+}
+
+func (c *Cfg) Generate() error {
+	f := genConfFile
+	c_old := createDir
+	if default_gen_conf_file(f) {
+		if genConfDir {
+			createDir = true
+			f = DEFAULT_CONF_DIR + PS + DEFAULT_CONF_NAME
+			c.Log(LOG_INFO, "The configuration directory at "+DEFAULT_CONF_DIR+" will be created.")
+		}
+	} else {
+		if genConfDir {
+			c.Log(LOG_INFO, "You have specified that a configuration file be created, but have also specified a configuration directory be created. The configuration directory is specific to the user this program is running under, but will be ignored, as a configuration file has been specified.")
+		}
+	}
+	defer func() {
+		createDir = c_old
+	}()
+	c.CmdGet()
+	if c.IsDefault() {
+		c.Log(LOG_INFO, "Default parameters have been used. No configuration file will be generated. The configuration file would have been written to "+f)
+		return nil
+	}
+	c.Log(LOG_INFO, "Generating configuration file "+f)
+	if default_cert_file(c.Cert) && default_key_file(c.Key) && !default_gen_cert_file(gencertfile) {
+		c.Log(LOG_INFO, "You have specified that the certificate file "+gencertfile+" be generated. This file will be used as the cert and key files in the generated configuration file.")
+		c.Cert = gencertfile
+		c.Key = gencertfile
+	}
+	err := c.Write(f)
+	if err != nil {
+		return err
+	}
+	c.Cwd(filepath.Dir(f))
+	return nil
 }
