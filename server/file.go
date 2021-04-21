@@ -37,17 +37,22 @@ func fileExists(file string) bool {
 	return !info.IsDir()
 }
 
+func cleanPath(p string) string {
+	p = strings.Replace(p, PS+PS, PS, 1)
+	return p
+}
+
 func fullPath(old_path string) string {
 	var err error
 	var path string
 	path, err = filepath.Abs(old_path)
 	if err != nil {
-		return old_path
+		return cleanPath(old_path)
 	}
 	var e_path string
 	e_path, err = filepath.EvalSymlinks(path)
 	if err == nil {
-		return e_path
+		return cleanPath(e_path)
 	}
 	e_path = ""
 	n_path := ""
@@ -62,7 +67,7 @@ func fullPath(old_path string) string {
 			e_path = n_path + PS
 		}
 	}
-	return strings.TrimSuffix(e_path, PS)
+	return cleanPath(strings.TrimSuffix(e_path, PS))
 }
 
 func fileOps(file string) (string, error) {
