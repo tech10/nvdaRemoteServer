@@ -194,5 +194,48 @@ func (c *Cfg) Setup() error {
 		}
 		return nil
 	}
+	c.CmdSet()
 	return nil
+}
+
+func (c *Cfg) CmdGet() {
+	c.PidFile = pidfile
+	c.LogFile = logfile
+	c.LogLevel = loglevel
+	c.Addresses = addresses
+	c.Cert = cert
+	c.Key = key
+	c.Motd = motd
+	c.MotdAlwaysDisplay = motdAlwaysDisplay
+	c.SendOrigin = sendOrigin
+}
+
+func (c *Cfg) CmdSet() {
+	if !default_pid_file(c.PidFile) && default_pid_file(pidfile) {
+		pidfile = c.PidFile
+	}
+	if !default_log_file(c.LogFile) && default_log_file(logfile) {
+		logfile = c.LogFile
+	}
+	if !default_log_level(c.LogLevel) && default_log_level(loglevel) {
+		loglevel = c.LogLevel
+	}
+	if !default_addresses(c.Addresses) && default_addresses(addresses) {
+		addresses = c.Addresses
+	}
+	if !default_cert_file(c.Cert) && default_cert_file(cert) {
+		cert = c.Cert
+	}
+	if !default_key_file(c.Key) && default_key_file(key) {
+		key = c.Key
+	}
+	if !default_motd(c.Motd) && default_motd(motd) {
+		motd = c.Motd
+	}
+	if !default_motd_always_display(c.MotdAlwaysDisplay) && default_motd_always_display(motdAlwaysDisplay) {
+		motdAlwaysDisplay = c.MotdAlwaysDisplay
+	}
+	if !default_send_origin(c.SendOrigin) && default_send_origin(sendOrigin) {
+		sendOrigin = c.SendOrigin
+	}
 }
