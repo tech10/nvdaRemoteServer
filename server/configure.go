@@ -49,15 +49,15 @@ func Configure() error {
 
 	flag.BoolVar(&createDir, "create", DEFAULT_CREATE_DIR, "Create directories upon any operation involving files being written to, or the working directory being changed.")
 
-	flag.StringVar(&confFile, "conf", DEFAULT_CONF_FILE, "Path to a configuration file. If the configuration file does not exist, or there is an error reading the configuration file, the program will fall back to command line parameters.")
+	flag.StringVar(&confFile, "conf-file", DEFAULT_CONF_FILE, "Path to a configuration file. If the configuration file does not exist, or there is an error reading the configuration file, the program will fall back to command line parameters.")
 
 	flag.StringVar(&genConfFile, "gen-conf-file", DEFAULT_GEN_CONF_FILE, "Path to a configuration file to generate from command line parameters. If the configuration file can't be generated, an error message will be logged.")
 	flag.BoolVar(&genConfDir, "gen-conf-dir", DEFAULT_GEN_CONF_DIR, "Whether or not to generate a configuration directory for the user. If the configuration directory and file can't be generated, an error message will be logged.")
 
 	flag.BoolVar(&confRead, "conf-read", DEFAULT_CONF_READ, "Whether or not to read a configuration file. If a configuration file will not be read or searched for, the program will warn you. If you set a configuration file parameter, it will be reset to its default value.")
 
-	flag.StringVar(&cert, "cert", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
-	flag.StringVar(&key, "key", DEFAULT_KEY_FILE, "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
+	flag.StringVar(&cert, "cert-file", DEFAULT_CERT_FILE, "SSL certificate file to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
+	flag.StringVar(&key, "key-file", DEFAULT_KEY_FILE, "SSL key to use for the server's TLS connection, must point to an existing file. If this is empty, the server will automatically generate its own self-signed certificate.")
 	flag.StringVar(&gencertfile, "gen-cert-file", DEFAULT_GEN_CERT_FILE, "Generate a certificate file from the self-generated, self-signed SSL certificate. This file will only be created if you aren't loading your own certificate key files. The file will encode the key and certificate, packaging them both in a single .pem file.")
 
 	flag.StringVar(&pidfile, "pid-file", DEFAULT_PID_FILE, "Create a PID file when the server has successfully started.")

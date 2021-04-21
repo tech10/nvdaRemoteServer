@@ -108,7 +108,7 @@ The included certificate file is a single file that contains an automatically ge
 # Usage
 
 ```console
-$ nvdaRemoteServer [-pid-file /path/to/pid/file] [-conf /path/to/configuration/file] [-conf-read=true] [-gen-conf-file /path/to/generated/configuration/file] [-gen-conf-dir=false] [-create=false] [-address :6837] [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
+$ nvdaRemoteServer [-pid-file /path/to/pid/file] [-conf-file /path/to/configuration/file] [-conf-read=true] [-gen-conf-file /path/to/generated/configuration/file] [-gen-conf-dir=false] [-create=false] [-address :6837] [-cert-file /path/to/ssl/certificate] [-key-file /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -118,7 +118,7 @@ Please note that the brackets around a parameter indicate that it is optional.
 
 ### Optional
 
-#### `-conf`
+#### `-conf-file`
 
 This is a path to an existing configuration file. If the configuration file can't be read, the program will alert you and exit with an error.
 
@@ -135,14 +135,14 @@ If a configuration file is read, and using default parameters, you will be alert
 
 #### `-conf-read`
 
-This will choose whether or not the program will read a configuration file. If set to false, no configuration file will be read, the program will warn you of this, then continue execution. If you have set the `-conf` parameter, it will be reset to its default value and the program will warn you of its reset.
+This will choose whether or not the program will read a configuration file. If set to false, no configuration file will be read, the program will warn you of this, then continue execution. If you have set the `-conf-file` parameter, it will be reset to its default value and the program will warn you of its reset.
 
 
 #### `-gen-conf-file`
 
 This is a path to a configuration file the program will attempt to generate from given command line parameters. If you have only specified the generation of a configuration file, no configuration file will be generated, you will be alerted on the info log level, and the program will continue execution with the default parameters.
 
-When generating a configuration file, you can automatically specify a generated certificate file that will be used for the cert and key parameters. This can be done by specifying the `-gen-cert-file` parameter, but not specifying the `-cert` or `-key` parameters.
+When generating a configuration file, you can automatically specify a generated certificate file that will be used for the cert and key parameters. This can be done by specifying the `-gen-cert-file` parameter, but not specifying the `-cert-file` or `-key-file` parameters.
 
 If the configuration file generation is successful, the working directory will be changed to that of the configuration file, if different than the current working directory. This will occurr if creating a user configuration, for example.
 
@@ -187,12 +187,12 @@ The default port, if no address is declared, is 6837. Valid port numbers are bet
 `:5000`
 
 
-#### `-cert`
+#### `-cert-file`
 
 This is the path to the SSL certificate the program will use to communicate securely, as the NVDA addon uses TLS for secure communication.
 
 
-#### `-key`
+#### `-key-file`
 
 This is the path to the SSL key. Both the certificate and key file need to exist and be accessible by the program, or the program will fall back to generating its own certificate.
 
