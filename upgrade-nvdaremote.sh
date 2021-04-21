@@ -36,3 +36,4 @@ exit
 fi
 echo Upgrading from $version to $new_version
 update
+clean
