@@ -70,9 +70,6 @@ func (c *Cfg) IsDefault() bool {
 }
 
 func (c *Cfg) Log(level int, msg ...interface{}) {
-	if default_conf_file(confFile) {
-		level = LOG_DEBUG
-	}
 	c.ls = append(c.ls, msg)
 	c.ll = append(c.ll, level)
 	c.le = append(c.le, false)
