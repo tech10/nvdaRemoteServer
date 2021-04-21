@@ -130,6 +130,8 @@ If a configuration file you specify is invalid, the program will exit after tell
 
 If a configuration file is successfully read, and isn't in the current working directory, the program will change its working directory to that of the configuration file that was read. Any relative parameters to files, such as nvdaRemoteServer.log for a log file, will be created and written to under the configuration file directory.
 
+If a configuration file is read, and using default parameters, you will be alerted that the configuration file is using default parameters and none is needed. The program will then continue execution.
+
 
 #### `-gen-conf-file`
 

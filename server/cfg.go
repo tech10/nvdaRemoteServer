@@ -181,6 +181,9 @@ func (c *Cfg) Read() error {
 	}
 	c.Log(LOG_DEBUG, "Data successfully decoded.")
 	c.Cwd(filepath.Dir(f))
+	if c.IsDefault() {
+		c.Log(LOG_INFO, "The configuration file at "+f+" is using default parameters. No configuration file is needed.")
+	}
 	return nil
 }
 
