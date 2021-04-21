@@ -108,7 +108,7 @@ The included certificate file is a single file that contains an automatically ge
 # Usage
 
 ```console
-$ nvdaRemoteServer [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-pid-file /path/to/pid/file] [-create=false] [-address :6837] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
+$ nvdaRemoteServer [-pid-file /path/to/pid/file] [-create=false] [-address :6837] [-cert /path/to/ssl/certificate] [-key /path/to/ssl/key] [-gen-cert-file /path/to/created/cert/file] [-motd "Example message of the day."] [-motd-always-display=false] [-send-origin=true] [-log-level=0] [-log-file /path/to/log/file] [-launch=true]
 ```
 
 Please note that the brackets around a parameter indicate that it is optional.
@@ -118,9 +118,38 @@ Please note that the brackets around a parameter indicate that it is optional.
 
 ### Optional
 
+#### `-conf`
+
+This is a path to an existing configuration file. If the configuration file can't be read, the program will alert you and exit with an error.
+
+When reading a configuration file, all command line parameters take priority over anything within a configuration file. For example, if you create a configuration file, then later decide you wish to listen on a different address, the address you specify, presuming it isn't the default address, will be used over that in the configuration file.
+
+Configuration files are searched for automatically in two places if this parameter is not supplied. First, if a file named nvdaRemoteServer.json is found in the current working directory, it will be read. Second, the users configuration directory will be searched for a directory named nvdaRemoteServer, and a configuration file with the previously stated name. If neither of these files are found, and you don't specify a configuration file, the program will continue execution.
+
+If a configuration file you specify is invalid, the program will exit after telling you what error has been encountered. If you haven't specified a configuration file, but one is found in one of the searched directories that is invalid, you will be alerted and the program will continue execution with any given command line parameters.
+
+If a configuration file is successfully read, and isn't in the current working directory, the program will change its working directory to that of the configuration file that was read. Any relative parameters to files, such as nvdaRemoteServer.log for a log file, will be created and written to under the configuration file directory.
+
+
+#### `-gen-conf-file`
+
+This is a path to a configuration file the program will attempt to generate from given command line parameters. If you have only specified the generation of a configuration file, no configuration file will be generated, you will be alerted on the info log level, and the program will continue execution with the default parameters.
+
+When generating a configuration file, you can automatically specify a generated certificate file that will be used for the cert and key parameters. This can be done by specifying the `-gen-cert-file` parameter, but not specifying the `-cert` or `-key` parameters.
+
+If the configuration file generation is successful, the working directory will be changed to that of the configuration file, if different than the current working directory. This will occurr if creating a user configuration, for example.
+
+
+#### `-gen-conf-dir`
+
+This will generate a configuration directory for the currently running user if set to true. If the directory doesn't exist, it will be automatically created, if possible. If it can't be created, you will be alerted with an error and the program will abort execution. The program will tell you what path is used for the generation of the configuration file and directory, so you can find it later if you desire.
+
+
 #### `-create`
 
-If set to true, this parameter will attempt to create directories upon any operation that requires either a directory change, or writing to a file. The default is false.
+If set to true, this parameter will attempt to create directories upon any operation that requires writing to a file. The default is false.
+
+This parameter is temporarily set to true if you specify that a user configuration directory is to be generated.
 
 
 #### `-pid-file`
@@ -128,6 +157,27 @@ If set to true, this parameter will attempt to create directories upon any opera
 Path to a file where the process ID is stored.
 
 This file will only be created once the server has successfully started, and will be removed upon shutdown. This could be useful if you've started the program in the background, and wish to kill the process without searching for its process ID by name. If the program fails to create the file, it will warn you via the debug log level and continue execution.
+
+
+#### `-address`
+
+Address for the program to listen for incoming connections on in the form ip:port. By default, all addresses are used, and the server accepts connections on port 6837. This can be declared more than once.
+
+If you want to listen on an IPV6 address, the address must be surrounded by brackets. The address must also be on an interface for your computer. For example, this type of parameter can be used.
+
+`[fd80::ffe8]:6837`
+
+So long as that is a valid IPV6 address on one of your network interfaces, this example in the local prefix of IPV6 addresses, you will be able to listen for incoming connections to the server. To listen on only IPV6 addresses, use the following example.
+
+`[::]:6837`
+
+To listen on an IPV4 address, it's as simple as using a valid parameter such as the following example, which will listen on all IPV4 addresses only.
+
+`0.0.0.0:6837`
+
+The default port, if no address is declared, is 6837. Valid port numbers are between 1 and 65536. When declaring an address for the server to listen on, you must also declare a port, or the parameter will be invalid. You need not declare an address, however. For example, if you want to listen on all addresses, but use port 5000, use the following.
+
+`:5000`
 
 
 #### `-cert`
@@ -163,27 +213,6 @@ To generate the certificate, the program will use a source of random entropy tha
 As a result of the secure random number generator, along with the various algorithms needed to generate the keys, the generation of a self-signed certificate can take some time, anywhere between three to ten seconds in the best case sanario. If the program takes longer than thirty seconds to generate the certificate, it is probably hanging as it waits for available entropy to complete random number generation. Once the key is generated, the program will run with its full performance.
 
 If the self-signed certificate takes a particularly long time to create on your system, you can elect to write the certificate to a file as documented above, and optionally do only that by setting the launch parameter to false, which is documented below. You could then launch the server with the generated certificate file as the parameter for the cert and key parameters, preventing long start times on systems with slow processors or entropy difficulties. Alternatively, you could have someone else generate a certificate for you with this program, then send it to you via a secure method of transfer. The final method would be using the certificate file included in this repository, though this may be less secure than the other methods outlined. This is no more secure than the official addon, which packages its own certificate rather than generating it.
-
-
-#### `-address`
-
-Address for the program to listen for incoming connections on in the form ip:port. By default, all addresses are used, and the server accepts connections on port 6837. This can be declared more than once.
-
-If you want to listen on an IPV6 address, the address must be surrounded by brackets. The address must also be on an interface for your computer. For example, this type of parameter can be used.
-
-`[fd80::ffe8]:6837`
-
-So long as that is a valid IPV6 address on one of your network interfaces, this example in the local prefix of IPV6 addresses, you will be able to listen for incoming connections to the server. To listen on only IPV6 addresses, use the following example.
-
-`[::]:6837`
-
-To listen on an IPV4 address, it's as simple as using a valid parameter such as the following example, which will listen on all IPV4 addresses only.
-
-`0.0.0.0:6837`
-
-The default port, if no address is declared, is 6837. Valid port numbers are between 1 and 65536. When declaring an address for the server to listen on, you must also declare a port, or the parameter will be invalid. You need not declare an address, however. For example, if you want to listen on all addresses, but use port 5000, use the following.
-
-`:5000`
 
 
 #### `-motd`
