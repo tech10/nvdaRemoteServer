@@ -13,4 +13,4 @@ COPY --from=build /app/nvdaRemoteServer /nvdaRemoteServer
 COPY --from=build /app/cert.pem /cert.pem
 
 EXPOSE 6837
-CMD ["/nvdaRemoteServer", "-cert", "/cert.pem", "-key", "/cert.pem"]
+CMD ["/nvdaRemoteServer", "-conf-read=false", "-cert", "/cert.pem", "-key", "/cert.pem"]
