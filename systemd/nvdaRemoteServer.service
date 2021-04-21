@@ -9,7 +9,7 @@ After=network.target
 Type=simple
 User=sample
 Group=sample
-ExecStart=/home/sample/bin/nvdaRemoteServer -cert /home/sample/nvdaRemoteServer/cert.crt -key /home/sample/nvdaRemoteServer/cert.key -loglevel=3
+ExecStart=/home/sample/bin/nvdaRemoteServer -cert-file /home/sample/nvdaRemoteServer/cert.crt -key-file /home/sample/nvdaRemoteServer/cert.key -log-level=3
 StandardOutput=append:/home/sample/nvdaRemoteServer/stdout.log
 StandardError=append:/home/sample/nvdaRemoteServer/stderr.log
 Restart=always
