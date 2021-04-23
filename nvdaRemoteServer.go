@@ -4,7 +4,6 @@ import (
 	"fmt"
 	. "github.com/tech10/nvdaRemoteServer/server"
 	"os"
-	"runtime/debug"
 	"strings"
 	"sync"
 )
@@ -15,15 +14,7 @@ func main() {
 	Version = strings.TrimPrefix(Version, "v")
 	args()
 	// Log panics
-	defer func() {
-		r := recover()
-		if r == nil {
-			return
-		}
-		Log_error("PANIC\n", r, "\n", string(debug.Stack()))
-		shutdown()
-		os.Exit(2)
-	}()
+	defer PanicHandle()
 
 	err := Configure()
 	if err != nil {
@@ -40,7 +31,7 @@ func main() {
 	PidfileSet()
 	Log(LOG_INFO, "Server started. Running under PID "+PID_STR+". Server version "+Version)
 	wait()
-	shutdown()
+	Shutdown()
 	Log(LOG_INFO, "Server shutdown complete.")
 }
 
@@ -70,8 +61,4 @@ func args() {
 	default:
 		return
 	}
-}
-
-func shutdown() {
-	PidfileClear()
 }
