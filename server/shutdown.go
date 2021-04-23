@@ -1,20 +1,16 @@
 package server
 
 import (
+	"github.com/tech10/panic_handler"
 	"os"
-	"runtime/debug"
 )
 
 func Shutdown() {
 	PidfileClear()
 }
 
-func PanicHandle() {
-	r := recover()
-	if r == nil {
-		return
-	}
-	Log_error("PANIC\n", r, "\n", string(debug.Stack()))
+var PanicHandle panic_handler.HandlerFunc = func(i *panic_handler.Info) {
+	Log_error("PANIC\n", i.String())
 	Shutdown()
 	os.Exit(2)
 }
