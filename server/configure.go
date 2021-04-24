@@ -89,6 +89,9 @@ func Configure() error {
 	Log(LOG_INFO, "Initializing configuration.")
 	c.LogWrite()
 
+	if c.panicString != "" {
+		os.Exit(2)
+	}
 	if cfg_err != nil {
 		os.Exit(1)
 	}
