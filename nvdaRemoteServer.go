@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	. "github.com/tech10/nvdaRemoteServer/server"
-	"github.com/tech10/panic_handler"
 	"os"
 	"strings"
 	"sync"
@@ -15,7 +14,7 @@ func main() {
 	Version = strings.TrimPrefix(Version, "v")
 	args()
 	// Log panics
-	defer panic_handler.Handle(PanicHandle)
+	defer PanicHandle.Catch()
 
 	err := Configure()
 	if err != nil {
