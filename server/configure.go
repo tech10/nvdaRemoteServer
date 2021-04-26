@@ -96,6 +96,8 @@ func Configure() error {
 		os.Exit(1)
 	}
 
+	defer PanicHandle.Catch()
+
 	generate := false
 	var config *tls.Config
 	var err error

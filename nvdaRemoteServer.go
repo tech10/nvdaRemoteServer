@@ -13,8 +13,6 @@ var Version string = "development"
 func main() {
 	Version = strings.TrimPrefix(Version, "v")
 	args()
-	// Log panics
-	defer PanicHandle.Catch()
 
 	err := Configure()
 	if err != nil {
@@ -28,6 +26,7 @@ func main() {
 		Log_error("No servers started. Shutting down.")
 		os.Exit(1)
 	}
+	defer PanicHandle.Catch()
 	PidfileSet()
 	Log(LOG_INFO, "Server started. Running under PID "+PID_STR+". Server version "+Version)
 	wait()
