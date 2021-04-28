@@ -22,6 +22,7 @@ func file_rewrite(file string, data []byte) error {
 	if err != nil {
 		return errors.New("Unable to write to the file " + file + "\n" + err.Error())
 	}
+	_ = w.Sync()
 	err = w.Close()
 	if err != nil {
 		return errors.New("The file at " + file + " was unable to close. Information may not have been written to it correctly.\n" + err.Error())
