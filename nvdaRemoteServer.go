@@ -14,9 +14,11 @@ func main() {
 	Version = strings.TrimPrefix(Version, "v")
 	args()
 
+	defer Log_close()
 	err := Configure()
 	if err != nil {
 		if Launch {
+			Log_close()
 			os.Exit(1)
 		}
 		return
@@ -24,6 +26,7 @@ func main() {
 	num := Start()
 	if num == 0 {
 		Log_error("No servers started. Shutting down.")
+		Log_close()
 		os.Exit(1)
 	}
 	defer PanicHandle.Catch()

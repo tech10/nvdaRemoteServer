@@ -11,6 +11,7 @@ var ll sync.Mutex
 
 var log_standard *log.Logger
 var log_error *log.Logger
+var log_file *os.File
 
 func Log(level int, msg ...interface{}) {
 	if level > loglevel {
@@ -47,4 +48,16 @@ func log_init(file string) {
 	}
 	log_standard = log.New(io.MultiWriter(os.Stdout, w), "", log.LstdFlags)
 	log_error = log.New(io.MultiWriter(os.Stderr, w), "[ERROR]: ", log.LstdFlags)
+	log_file = w
+}
+
+func Log_close() {
+	ll.Lock()
+	defer ll.Unlock()
+	if log_file == nil {
+		return
+	}
+	_ = log_file.Sync()
+	_ = log_file.Close()
+	log_file = nil
 }
