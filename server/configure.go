@@ -90,9 +90,11 @@ func Configure() error {
 	c.LogWrite()
 
 	if c.panicString != "" {
+		Log_close()
 		os.Exit(2)
 	}
 	if cfg_err != nil {
+		Log_close()
 		os.Exit(1)
 	}
 
