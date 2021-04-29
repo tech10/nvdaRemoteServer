@@ -117,22 +117,23 @@ func (c *Client) listen() {
 	defer c.s.Done()
 	defer RemoveClient(c)
 	defer c.Close()
+	idstr := strconv.Itoa(c.GetID())
 	for {
 		message, err := reader.ReadBytes(EndMessage)
 		if err != nil {
 			msl.Lock()
 			if !stoppingServers {
-				Log(LOG_DEBUG, "Error receiving message from client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
+				Log(LOG_DEBUG, "Error receiving message from client "+idstr+".\r\n"+err.Error()+"\r\nClosing connection.")
 			}
 			msl.Unlock()
 			return
 		}
 		if len(message) == 1 {
-			Log(LOG_DEBUG, "Received empty message from client "+strconv.Itoa(c.GetID()))
+			Log(LOG_DEBUG, "Received empty message from client "+idstr)
 			continue
 		}
 		c.t.Reset(time.Duration(ping_sec) * time.Second)
-		Log(LOG_PROTOCOL, "Data received from client "+strconv.Itoa(c.GetID())+"\r\n"+string(message))
+		Log(LOG_PROTOCOL, "Data received from client "+idstr+"\r\n"+string(message))
 		MessageReceived(c, message)
 	}
 }
