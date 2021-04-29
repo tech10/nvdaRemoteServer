@@ -34,6 +34,7 @@ type Server struct {
 var mctx context.Context
 var StopServers context.CancelFunc
 var msl sync.Mutex
+var stoppingServers bool = false
 
 func init() {
 	mctx, StopServers = context.WithCancel(context.Background())
@@ -84,7 +85,11 @@ func (s *Server) accept(listener net.Listener) {
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			Log(LOG_DEBUG, "Error accepting connections on the server at "+address+"\r\n"+err.Error()+"\r\nStopping server.")
+			msl.Lock()
+			if !stoppingServers {
+				Log(LOG_DEBUG, "Error accepting connections on the server at "+address+"\r\n"+err.Error()+"\r\nStopping server.")
+			}
+			msl.Unlock()
 			s.Stop()
 			break
 		}

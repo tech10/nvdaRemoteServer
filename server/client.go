@@ -120,7 +120,11 @@ func (c *Client) listen() {
 	for {
 		message, err := reader.ReadBytes(EndMessage)
 		if err != nil {
-			Log(LOG_DEBUG, "Error receiving message from client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
+			msl.Lock()
+			if !stoppingServers {
+				Log(LOG_DEBUG, "Error receiving message from client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
+			}
+			msl.Unlock()
 			return
 		}
 		if len(message) == 1 {
