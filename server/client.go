@@ -101,7 +101,6 @@ func (c *Client) listen() {
 		for {
 			select {
 			case <-c.ctx.Done():
-				Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" has received a signal to close.")
 				msl.Lock()
 				c.s.Lock()
 				c.t.Stop()
