@@ -26,6 +26,7 @@ type Client struct {
 	Close             context.CancelFunc
 	t                 *time.Ticker
 	s                 *Server
+	closed            bool
 }
 
 func (c *Client) ClearChannel() {
@@ -105,16 +106,17 @@ func (c *Client) listen() {
 				c.s.Lock()
 				c.t.Stop()
 				c.conn.Close()
-				RemoveClient(c)
+				c.closed = true
 				c.s.Unlock()
 				msl.Unlock()
-				c.s.Done()
 				return
 			case <-c.t.C:
 				c.Send(ping_msg)
 			}
 		}
 	}()
+	defer c.s.Done()
+	defer RemoveClient(c)
 	defer c.Close()
 	for {
 		message, err := reader.ReadBytes(EndMessage)
@@ -136,6 +138,10 @@ func (c *Client) listen() {
 func (c *Client) Send(b []byte) {
 	c.Lock()
 	EndMessage := c.messageTerminator
+	if c.closed {
+		c.Unlock()
+		return
+	}
 	c.Unlock()
 	if len(b) == 0 {
 		return

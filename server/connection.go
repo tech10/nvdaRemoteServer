@@ -95,6 +95,7 @@ func (s *Server) accept(listener net.Listener) {
 			ip:                getIP(conn),
 			s:                 s,
 			messageTerminator: s.messageTerminator,
+			closed:            false,
 		}
 		client.ctx, client.Close = context.WithCancel(s.ctx)
 		s.Add(1)
