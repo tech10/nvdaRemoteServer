@@ -78,7 +78,11 @@ func (s *Server) accept(listener net.Listener) {
 	// Stopping our server.
 	go func() {
 		<-s.ctx.Done()
-		Log(LOG_DEBUG, "The server at "+address+" has received a signal to stop.")
+		msl.Lock()
+		if !stoppingServers {
+			Log(LOG_DEBUG, "The server at "+address+" has received a signal to stop.")
+		}
+		msl.Unlock()
 		listener.Close()
 		s.Done()
 	}()
