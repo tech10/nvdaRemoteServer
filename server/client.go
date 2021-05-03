@@ -2,6 +2,7 @@ package server
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"net"
 	"strconv"
@@ -133,6 +134,7 @@ func (c *Client) listen() {
 			continue
 		}
 		c.t.Reset(time.Duration(ping_sec) * time.Second)
+		message = bytes.TrimRight(message, string(EndMessage))
 		Log(LOG_PROTOCOL, "Data received from client "+idstr+"\r\n"+string(message))
 		MessageReceived(c, message)
 	}
@@ -150,7 +152,7 @@ func (c *Client) Send(b []byte) {
 	if len(b) == 0 {
 		return
 	}
-	Log(LOG_PROTOCOL, "Data sending to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
+	Log(LOG_PROTOCOL, "Data sent to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
 	num, err := c.conn.Write(append(b, EndMessage))
 	if err != nil {
 		Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
