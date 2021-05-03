@@ -144,6 +144,26 @@ func Configure() error {
 	config.MaxVersion = tls.VersionTLS12
 	config.InsecureSkipVerify = true
 
+	if loglevel < LOG_SILENT {
+		loglevel = LOG_SILENT
+		Log(LOG_INFO, "Log level is less than silent log value, resetting to "+strconv.Itoa(LOG_SILENT))
+	}
+	if loglevel > LOG_PROTOCOL {
+		loglevel = LOG_PROTOCOL
+		Log(LOG_INFO, "Log level is greater than protocol log value, resetting to "+strconv.Itoa(LOG_PROTOCOL))
+	}
+
+	if loglevel == LOG_PROTOCOL {
+		Log(LOG_INFO, "Protocol logging is enabled. The server message of the day will be set to display always, and if unset, will have a value added to it that will alert all users connecting that protocol logging is enabled.")
+		protocollogmotd := "WARNING!\nAll server information is being logged, including the protocol being used. This server is running in an insecure mode for production."
+		if motd == "" {
+			motd = protocollogmotd
+		} else {
+			motd = protocollogmotd + motd
+		}
+		motdAlwaysDisplay = true
+	}
+
 	if !default_motd(motd) {
 		logstr := "The server will display the following message of the day:\r\n" + motd
 		if default_motd_always_display(motdAlwaysDisplay) {
