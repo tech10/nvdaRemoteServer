@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"errors"
+	"io"
 	"net"
 	"strconv"
 	"sync"
@@ -124,7 +126,11 @@ func (c *Client) listen() {
 		if err != nil {
 			msl.Lock()
 			if !stoppingServers {
-				Log(LOG_DEBUG, "Error receiving message from client "+idstr+".\r\n"+err.Error()+"\r\nClosing connection.")
+				if !c.closed {
+					if !errors.Is(err, io.EOF) {
+						Log(LOG_DEBUG, "Error receiving message from client "+idstr+".\r\n"+err.Error()+"\r\nClosing connection.")
+					}
+				}
 			}
 			msl.Unlock()
 			return
