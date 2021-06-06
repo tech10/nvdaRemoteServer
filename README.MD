@@ -17,13 +17,6 @@ The original server for the addon is written in [Python,](https://www.python.org
 My goals for this project are to create a stable server for the NVDARemote addon, which will be fast and have an efficient memory footprint. Configuration of the program will be done through the command line. Any log output can easily be redirected by the various facilities across operating systems, so a log file wouldn't need to be implemented by the program.
 
 
-# Notes on current usage
-
-Any command line flags used by the program are not garanteed to remain the same until a 1.0 release. As I am still developing features for this server, the current command line flags may not remain completely compatible with a future version. Those I am satisfied with are likely to remain the same, but those which could have more flexibility may be changed.
-
-Keep an eye on the changelog for future releases. Any breaking changes will be clearly indicated there on the first release that introduces the change. If you encounter a breaking change, review this readme file and see what's changed in the usage parameters.
-
-
 # Downloading / installation
 
 ## Go
