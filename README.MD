@@ -5,7 +5,7 @@ Welcome to the server for the NVDARemote addon, written in the [Go programming l
 The original server for the addon is written in [Python,](https://www.python.org/) which works well enough under most circumstances. However, there were a few reasons why I wanted to write the server in Go.
 
 - Performance. Go can be much faster than Python if you write your program properly.
-- Automatic generation of the self-signed certificate, if desired. Both the addon and the server utalize self-signed SSL certificates, and the addon doesn't verify a certificate's authenticity before connecting. Therefore, I wanted a program that would automatically generate the needed certificate, store it in memory, and use it until the program is terminated.
+- Automatic generation of the self-signed certificate, if desired. Both the addon and the server utalize self-signed SSL certificates, and the addon originally didn't verify a certificate's authenticity before connecting. This has since been updated. I wanted a program that would automatically generate the needed certificate, store it in memory, and use it until the program is terminated.
 - Less memory should be used by the Go program.
 - Easy to compile on other operating systems without changing the code base much, if at all.
 - Can be compiled into a static, position-independent binary if desired, for use across systems using different libraries.
@@ -206,7 +206,7 @@ When the program generates its own self-signed certificate, you can optionally w
 
 ##### Notes on self-signed certificate generation
 
-The certificate that this program generates will allow for secure verification. However, like the certificate packaged by the addon, you can't verify it by using any certificate authority. If this changes in the addon and it requires certificate verification in the future, a certificate, key, and a root certificate authority file will be required for the server to use. The client would then require the appropriate files to verify the certificate is valid, unless you get a certificate from Letsencrypt, or another certificate authority.
+The certificate that this program generates will allow for secure verification. However, like the certificate packaged by the addon, you can't verify it by using any certificate authority. If you know that you have generated the certificate, you can allow the addon to connect by trusting its fingerprint. Alternatively, you could get a verified certificate from Letsencrypt, or another certificate authority and use that, as the addon will make sure the certificate can be verified as secure.
 
 To generate the certificate, the program will use a source of random entropy that is cryptographically secure. This can be a problem on servers that are headless, meaning you access them remotely only. However, daemons such as Haveged exist to provide your system with available entropy that can be utalized.
 
