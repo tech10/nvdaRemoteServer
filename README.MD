@@ -72,7 +72,7 @@ $ docker run --network host ghcr.io/tech10/nvdaremoteserver-docker:v1.0.0
 
 #### Docker Hub
 
-Automatically built images are now available on [Docker Hub.](https://hub.docker.com) Here is an example to pull the latest image and run it.
+Images are available on [Docker Hub.](https://hub.docker.com) They are not automatically built as they once were, due to that feature leaving free accounts on June 18, 2021. The images may not be as up to date as those on GitHub. Here is an example to pull the latest image and run it.
 
 ```console
 $ docker pull tech10/nvdaremoteserver
