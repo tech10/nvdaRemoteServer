@@ -19,6 +19,33 @@ My goals for this project are to create a stable server for the NVDARemote addon
 
 # Downloading / installation
 
+## Binary releases
+
+On the [releases](https://github.com/tech10/nvdaRemoteServer/releases) page, there are compiled binaries for various operating systems and architectures that Go supports. I have made an effort to ensure each binary is a completely static build, and thus, not dependent on any libraries that may or may not be used in different operating systems upon which the program can be run. Since there are numerous systems and configurations available for use, the download and installation of the server's binary builds won't be completely covered in this documentation.
+
+Some basic instructions to download and use the binary on Linux using a x86_64 architecture would be the following, for example.
+
+```console
+# Assume wget is installed.
+# First, download the latest archive.
+$ wget https://github.com/tech10/nvdaRemoteServer/releases/latest/download/nvdaRemoteServer_Linux_x86_64.tar.gz
+# Use tar to extract the archive and change to the directory.
+$ tar -axf ./nvdaRemoteServer_Linux_x86_64.tar.gz
+$ cd ./nvdaRemoteServer_Linux_x86_64
+# Copy the binary to the users bin directory, for example.
+$ cp -a ./nvdaRemoteServer ~/bin/
+# Clean up after yourself by removing what you don't need.
+$ cd ../
+$ rm -r ./nvdaRemoteServer_Linux_x86_64*
+```
+
+A sample systemd service file is also available within the archive, which is for use on systems using systemd. Configuration of systemd with this server is outside the scope of this documentation, as there are numerous configurations available for use with systemd.
+
+### Note on creating packaged releases
+
+There are currently no packaged releases of this program, requiring manual installation. If this server is packaged into a release that can be easily installed on an operating system, please include the license along with the binary.
+
+
 ## Go
 
 With the latest version of Go installed, use the following command.
