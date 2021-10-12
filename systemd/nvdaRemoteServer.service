@@ -14,6 +14,7 @@ StandardOutput=append:/home/sample/nvdaRemoteServer/stdout.log
 StandardError=append:/home/sample/nvdaRemoteServer/stderr.log
 Restart=always
 RestartSec=10s
+TimeoutStopSec=10s
 
 [Install]
 WantedBy=multi-user.target
