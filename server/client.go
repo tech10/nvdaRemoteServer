@@ -109,8 +109,10 @@ func (c *Client) listen() {
 				msl.Lock()
 				c.s.Lock()
 				c.t.Stop()
+				c.Lock()
 				c.conn.Close()
 				c.closed = true
+				c.Unlock()
 				c.s.Unlock()
 				msl.Unlock()
 				return
@@ -128,11 +130,13 @@ func (c *Client) listen() {
 		if err != nil {
 			msl.Lock()
 			if !stoppingServers {
+				c.Lock()
 				if !c.closed {
 					if !errors.Is(err, io.EOF) {
 						Log(LOG_DEBUG, "Error receiving message from client "+idstr+".\r\n"+err.Error()+"\r\nClosing connection.")
 					}
 				}
+				c.Unlock()
 			}
 			msl.Unlock()
 			return
