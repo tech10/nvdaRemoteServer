@@ -16,6 +16,8 @@ var ping_msg = []byte(`{"type":"ping"}`)
 
 const ping_sec int = 120
 
+const write_sec int = 8
+
 type Client struct {
 	sync.Mutex
 	conn              net.Conn
@@ -159,6 +161,7 @@ func (c *Client) Send(b []byte) {
 		return
 	}
 	Log(LOG_PROTOCOL, "Data sent to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
+	_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(write_sec) * time.Second))
 	num, err := c.conn.Write(append(b, EndMessage))
 	if err != nil {
 		Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
