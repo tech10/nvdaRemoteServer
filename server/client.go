@@ -59,8 +59,8 @@ func (c *Client) GetID() int {
 }
 
 func (c *Client) SetID(id int) {
-	c.Lock()
 	defer c.Unlock()
+	c.Lock()
 	c.id = id
 }
 
