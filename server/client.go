@@ -154,28 +154,27 @@ func (c *Client) listen() {
 
 // Send bytes to client
 func (c *Client) Send(b []byte) {
-	go func() {
-		defer c.Unlock()
-		c.Lock()
-		EndMessage := c.messageTerminator
-		if c.closed {
-			return
-		}
-		if len(b) == 0 {
-			return
-		}
-		Log(LOG_PROTOCOL, "Data sent to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
-		_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(write_sec) * time.Second))
-		num, err := c.conn.Write(append(b, EndMessage))
-		if err != nil {
-			Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
-			c.Close()
-			return
-		}
-		if num < len(b)+1 {
-			Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b)+1)+" bytes sent. Closing connection.")
-			c.Close()
-			return
-		}
-	}()
+	c.Lock()
+	EndMessage := c.messageTerminator
+	if c.closed {
+		c.Unlock()
+		return
+	}
+	c.Unlock()
+	if len(b) == 0 {
+		return
+	}
+	Log(LOG_PROTOCOL, "Data sent to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
+	_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(write_sec) * time.Second))
+	num, err := c.conn.Write(append(b, EndMessage))
+	if err != nil {
+		Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
+		c.Close()
+		return
+	}
+	if num < len(b)+1 {
+		Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b)+1)+" bytes sent. Closing connection.")
+		c.Close()
+		return
+	}
 }
