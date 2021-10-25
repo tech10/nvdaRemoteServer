@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"strconv"
+	"time"
 )
 
 var command = make(map[string]func(*Client, *Data))
@@ -97,6 +98,7 @@ func init() {
 		}
 		c.Send(enc)
 		Log(LOG_DEBUG, "Client "+strconv.Itoa(c.GetID())+" has generated a key: "+key)
+		time.Sleep(time.Second)
 		c.Close()
 	})
 
