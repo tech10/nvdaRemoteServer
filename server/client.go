@@ -32,6 +32,7 @@ type Client struct {
 	t                 *time.Ticker
 	s                 *Server
 	closed            bool
+	sd                chan []byte
 }
 
 func (c *Client) ClearChannel() {
@@ -94,13 +95,35 @@ func (c *Client) SetVersion(version int) {
 	c.version = version
 }
 
-// Read client data from channel
+// Handle client data
 func (c *Client) listen() {
 	c.Lock()
 	c.t = time.NewTicker(time.Duration(ping_sec) * time.Second)
 	reader := bufio.NewReader(c.conn)
 	EndMessage := c.messageTerminator
 	c.Unlock()
+	// Send data to client.
+	c.sd = make(chan []byte, 100)
+	go func() {
+		for b := range c.sd {
+			if len(b) == 0 {
+				c.Close()
+				return
+			}
+			_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(write_sec) * time.Second))
+			num, err := c.conn.Write(append(b, EndMessage))
+			if err != nil {
+				Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
+				c.Close()
+				return
+			}
+			if num < len(b)+1 {
+				Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b)+1)+" bytes sent. Closing connection.")
+				c.Close()
+				return
+			}
+		}
+	}()
 	// Stopping and pinging our client
 	go func() {
 		for {
@@ -112,6 +135,7 @@ func (c *Client) listen() {
 				c.Lock()
 				c.conn.Close()
 				c.closed = true
+				close(c.sd)
 				c.Unlock()
 				c.s.Unlock()
 				msl.Unlock()
@@ -154,8 +178,12 @@ func (c *Client) listen() {
 
 // Send bytes to client
 func (c *Client) Send(b []byte) {
+	defer func() {
+		if r := recover(); r != nil {
+			c.Close()
+		}
+	}()
 	c.Lock()
-	EndMessage := c.messageTerminator
 	if c.closed {
 		c.Unlock()
 		return
@@ -165,16 +193,5 @@ func (c *Client) Send(b []byte) {
 		return
 	}
 	Log(LOG_PROTOCOL, "Data sent to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
-	_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(write_sec) * time.Second))
-	num, err := c.conn.Write(append(b, EndMessage))
-	if err != nil {
-		Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
-		c.Close()
-		return
-	}
-	if num < len(b)+1 {
-		Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b)+1)+" bytes sent. Closing connection.")
-		c.Close()
-		return
-	}
+	c.sd <- b
 }
