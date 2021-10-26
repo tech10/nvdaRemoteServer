@@ -94,11 +94,11 @@ func RemoveChannel(name string) {
 
 func MessageReceived(c *Client, pmsg []byte) {
 	var err error
+	id := c.GetID()
 	if !FindClient(c) {
-		Log_error("A client object was not found from the connection receiving a message, number " + strconv.Itoa(c.GetID()) + ". Unexpected behavior encountered. Closing connection.")
+		Log_error("A client object was not found from the connection receiving a message, number " + strconv.Itoa(id) + ". Unexpected behavior encountered. Closing connection.")
 		runtime.Goexit()
 	}
-	id := c.GetID()
 	cc := c.GetChannel()
 	if cc != nil {
 		if sendOrigin {
