@@ -101,6 +101,7 @@ func (c *Client) listen() {
 	c.t = time.NewTicker(time.Duration(ping_sec) * time.Second)
 	reader := bufio.NewReader(c.conn)
 	EndMessage := c.messageTerminator
+	idstr := strconv.Itoa(c.id)
 	c.Unlock()
 	// Send data to client.
 	c.sd = make(chan []byte, 100)
@@ -110,15 +111,16 @@ func (c *Client) listen() {
 				c.Close()
 				return
 			}
+			Log(LOG_PROTOCOL, "Data sent to client "+idstr+"\r\n"+string(b))
 			_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(write_sec) * time.Second))
 			num, err := c.conn.Write(append(b, EndMessage))
 			if err != nil {
-				Log(LOG_DEBUG, "Error sending message to client "+strconv.Itoa(c.GetID())+".\r\n"+err.Error()+"\r\nClosing connection.")
+				Log(LOG_DEBUG, "Error sending message to client "+idstr+".\r\n"+err.Error()+"\r\nClosing connection.")
 				c.Close()
 				return
 			}
 			if num < len(b)+1 {
-				Log(LOG_DEBUG, "Error sending data to client "+strconv.Itoa(c.GetID())+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b)+1)+" bytes sent. Closing connection.")
+				Log(LOG_DEBUG, "Error sending data to client "+idstr+". There were "+strconv.Itoa(num)+" bytes sent to the client, but the client should have been sent "+strconv.Itoa(len(b)+1)+" bytes. Closing connection.")
 				c.Close()
 				return
 			}
@@ -148,7 +150,6 @@ func (c *Client) listen() {
 	defer c.s.Done()
 	defer RemoveClient(c)
 	defer c.Close()
-	idstr := strconv.Itoa(c.GetID())
 	for {
 		message, err := reader.ReadBytes(EndMessage)
 		if err != nil {
@@ -192,6 +193,5 @@ func (c *Client) Send(b []byte) {
 	if len(b) == 0 {
 		return
 	}
-	Log(LOG_PROTOCOL, "Data sent to client "+strconv.Itoa(c.GetID())+"\r\n"+string(b))
 	c.sd <- b
 }
