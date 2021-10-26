@@ -124,6 +124,7 @@ func (c *Client) listen() {
 				c.Close()
 				return
 			}
+			c.t.Reset(time.Duration(ping_sec) * time.Second)
 		}
 	}()
 	// Stopping and pinging our client
@@ -170,7 +171,6 @@ func (c *Client) listen() {
 			Log(LOG_DEBUG, "Received empty message from client "+idstr)
 			continue
 		}
-		c.t.Reset(time.Duration(ping_sec) * time.Second)
 		message = bytes.TrimRight(message, string(EndMessage))
 		Log(LOG_PROTOCOL, "Data received from client "+idstr+"\r\n"+string(message))
 		MessageReceived(c, message)
