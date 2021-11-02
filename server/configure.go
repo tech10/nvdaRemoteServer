@@ -140,9 +140,7 @@ func Configure() error {
 		}
 	}
 
-	config.PreferServerCipherSuites = false
-	config.MaxVersion = tls.VersionTLS12
-	config.InsecureSkipVerify = true
+	config.MinVersion = tls.VersionTLS12
 
 	if loglevel < LOG_SILENT {
 		loglevel = LOG_SILENT
