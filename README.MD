@@ -41,6 +41,7 @@ $ rm -r ./nvdaRemoteServer_Linux_x86_64*
 
 A sample systemd service file is also available within the archive, which is for use on systems using systemd. Configuration of systemd with this server is outside the scope of this documentation, as there are numerous configurations available for use with systemd.
 
+
 ### Note on creating packaged releases
 
 There are currently no packaged releases of this program, requiring manual installation. If this server is packaged into a release that can be easily installed on an operating system, please include the license along with the binary.
@@ -297,6 +298,15 @@ $ nvdaRemoteServer version
 development
 $ 
 ```
+
+
+# Extra Features
+
+This server has a few extra features that the official addon and server do not support at the moment. This list is subject to change as the addon changes.
+
+- The official server sends all data that one connected client sends, to all other connected clients. It relies upon the addon to determine whether or not a computer needs to be controlled. This server will determine if a computer is a controller (master, or a computer being controlled (slave). If a computer is a master, any sent data is only sent to all other connected slaves. If the computer is a slave, any sent data is only sent to all other masters.
+- This server can optionally send no origin field, which may result in unexpected behavior, depending on whether or not the origin field is used for anything in the future.
+- This server uses the nvda_not_connected type in the protocol, which is included in the addon, but not used in any way by the official server. If you are a master and no slaves are connected to control, the server will send this type to you, which will then instruct NVDA to tell you that NVDA Remote is not connected. This can be useful feedback if you have no idea whether or not a client is actually connected to control.
 
 
 # Statistics
