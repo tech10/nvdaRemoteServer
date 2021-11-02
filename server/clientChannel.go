@@ -3,6 +3,7 @@ package server
 import (
 	"sort"
 	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -12,6 +13,22 @@ type ClientChannel struct {
 	ClientsAll    map[int]*Client
 	ClientsMaster map[int]*Client
 	ClientsSlave  map[int]*Client
+	locked        bool
+}
+
+func (c *ClientChannel) Lmotd(ctype string) string {
+	msg := "This is a locked channel."
+	switch ctype {
+	case "slave":
+		msg = msg + " No one will be able to control your computer."
+	case "master":
+		msg = msg + " You won't be able to control any computers on this channel."
+	}
+	if !c.locked {
+		return ""
+	} else {
+		return msg
+	}
 }
 
 func (c *ClientChannel) Add(client *Client) {
@@ -20,6 +37,7 @@ func (c *ClientChannel) Add(client *Client) {
 	id := client.GetID()
 	connection := client.GetConnectionType()
 	clients := c.ClientsAll
+	lmotd := c.Lmotd(connection)
 	switch connection {
 	case "master":
 		_, exists := c.ClientsMaster[id]
@@ -91,11 +109,19 @@ func (c *ClientChannel) Add(client *Client) {
 	if encerr == nil {
 		client.Send(enc)
 	}
-	if motd != "" {
+	if motd != "" || lmotd != "" {
 		mdb := Data{
 			Type:              "motd",
 			Motd:              motd,
 			MotdAlwaysDisplay: motdAlwaysDisplay,
+		}
+		if lmotd != "" {
+			if mdb.Motd == "" {
+				mdb.Motd = lmotd
+			} else {
+				mdb.Motd = lmotd + "\n" + mdb.Motd
+			}
+			mdb.MotdAlwaysDisplay = true
 		}
 		enc, encerr = Encode(mdb)
 		if encerr == nil {
@@ -198,6 +224,7 @@ func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
 	connection := client.GetConnectionType()
 	var clients map[int]*Client
 	c.Lock()
+	locked := c.locked
 	switch connection {
 	case "master":
 		clients = c.ClientsSlave
@@ -211,6 +238,9 @@ func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
 		if connection == "master" {
 			client.Send([]byte("{\"type\":\"nvda_not_connected\"}"))
 		}
+		return
+	}
+	if connection == "master" && locked {
 		return
 	}
 	for _, sc := range clients {
@@ -233,6 +263,11 @@ func NewClientChannel(name string, client *Client) *ClientChannel {
 		ClientsAll:    make(map[int]*Client),
 		ClientsMaster: make(map[int]*Client),
 		ClientsSlave:  make(map[int]*Client),
+	}
+	if strings.HasPrefix(name, "lock_") {
+		c.locked = true
+	} else {
+		c.locked = false
 	}
 	c.Add(client)
 	return c

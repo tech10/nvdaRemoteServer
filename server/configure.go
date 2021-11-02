@@ -157,7 +157,7 @@ func Configure() error {
 		if motd == "" {
 			motd = protocollogmotd
 		} else {
-			motd = protocollogmotd + motd
+			motd = protocollogmotd + "\n" + motd
 		}
 		motdAlwaysDisplay = true
 	}
