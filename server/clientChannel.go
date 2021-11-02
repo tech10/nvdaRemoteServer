@@ -22,7 +22,7 @@ func (c *ClientChannel) Lmotd(ctype string) string {
 	case "slave":
 		msg = msg + " No one will be able to control your computer."
 	case "master":
-		msg = msg + " You won't be able to control any computers on this channel."
+		msg = msg + " You won't be able to control any computers connected to this channel."
 	}
 	if !c.locked {
 		return ""
