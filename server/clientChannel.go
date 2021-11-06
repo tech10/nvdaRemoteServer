@@ -31,7 +31,7 @@ func (c *ClientChannel) Lmotd(ctype, name, password string) string {
 		if (c.password != "" && password != c.password) || (c.password == "") {
 			msg += "You won't be able to control any computers connected to this channel."
 		}
-		if c.password == password {
+		if c.password == password && c.password != "" {
 			msg += "You are authorized to control any computer connected to this channel. Authorized with password " + password
 		}
 	}
@@ -46,9 +46,15 @@ func (c *ClientChannel) Add(client *Client, password string) {
 	defer c.Unlock()
 	c.Lock()
 	auth := false
+	client.SetAuthorized(false)
 	id := client.GetID()
 	connection := client.GetConnectionType()
-	if c.password == "" || password == c.password {
+	if c.locked {
+		if password == c.password && c.password != "" {
+			client.SetAuthorized(true)
+			auth = true
+		}
+	} else {
 		client.SetAuthorized(true)
 		auth = true
 	}
