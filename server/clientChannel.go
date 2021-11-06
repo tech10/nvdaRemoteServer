@@ -10,19 +10,31 @@ import (
 type ClientChannel struct {
 	sync.Mutex
 	name          string
+	password      string
+	locked        bool
 	ClientsAll    map[int]*Client
 	ClientsMaster map[int]*Client
 	ClientsSlave  map[int]*Client
-	locked        bool
 }
 
-func (c *ClientChannel) Lmotd(ctype string) string {
+func (c *ClientChannel) Lmotd(ctype, password string) string {
 	msg := "This is a locked channel."
 	switch ctype {
 	case "slave":
-		msg = msg + " No one will be able to control your computer."
+		msg += " No one will be able to control your computer"
+		if c.password != "" {
+			msg += " unless they authenticate with the password " + c.password
+		} else {
+			msg += "."
+		}
 	case "master":
-		msg = msg + " You won't be able to control any computers connected to this channel."
+		msg += " "
+		if (c.password != "" && password != c.password) || (c.password == "") {
+			msg += "You won't be able to control any computers connected to this channel."
+		}
+		if c.password == password {
+			msg += "You are authorized to control any computer connected to this channel."
+		}
 	}
 	if !c.locked {
 		return ""
@@ -31,13 +43,18 @@ func (c *ClientChannel) Lmotd(ctype string) string {
 	}
 }
 
-func (c *ClientChannel) Add(client *Client) {
+func (c *ClientChannel) Add(client *Client, password string) {
 	defer c.Unlock()
 	c.Lock()
+	auth := false
 	id := client.GetID()
 	connection := client.GetConnectionType()
+	if c.password == "" || password == c.password {
+		client.SetAuthorized(true)
+		auth = true
+	}
 	clients := c.ClientsAll
-	lmotd := c.Lmotd(connection)
+	lmotd := c.Lmotd(connection, password)
 	switch connection {
 	case "master":
 		_, exists := c.ClientsMaster[id]
@@ -130,7 +147,12 @@ func (c *ClientChannel) Add(client *Client) {
 	}
 	logstr := "Client " + strconv.Itoa(id) + " has joined channel " + c.name
 	if connection != "" {
-		logstr += " as a " + connection
+		logstr += " as a " + connection + ". "
+		if auth {
+			logstr += "This client is authorized to control other computers"
+		} else {
+			logstr += "This client is not authorized to control other computers"
+		}
 	}
 	Log(LOG_CHANNEL, logstr+".")
 }
@@ -223,8 +245,8 @@ func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
 	}
 	connection := client.GetConnectionType()
 	var clients map[int]*Client
+	auth := client.GetAuthorized()
 	c.Lock()
-	locked := c.locked
 	switch connection {
 	case "master":
 		clients = c.ClientsSlave
@@ -240,7 +262,7 @@ func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
 		}
 		return
 	}
-	if connection == "master" && locked {
+	if connection == "master" && !auth {
 		return
 	}
 	for _, sc := range clients {
@@ -257,18 +279,38 @@ func (c *ClientChannel) Name() string {
 	return c.name
 }
 
-func NewClientChannel(name string, client *Client) *ClientChannel {
+func NewClientChannel(name, password string, locked bool, client *Client) *ClientChannel {
 	c := &ClientChannel{
 		name:          name,
+		locked:        locked,
+		password:      password,
 		ClientsAll:    make(map[int]*Client),
 		ClientsMaster: make(map[int]*Client),
 		ClientsSlave:  make(map[int]*Client),
 	}
-	if strings.HasPrefix(name, "lock_") {
-		c.locked = true
-	} else {
-		c.locked = false
-	}
-	c.Add(client)
+	c.Add(client, password)
 	return c
+}
+
+func getChannelParams(name string) (string, string, bool) {
+	password := ""
+	locked := false
+	fl := "lock_"
+	fp := "__password__"
+	li := strings.Index(name, fl)
+	pi := strings.Index(name, fp)
+	if li == -1 && pi == -1 {
+		return name, password, locked
+	}
+	if li == 0 {
+		name = name[len(fl):]
+		locked = true
+		pi = strings.Index(name, fp)
+	}
+	if pi > 0 {
+		password = name[(pi + len(fp)):]
+		name = name[:pi]
+		locked = true
+	}
+	return name, password, locked
 }

@@ -27,6 +27,7 @@ type Client struct {
 	version           int
 	ip                string
 	c                 *ClientChannel
+	auth              bool
 	ctx               context.Context
 	Close             context.CancelFunc
 	t                 *time.Ticker
@@ -63,6 +64,18 @@ func (c *Client) SetID(id int) {
 	defer c.Unlock()
 	c.Lock()
 	c.id = id
+}
+
+func (c *Client) GetAuthorized() bool {
+	defer c.Unlock()
+	c.Lock()
+	return c.auth
+}
+
+func (c *Client) SetAuthorized(auth bool) {
+	defer c.Unlock()
+	c.Lock()
+	c.auth = auth
 }
 
 func (c *Client) GetIP() string {

@@ -44,6 +44,9 @@ func init() {
 				return
 			}
 		}
+		password := ""
+		locked := false
+		db.Channel, password, locked = getChannelParams(db.Channel)
 		if db.Channel == "" {
 			enc, encerr := Encode(Data{
 				Type:  "error",
@@ -61,10 +64,10 @@ func init() {
 		c.SetConnectionType(db.ConnectionType)
 		cc := FindChannel(db.Channel)
 		if cc != nil {
-			cc.Add(c)
+			cc.Add(c, password)
 			return
 		}
-		AddChannel(db.Channel, c)
+		AddChannel(db.Channel, password, locked, c)
 	})
 
 	cmd_add("protocol_version", func(c *Client, db *Data) {

@@ -53,14 +53,23 @@ func RemoveClient(c *Client) {
 	}
 }
 
-func AddChannel(name string, c *Client) {
+func AddChannel(name, password string, locked bool, c *Client) {
 	sl.Lock()
 	defer sl.Unlock()
 	if channels == nil {
 		channels = make(map[string]*ClientChannel)
 	}
-	Log(LOG_CHANNEL, "Channel "+name+" has been created.")
-	cc := NewClientChannel(name, c)
+	logstr := "Channel " + name + " has been created."
+	if locked {
+		logstr += " This is a locked channel. "
+		if password != "" {
+			logstr += "Clients can control a computer with the password " + password
+		} else {
+			logstr += "No computers can be controlled on this channel."
+		}
+	}
+	Log(LOG_CHANNEL, logstr)
+	cc := NewClientChannel(name, password, locked, c)
 	channels[name] = cc
 }
 
