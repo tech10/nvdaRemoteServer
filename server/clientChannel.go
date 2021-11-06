@@ -17,18 +17,17 @@ type ClientChannel struct {
 	ClientsSlave  map[int]*Client
 }
 
-func (c *ClientChannel) Lmotd(ctype, password string) string {
-	msg := "This is a locked channel."
+func (c *ClientChannel) Lmotd(ctype, name, password string) string {
+	msg := "This is a locked channel. Name: " + name + "\n"
 	switch ctype {
 	case "slave":
-		msg += " No one will be able to control your computer"
+		msg += "No one will be able to control your computer"
 		if c.password != "" {
 			msg += " unless they authenticate with the password " + c.password
 		} else {
 			msg += "."
 		}
 	case "master":
-		msg += " "
 		if (c.password != "" && password != c.password) || (c.password == "") {
 			msg += "You won't be able to control any computers connected to this channel."
 		}
@@ -54,7 +53,7 @@ func (c *ClientChannel) Add(client *Client, password string) {
 		auth = true
 	}
 	clients := c.ClientsAll
-	lmotd := c.Lmotd(connection, password)
+	lmotd := c.Lmotd(connection, c.name, password)
 	switch connection {
 	case "master":
 		_, exists := c.ClientsMaster[id]
