@@ -33,7 +33,7 @@ func (c *ClientChannel) Lmotd(ctype, password string) string {
 			msg += "You won't be able to control any computers connected to this channel."
 		}
 		if c.password == password {
-			msg += "You are authorized to control any computer connected to this channel."
+			msg += "You are authorized to control any computer connected to this channel. Authorized with password " + password
 		}
 	}
 	if !c.locked {
