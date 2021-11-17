@@ -3,11 +3,17 @@
 # This assumes you have tar on your system, installed the binary into /usr/bin, have sudo rights,
 # and are using systemd for your daemon manager. This will automatically download the latest release.
 # Modify the appropriate variables for your system, and commands, if needed.
-. ./functions.sh
 binary="nvdaRemoteServer"
 os="Linux"
 arch="x86_64"
 program="${binary}_${os}_${arch}"
+check() {
+eval $@
+if [ $? -ne 0 ]; then
+echo "Command $1 failed to execute."
+exit 10
+fi
+}
 echo Checking version.
 version=$(check ${binary} version)
 echo Current version ${version}
