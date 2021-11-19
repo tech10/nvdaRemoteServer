@@ -47,6 +47,8 @@ func Configure() error {
 	PID = os.Getpid()
 	PID_STR = strconv.Itoa(PID)
 
+	flag.CommandLine.SetOutput(os.Stdout)
+
 	flag.BoolVar(&createDir, "create", DEFAULT_CREATE_DIR, "Create directories upon any operation involving files being written to, or the working directory being changed.")
 
 	flag.StringVar(&confFile, "conf-file", DEFAULT_CONF_FILE, "Path to a configuration file. If the configuration file does not exist, or there is an error reading the configuration file, the program will fall back to command line parameters.")
