@@ -53,10 +53,16 @@ func gen_cert() (*tls.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	mpk, merr := x509.MarshalPKCS8PrivateKey(priv)
+	if merr != nil {
+		return nil, merr
+	}
+
 	certPrivKeyPEM := new(bytes.Buffer)
 	err = pem.Encode(certPrivKeyPEM, &pem.Block{
 		Type:  "RSA PRIVATE KEY",
-		Bytes: x509.MarshalPKCS1PrivateKey(priv),
+		Bytes: mpk,
 	})
 	if err != nil {
 		return nil, err
