@@ -2,8 +2,9 @@ package server
 
 import (
 	"bytes"
+	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/rand"
-	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
@@ -14,11 +15,7 @@ import (
 
 // Generate a self-signed certificate as long as the server is running
 func serial_number() *big.Int {
-	serial_num, serial_err := rand.Int(rand.Reader, big.NewInt(999999999999))
-	if serial_err != nil {
-		return big.NewInt(345098734305)
-	}
-	return serial_num
+	return big.NewInt(time.Now().UnixNano())
 }
 
 func gen_cert() (*tls.Config, error) {
@@ -36,7 +33,7 @@ func gen_cert() (*tls.Config, error) {
 		BasicConstraintsValid: true,
 		IsCA:                  true,
 	}
-	priv, err := rsa.GenerateKey(rand.Reader, 4096)
+	priv, err := ecdsa.GenerateKey(elliptic.P521(), rand.Reader)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +58,7 @@ func gen_cert() (*tls.Config, error) {
 
 	certPrivKeyPEM := new(bytes.Buffer)
 	err = pem.Encode(certPrivKeyPEM, &pem.Block{
-		Type:  "RSA PRIVATE KEY",
+		Type:  "EC PRIVATE KEY",
 		Bytes: mpk,
 	})
 	if err != nil {
