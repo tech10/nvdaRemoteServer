@@ -15,7 +15,11 @@ import (
 
 // Generate a self-signed certificate as long as the server is running
 func serial_number() *big.Int {
-	return big.NewInt(time.Now().UnixNano())
+	serial_num, serial_err := rand.Int(rand.Reader, big.NewInt(9223372036854775807))
+	if serial_err != nil {
+		return big.NewInt(time.Now().UnixNano())
+	}
+	return serial_num
 }
 
 func gen_cert() (*tls.Config, error) {
