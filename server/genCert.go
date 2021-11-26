@@ -23,7 +23,7 @@ func serial_number() *big.Int {
 }
 
 func gen_cert() (*tls.Config, error) {
-	var ca = &x509.Certificate{
+	ca := &x509.Certificate{
 		SerialNumber: serial_number(),
 		Subject: pkix.Name{
 			Country:      []string{"US"},

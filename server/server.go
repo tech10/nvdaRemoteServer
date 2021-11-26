@@ -6,11 +6,13 @@ import (
 	"sync"
 )
 
-var sl sync.Mutex
-var EndMessage byte = '\n'
-var lastID int = 0
-var clients map[*Client]struct{}
-var channels map[string]*ClientChannel
+var (
+	sl         sync.Mutex
+	EndMessage byte = '\n'
+	lastID     int  = 0
+	clients    map[*Client]struct{}
+	channels   map[string]*ClientChannel
+)
 
 func AddClient(c *Client) {
 	sl.Lock()

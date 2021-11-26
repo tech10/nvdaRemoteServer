@@ -9,9 +9,11 @@ import (
 
 var ll sync.Mutex
 
-var log_standard *log.Logger
-var log_error *log.Logger
-var log_file *os.File
+var (
+	log_standard *log.Logger
+	log_error    *log.Logger
+	log_file     *os.File
+)
 
 func Log(level int, msg ...interface{}) {
 	if level > loglevel {
@@ -40,7 +42,7 @@ func log_init(file string) {
 		Log(LOG_INFO, "The log file at "+file+" will not be written, as the server has been told not to launch.")
 		return
 	}
-	w, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	w, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0o644)
 	if err != nil {
 		log_init("")
 		Log_error("Unable to open log file " + file + " for writing.\r\n" + err.Error())

@@ -1,8 +1,9 @@
 package server
 
 import (
-	"github.com/tech10/panic_handler"
 	"os"
+
+	"github.com/tech10/panic_handler"
 )
 
 func Shutdown() {

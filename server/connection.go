@@ -31,10 +31,12 @@ type Server struct {
 	Stop              context.CancelFunc
 }
 
-var mctx context.Context
-var StopServers context.CancelFunc
-var msl sync.Mutex
-var stoppingServers bool = false
+var (
+	mctx            context.Context
+	StopServers     context.CancelFunc
+	msl             sync.Mutex
+	stoppingServers bool = false
+)
 
 func init() {
 	mctx, StopServers = context.WithCancel(context.Background())

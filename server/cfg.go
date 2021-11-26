@@ -2,9 +2,10 @@ package server
 
 import (
 	"errors"
-	"github.com/tech10/panic_handler"
 	"os"
 	"path/filepath"
+
+	"github.com/tech10/panic_handler"
 )
 
 type Cfg struct {

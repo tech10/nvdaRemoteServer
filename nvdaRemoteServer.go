@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	. "github.com/tech10/nvdaRemoteServer/server"
 	"os"
 	"strings"
 	"sync"
+
+	. "github.com/tech10/nvdaRemoteServer/server"
 )
 
 var Version string = "development"

@@ -10,8 +10,10 @@ import (
 
 var confFile string
 
-var genConfFile string
-var genConfDir bool
+var (
+	genConfFile string
+	genConfDir  bool
+)
 
 var confRead bool
 
@@ -39,9 +41,11 @@ var Launch bool
 
 var Servers []*Server
 
-var PID int
-var PID_STR string
-var pidfile string
+var (
+	PID     int
+	PID_STR string
+	pidfile string
+)
 
 func Configure() error {
 	PID = os.Getpid()

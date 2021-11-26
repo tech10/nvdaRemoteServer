@@ -6,34 +6,44 @@ import (
 
 var PS string = string(os.PathSeparator)
 
-var DEFAULT_CONF_FILE string = ""
-var DEFAULT_CONF_NAME string = "nvdaRemoteServer.json"
-var DEFAULT_CONF_DIR string
+var (
+	DEFAULT_CONF_FILE string = ""
+	DEFAULT_CONF_NAME string = "nvdaRemoteServer.json"
+	DEFAULT_CONF_DIR  string
+)
 
 var DEFAULT_CONF_READ bool = true
 
-var DEFAULT_GEN_CONF_FILE string = ""
-var DEFAULT_GEN_CONF_DIR bool = false
+var (
+	DEFAULT_GEN_CONF_FILE string = ""
+	DEFAULT_GEN_CONF_DIR  bool   = false
+)
 
 var DEFAULT_ADDRESS string = ":6837"
 
-var DEFAULT_CERT_FILE string = ""
-var DEFAULT_KEY_FILE string = ""
-var DEFAULT_GEN_CERT_FILE string = ""
+var (
+	DEFAULT_CERT_FILE     string = ""
+	DEFAULT_KEY_FILE      string = ""
+	DEFAULT_GEN_CERT_FILE string = ""
+)
 
 var DEFAULT_LOG_FILE string = ""
 
 var DEFAULT_LOG_LEVEL int = 0
 
-const LOG_SILENT int = -1
-const LOG_INFO int = 0
-const LOG_CONNECTION int = 1
-const LOG_CHANNEL int = 2
-const LOG_DEBUG int = 3
-const LOG_PROTOCOL int = 4
+const (
+	LOG_SILENT     int = -1
+	LOG_INFO       int = 0
+	LOG_CONNECTION int = 1
+	LOG_CHANNEL    int = 2
+	LOG_DEBUG      int = 3
+	LOG_PROTOCOL   int = 4
+)
 
-var DEFAULT_MOTD string = ""
-var DEFAULT_MOTD_ALWAYS_DISPLAY bool = false
+var (
+	DEFAULT_MOTD                string = ""
+	DEFAULT_MOTD_ALWAYS_DISPLAY bool   = false
+)
 
 var DEFAULT_SEND_ORIGIN bool = true
 

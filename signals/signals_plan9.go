@@ -10,7 +10,7 @@ import (
 )
 
 func Wait() chan os.Signal {
-	//Signal notifiers
+	// Signal notifiers
 	kill := make(chan os.Signal, 1)
 	signal.Notify(kill,
 		os.Interrupt,

@@ -104,5 +104,4 @@ func init() {
 		time.Sleep(time.Second)
 		c.Close()
 	})
-
 }
