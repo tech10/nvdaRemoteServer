@@ -52,7 +52,7 @@ There are currently no packaged releases of this program, requiring manual insta
 With the latest version of Go installed, use the following command.
 
 ```console
-$ go install github.com/tech10/nvdaRemoteServer
+$ go install github.com/tech10/nvdaRemoteServer@latest
 ```
 
 This should download and compile the latest code, placing the binary within your GOBIN environment variable. Presuming you have the GOBIN in your path, you will be able to execute it fairly easily. If not, you will need to update your path or execute the binary with its full path.
