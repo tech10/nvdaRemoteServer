@@ -5,7 +5,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY . .
 RUN ln -s /usr/bin/gcc /usr/bin/musl-gcc && ./build-static.sh
-RUN upx ./nvdaRemoteServer
+RUN upx --best --lzma ./nvdaRemoteServer
 
 FROM scratch
 
