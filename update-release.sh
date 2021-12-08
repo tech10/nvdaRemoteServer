@@ -27,4 +27,4 @@ check git push
 echo Tagging update.
 check git tag -s -m \"release: ${newtag}\" -a ${newtag}
 echo Releasing.
-check goreleaser release --rm-dist
+check git push origin ${newtag}
