@@ -130,7 +130,6 @@ func (c *ClientChannel) Add(client *Client, password string) {
 					return scdb.Clients[i].ID < scdb.Clients[j].ID
 				})
 		}
-
 	}
 	enc, encerr = Encode(scdb)
 	if encerr == nil {

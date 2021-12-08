@@ -5,10 +5,18 @@
 [linters]
   disable-all = true
   enable = [
+    "asciicheck",
+    "bidichk",
+    "contextcheck",
     "deadcode",
     "depguard",
+    "dogsled",
+    "dupl",
     "errcheck",
+    "errname",
+    "errorlint",
     "exportloopref",
+    "forcetypeassert",
     "goconst",
     "gocyclo",
     "godot",
@@ -18,16 +26,21 @@
     "ineffassign",
     "misspell",
     "nakedret",
-    "noctx",
+    "nilerr",
+    "nilnil",
     "nolintlint",
+    "prealloc",
+    "predeclared",
     "staticcheck",
     "structcheck",
+    "stylecheck",
     "typecheck",
     "unconvert",
     "unparam",
     "unused",
     "varcheck",
     "vetshadow",
+    "whitespace",
   ]
 
 [issues]
@@ -35,3 +48,6 @@
 
 [linters-settings.gofumpt]
     extra-rules = true
+
+[linters-settings.stylecheck]
+    checks = ["all", "-ST1001", "-ST1003", "-ST1005"]

@@ -200,7 +200,7 @@ func Configure() error {
 }
 
 func Start() int {
-	var num int = 0
+	num := 0
 	var err error
 
 	for i := range Servers {
