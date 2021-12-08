@@ -108,7 +108,7 @@ func (c *Client) SetVersion(version int) {
 	c.version = version
 }
 
-// Handle client data
+// Handle client data.
 func (c *Client) listen() {
 	c.Lock()
 	c.t = time.NewTicker(time.Duration(ping_sec) * time.Second)
@@ -190,7 +190,7 @@ func (c *Client) listen() {
 	}
 }
 
-// Send bytes to client
+// Send bytes to client.
 func (c *Client) Send(b []byte) {
 	defer func() {
 		if r := recover(); r != nil {

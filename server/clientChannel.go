@@ -7,6 +7,11 @@ import (
 	"sync"
 )
 
+const (
+	connTypeSlave  string = "slave"
+	connTypeMaster string = "master"
+)
+
 type ClientChannel struct {
 	sync.Mutex
 	name          string
@@ -20,14 +25,14 @@ type ClientChannel struct {
 func (c *ClientChannel) Lmotd(ctype, name, password string) string {
 	msg := "This is a locked channel. Name: " + name + "\n"
 	switch ctype {
-	case "slave":
+	case connTypeSlave:
 		msg += "No one will be able to control your computer"
 		if c.password != "" {
 			msg += " unless they authenticate with the password " + c.password
 		} else {
 			msg += "."
 		}
-	case "master":
+	case connTypeMaster:
 		if (c.password != "" && password != c.password) || (c.password == "") {
 			msg += "You won't be able to control any computers connected to this channel."
 		}
@@ -61,13 +66,13 @@ func (c *ClientChannel) Add(client *Client, password string) {
 	clients := c.ClientsAll
 	lmotd := c.Lmotd(connection, c.name, password)
 	switch connection {
-	case "master":
+	case connTypeMaster:
 		_, exists := c.ClientsMaster[id]
 		if exists {
 			break
 		}
 		c.ClientsMaster[id] = client
-	case "slave":
+	case connTypeSlave:
 		_, exists := c.ClientsSlave[id]
 		if exists {
 			break
@@ -169,13 +174,13 @@ func (c *ClientChannel) Remove(client *Client) {
 	id := client.GetID()
 	connection := client.GetConnectionType()
 	switch connection {
-	case "master":
+	case connTypeMaster:
 		_, exists := c.ClientsMaster[id]
 		if !exists {
 			break
 		}
 		delete(c.ClientsMaster, id)
-	case "slave":
+	case connTypeSlave:
 		_, exists := c.ClientsSlave[id]
 		if !exists {
 			break
@@ -253,21 +258,21 @@ func (c *ClientChannel) SendOthers(msg []byte, client *Client) {
 	auth := client.GetAuthorized()
 	c.Lock()
 	switch connection {
-	case "master":
+	case connTypeMaster:
 		clients = c.ClientsSlave
-	case "slave":
+	case connTypeSlave:
 		clients = c.ClientsMaster
 	default:
 		clients = c.ClientsAll
 	}
 	c.Unlock()
 	if len(clients) == 0 {
-		if connection == "master" {
+		if connection == connTypeMaster {
 			client.Send([]byte("{\"type\":\"nvda_not_connected\"}"))
 		}
 		return
 	}
-	if connection == "master" && !auth {
+	if connection == connTypeMaster && !auth {
 		return
 	}
 	for _, sc := range clients {

@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// Generate a self-signed certificate as long as the server is running
+// Generate a self-signed certificate as long as the server is running.
 func serial_number() *big.Int {
 	serial_num, serial_err := rand.Int(rand.Reader, big.NewInt(9223372036854775807))
 	if serial_err != nil {

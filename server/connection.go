@@ -20,7 +20,7 @@ import (
 	"sync"
 )
 
-// TCP server
+// TCP server.
 type Server struct {
 	sync.Mutex
 	sync.WaitGroup
@@ -42,14 +42,14 @@ func init() {
 	mctx, StopServers = context.WithCancel(context.Background())
 }
 
-// Set message terminator
+// Set message terminator.
 func (s *Server) MessageTerminator(terminator byte) {
 	s.Lock()
 	defer s.Unlock()
 	s.messageTerminator = terminator
 }
 
-// Listen starts network server
+// Listen starts network server.
 func (s *Server) Listen() error {
 	s.Lock()
 	var listener net.Listener
@@ -117,7 +117,7 @@ func (s *Server) accept(listener net.Listener) {
 	}
 }
 
-// Creates new tcp server instance
+// Creates new tcp server instance.
 func New(address string) *Server {
 	server := &Server{
 		address:           address,

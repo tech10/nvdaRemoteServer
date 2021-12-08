@@ -1,0 +1,37 @@
+[run]
+  deadline = "10m"
+  tests = true
+
+[linters]
+  disable-all = true
+  enable = [
+    "deadcode",
+    "depguard",
+    "errcheck",
+    "exportloopref",
+    "goconst",
+    "gocyclo",
+    "godot",
+    "gofumpt",
+    "gosimple",
+    "govet",
+    "ineffassign",
+    "misspell",
+    "nakedret",
+    "noctx",
+    "nolintlint",
+    "staticcheck",
+    "structcheck",
+    "typecheck",
+    "unconvert",
+    "unparam",
+    "unused",
+    "varcheck",
+    "vetshadow",
+  ]
+
+[issues]
+  fix = true
+
+[linters-settings.gofumpt]
+    extra-rules = true
