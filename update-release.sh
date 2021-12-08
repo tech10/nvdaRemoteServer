@@ -16,8 +16,6 @@ echo The old tag and new tag are identical. Not upgrading.
 exit
 fi
 echo "Upgrading from $oldtag to $newtag."
-echo Changing readme file.
-check sed -i \"s/${oldtag}/${newtag}/g\" README.MD
 echo Generating certificate.
 gen_cert
 echo Committing update.
