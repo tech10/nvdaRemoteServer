@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/tech10/panic_handler"
+	"github.com/tech10/panichandler"
 )
 
 type Cfg struct {
@@ -194,7 +194,7 @@ func (c *Cfg) Read() error {
 }
 
 func (c *Cfg) Setup() error {
-	defer panic_handler.HandleTask(c)
+	defer panichandler.HandleTask(c)
 	if !default_conf_read(confRead) {
 		logstr := "No configuration file will be read."
 		if !default_conf_file(confFile) {
@@ -317,7 +317,7 @@ func (c *Cfg) Generate() error {
 	return nil
 }
 
-func (c *Cfg) DoPanicTask(i *panic_handler.Info) {
+func (c *Cfg) DoPanicTask(i *panichandler.Info) {
 	c.panicString = i.String()
 	c.Log_error("PANIC DETECTED DURING CONFIGURATION\n" + c.panicString)
 }
