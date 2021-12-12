@@ -4,7 +4,7 @@ jobs:
   build:
     strategy:
       matrix:
-        go-version: ['1.15.15', '${{ secrets.GO_LATEST }}']
+        go-version: [1.15.15, ${{ secrets.GO_LATEST }}]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
