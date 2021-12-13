@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 	"strings"
 	"sync"
 
@@ -12,7 +13,7 @@ import (
 var Version string = "development"
 
 func main() {
-	Version = strings.TrimPrefix(Version, "v")
+	Version = strings.TrimPrefix(versionSetter(), "v")
 	args()
 
 	defer Log_close()
@@ -64,4 +65,16 @@ func args() {
 	default:
 		return
 	}
+}
+
+func versionSetter() string {
+	i, ok := debug.ReadBuildInfo()
+	if !ok {
+		return Version
+	}
+	m := i.Main
+	if m.Sum != "" {
+		return m.Version
+	}
+	return Version
 }
