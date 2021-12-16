@@ -28,7 +28,12 @@ func (c *ClientChannel) Lmotd(ctype, name, password string) string {
 	case connTypeSlave:
 		msg += "No one will be able to control your computer"
 		if c.password != "" {
-			msg += " unless they authenticate with the password " + c.password
+			msg += " unless they authenticate"
+			if password == c.password {
+				msg += " with the password " + c.password
+			} else {
+				msg += "."
+			}
 		} else {
 			msg += "."
 		}
@@ -37,7 +42,7 @@ func (c *ClientChannel) Lmotd(ctype, name, password string) string {
 			msg += "You won't be able to control any computers connected to this channel."
 		}
 		if c.password == password && c.password != "" {
-			msg += "You are authorized to control any computer connected to this channel. Authorized with password " + password
+			msg += "You are authorized to control any computer connected to this channel. Authorized with password " + c.password
 		}
 	}
 	if !c.locked {
