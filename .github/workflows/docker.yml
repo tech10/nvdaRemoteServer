@@ -38,7 +38,7 @@ jobs:
             ghcr.io/tech10/nvdaremoteserver-docker
       
       - name: Build and push Docker images
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
