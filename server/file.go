@@ -2,7 +2,6 @@ package server
 
 import (
 	"errors"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -89,5 +88,5 @@ func cdir(dir string) error {
 
 func file_read(file string) ([]byte, error) {
 	file = fullPath(file)
-	return ioutil.ReadFile(file)
+	return os.ReadFile(file)
 }

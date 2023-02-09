@@ -3,7 +3,6 @@ package server
 import (
 	"math/rand"
 	"strconv"
-	"time"
 )
 
 func gen_key() string {
@@ -11,7 +10,6 @@ func gen_key() string {
 	max := 10000000
 	var key string
 	var c *ClientChannel
-	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 20; i++ {
 		key = strconv.Itoa(rand.Intn(max-min) + min)
 		c = FindChannel(key)
