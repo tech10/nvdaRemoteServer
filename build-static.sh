@@ -13,4 +13,4 @@
 # and trim the build path of your current working directory from all information returned in case of a panic.
 
 . ./functions.sh
-CC=musl-gcc go build -buildmode=pie -trimpath -ldflags "-linkmode external -w -s -extldflags '-static' -X main.Version=$(git_version)" -o nvdaRemoteServer .
+CGO_ENABLED=1 CC=musl-gcc go build -buildmode=pie -trimpath -ldflags "-linkmode external -w -s -extldflags '-static' -X main.Version=$(git_version)" -o nvdaRemoteServer .
