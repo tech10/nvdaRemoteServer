@@ -23,7 +23,7 @@ My goals for this project are to create a stable server for the NVDARemote addon
 
 On the [releases](https://github.com/tech10/nvdaRemoteServer/releases) page, there are compiled binaries for various operating systems and architectures that Go supports. I have made an effort to ensure each binary is a completely static build, and thus, not dependent on any libraries that may or may not be used in different operating systems upon which the program can be run. Since there are numerous systems and configurations available for use, the download and installation of the server's binary builds won't be completely covered in this documentation.
 
-Due to some recent deprecation notices in Goreleaser, the following changes have been made to the archive file format, which will take effect on the next release.
+Due to some recent deprecation notices in Goreleaser, the following changes have been made to the archive file format.
 
 - The architecture format has changed. Most notibly, x86_64 is now amd64, i386 is 386, aarch64 is arm64.
 - Operating system formats have been changed. For the most part, the capital letters have been removed from the operating system formats. Windows is windows, OpenBSD is openbsd, etc. The most significant of these changes is that macOS will be replaced with darwin. Any scripts that update the server from the GitHub releases will need to be updated accordingly, so as to reflect these changes.
