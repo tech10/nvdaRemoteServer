@@ -4,8 +4,8 @@
 # and are using systemd for your daemon manager. This will automatically download the latest release.
 # Modify the appropriate variables for your system, and commands, if needed.
 binary="nvdaRemoteServer"
-os="Linux"
-arch="x86_64"
+os="linux"
+arch="amd64"
 program="${binary}_${os}_${arch}"
 check() {
 eval $@

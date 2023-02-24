@@ -48,20 +48,7 @@ builds:
         goarch: 386
 archives:
   -
-    replacements:
-      darwin: macOS
-      linux: Linux
-      windows: Windows
-      freebsd: FreeBSD
-      netbsd: NetBSD
-      openbsd: OpenBSD
-      plan9: Plan9
-      dragonfly: DragonFly
-      solaris: Solaris
-      aix: AIX
-      386: i386
-      amd64: x86_64
-      arm64: aarch64
+    rlcp: true
     format_overrides:
       - goos: windows
         format: zip
@@ -88,6 +75,7 @@ changelog:
       - '^docs:'
       - '^release:'
 source:
+  rlcp: true
   enabled: true
   name_template: "{{ .ProjectName }}_source"
   format: "tar.gz"
