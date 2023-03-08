@@ -1,0 +1,39 @@
+name: lint and build
+on: [push, pull_request]
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  golangci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: stable
+          check-latest: true
+      - name: Go module download
+        run: go mod download
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          # args: --issues-exit-code=0
+          only-new-issues: true
+  build:
+    needs: golangci
+    strategy:
+      matrix:
+        go-version: ['stable']
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Install Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go-version }}
+        check-latest: true
+        cache: true
+    - name: Build
+      run: go build
