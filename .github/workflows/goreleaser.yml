@@ -18,7 +18,9 @@ jobs:
         name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: ${{ secrets.GO_LATEST }}
+          go-version: stable
+          check-latest: true
+          cache: true
       -
         name: Import GPG key
         id: import_gpg
@@ -30,13 +32,9 @@ jobs:
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
-          # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
           version: latest
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_PAT }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
-          # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
-          # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-
