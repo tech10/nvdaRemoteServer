@@ -305,6 +305,16 @@ $
 ```
 
 
+### `buildinfo`
+
+Print the build information, then shut down immediately. Example:
+
+```console
+$ nvdaRemoteServer buildinfo
+This application was compiled with go1.20.1. It was compiled for the amd64 architecture and the linux operating system.
+```
+
+
 # Extra Features
 
 This server has a few extra features that the official addon and server do not support at the moment. This list is subject to change as the addon changes.

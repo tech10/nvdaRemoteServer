@@ -62,6 +62,9 @@ func args() {
 	case "version":
 		fmt.Println(Version)
 		os.Exit(0)
+	case "buildinfo":
+		fmt.Println(buildInfo())
+		os.Exit(0)
 	default:
 		return
 	}
