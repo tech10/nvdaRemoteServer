@@ -55,7 +55,7 @@ func fullPath(old_path string) string {
 		return cleanPath(e_path)
 	}
 	e_path = ""
-	n_path := ""
+	var n_path string
 	err = nil
 	for _, v := range strings.Split(path, PS) {
 		e_path += v + PS

@@ -44,8 +44,8 @@ func init() {
 				return
 			}
 		}
-		password := ""
-		locked := false
+		var password string
+		var locked bool
 		db.Channel, password, locked = getChannelParams(db.Channel)
 		if db.Channel == "" {
 			enc, encerr := Encode(Data{
