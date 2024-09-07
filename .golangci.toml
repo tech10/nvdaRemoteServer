@@ -8,6 +8,7 @@
     "asciicheck",
     "bidichk",
     "contextcheck",
+#    "copyloopvar",
     "decorder",
     "dogsled",
     "dupl",
@@ -15,7 +16,6 @@
     "errcheck",
     "errname",
     "errorlint",
-    "exportloopref",
     "forcetypeassert",
     "gocheckcompilerdirectives",
     "gocyclo",
@@ -37,7 +37,6 @@
     "unconvert",
     "unparam",
     "unused",
-    "vetshadow",
     "wastedassign",
     "whitespace",
   ]

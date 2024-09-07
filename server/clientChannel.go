@@ -242,7 +242,7 @@ func (c *ClientChannel) Quit() {
 }
 
 func (c *ClientChannel) SendAll(msg []byte, client *Client) {
-	if c.ClientsAll == nil || len(c.ClientsAll) == 0 {
+	if len(c.ClientsAll) == 0 {
 		return
 	}
 	for _, sc := range c.ClientsAll {
