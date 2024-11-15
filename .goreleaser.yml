@@ -1,3 +1,4 @@
+version: 2
 project_name: nvdaRemoteServer
 before:
   hooks:
@@ -48,7 +49,6 @@ builds:
         goarch: 386
 archives:
   -
-    rlcp: true
     format_overrides:
       - goos: windows
         format: zip
@@ -75,7 +75,6 @@ changelog:
       - '^docs:'
       - '^release:'
 source:
-  rlcp: true
   enabled: true
   name_template: "{{ .ProjectName }}_source"
   format: "tar.gz"
