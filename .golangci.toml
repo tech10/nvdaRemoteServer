@@ -1,51 +1,80 @@
+version = '2'
+
 [run]
-  timeout = "10m"
-  tests = true
+tests = true
 
 [linters]
-  disable-all = true
-  enable = [
-    "asciicheck",
-    "bidichk",
-    "contextcheck",
-#    "copyloopvar",
-    "decorder",
-    "dogsled",
-    "dupl",
-    "dupword",
-    "errcheck",
-    "errname",
-    "errorlint",
-    "forcetypeassert",
-    "gocheckcompilerdirectives",
-    "gocyclo",
-    "godot",
-    "gofumpt",
-    "gosimple",
-    "govet",
-    "ineffassign",
-    "misspell",
-    "nakedret",
-    "nilerr",
-    "nilnil",
-    "nolintlint",
-    "prealloc",
-    "predeclared",
-    "staticcheck",
-    "stylecheck",
-    "typecheck",
-    "unconvert",
-    "unparam",
-    "unused",
-    "wastedassign",
-    "whitespace",
-  ]
+default = 'none'
+enable = [
+  'asciicheck',
+  'bidichk',
+  'contextcheck',
+  'decorder',
+  'dogsled',
+  'dupl',
+  'dupword',
+  'errcheck',
+  'errname',
+  'errorlint',
+  'forcetypeassert',
+  'gocheckcompilerdirectives',
+  'gocyclo',
+  'godot',
+  'govet',
+  'ineffassign',
+  'misspell',
+  'nakedret',
+  'nilerr',
+  'nilnil',
+  'nolintlint',
+  'prealloc',
+  'predeclared',
+  'staticcheck',
+  'unconvert',
+  'unparam',
+  'unused',
+  'wastedassign',
+  'whitespace'
+]
+
+[linters.settings.staticcheck]
+checks = [
+  'all',
+  '-ST1001',
+  '-ST1003',
+  '-ST1005'
+]
+
+[linters.exclusions]
+generated = 'lax'
+presets = [
+  'comments',
+  'common-false-positives',
+  'legacy',
+  'std-error-handling'
+]
+paths = [
+  'third_party$',
+  'builtin$',
+  'examples$'
+]
 
 [issues]
-  fix = true
+fix = true
 
-[linters-settings.gofumpt]
-    extra-rules = true
+[formatters]
+enable = [
+  'gofumpt'
+]
 
-[linters-settings.stylecheck]
-    checks = ["all", "-ST1001", "-ST1003", "-ST1005"]
+[formatters.settings]
+[formatters.settings.gofumpt]
+extra-rules = true
+
+[formatters.exclusions]
+generated = 'lax'
+paths = [
+  'third_party$',
+  'builtin$',
+  'examples$'
+]
