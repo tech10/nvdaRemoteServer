@@ -5,17 +5,20 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/sha1"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"math/big"
+	"net"
 	"time"
 )
 
 // Generate a self-signed certificate as long as the server is running.
 func serial_number() *big.Int {
-	serial_num, serial_err := rand.Int(rand.Reader, big.NewInt(9223372036854775807))
+	serialNumLimit := new(big.Int).Lsh(big.NewInt(1), 128)
+	serial_num, serial_err := rand.Int(rand.Reader, serialNumLimit)
 	if serial_err != nil {
 		return big.NewInt(time.Now().UnixNano())
 	}
@@ -30,6 +33,8 @@ func gen_cert() (*tls.Config, error) {
 			Organization: []string{"NVDARemote Server"},
 			CommonName:   "Root CA",
 		},
+		DNSNames:              []string{"localhost"},
+		IPAddresses:           []net.IP{net.ParseIP("127.0.0.1")},
 		NotBefore:             time.Now().Add(-10 * time.Second),
 		NotAfter:              time.Now().AddDate(10, 0, 0),
 		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign | x509.KeyUsageDigitalSignature,
@@ -41,6 +46,10 @@ func gen_cert() (*tls.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	pubKeyBytes, _ := x509.MarshalPKIXPublicKey(&priv.PublicKey)
+	keyID := sha1.Sum(pubKeyBytes)
+	ca.SubjectKeyId = keyID[:]
+	ca.AuthorityKeyId = keyID[:]
 	caBytes, cerr := x509.CreateCertificate(rand.Reader, ca, ca, &priv.PublicKey, priv)
 	if cerr != nil {
 		return nil, cerr
@@ -62,7 +71,7 @@ func gen_cert() (*tls.Config, error) {
 
 	certPrivKeyPEM := new(bytes.Buffer)
 	err = pem.Encode(certPrivKeyPEM, &pem.Block{
-		Type:  "EC PRIVATE KEY",
+		Type:  "PRIVATE KEY",
 		Bytes: mpk,
 	})
 	if err != nil {
